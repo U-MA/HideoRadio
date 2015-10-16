@@ -7,6 +7,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 
 public class MainActivity extends ListActivity {
+    private static final String RSS_FEED_URL = "http://www.konami.jp/kojima_pro/radio/hideradio/podcast.xml";
     private ArrayList<Episode> episodes;
     private EpisodeListAdapter adapter;
 
@@ -18,10 +19,7 @@ public class MainActivity extends ListActivity {
         episodes = new ArrayList<>();
         adapter = new EpisodeListAdapter(this, episodes);
 
-        setListAdapter(adapter);
-
-        for (int i=0; i < 10; ++i) {
-            adapter.add(new Episode());
-        }
+        RssParserTask task = new RssParserTask(this, adapter);
+        task.execute(RSS_FEED_URL);
     }
 }
