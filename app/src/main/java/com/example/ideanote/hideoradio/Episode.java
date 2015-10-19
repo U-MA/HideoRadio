@@ -6,8 +6,9 @@ import android.text.TextUtils;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Table(name = "episodes")
 public class Episode extends Model {
@@ -123,8 +124,12 @@ public class Episode extends Model {
         return true;
     }
 
+    public static Episode findById(String eid) {
+        return new Select().from(Episode.class).where("eid=?", eid).executeSingle();
+    }
+
     // from https://github.com/rejasupotaro/Rebuild/blob/master/Rebuild/src/main/java/rejasupotaro/rebuild/utils/DateUtils.java
-    private static String dateToString(Date date) {
+    public static String dateToString(Date date) {
         int month = date.getMonth() + 1;
         int day = date.getDate();
         int year = 1900 + date.getYear();

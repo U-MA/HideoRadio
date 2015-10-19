@@ -1,8 +1,9 @@
 package com.example.ideanote.hideoradio;
 
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.renderscript.ScriptGroup;
+import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -10,6 +11,10 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Locale;
+import java.util.Date;
 
 public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter> {
     private MainActivity activity;
@@ -61,17 +66,33 @@ public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter
                         if (tag.equals("item")) {
                             currentEpisode = new Episode();
                         } else if (currentEpisode != null) {
-                            if (tag.equals("title")) {
+                            if (tag.equals("guid")) {
+                                currentEpisode.setEpisodeId(parser.nextText());
+                            } else if (tag.equals("title")) {
                                 currentEpisode.setTitle(parser.nextText());
                             } else if (tag.equals("description")) {
                                 currentEpisode.setDescription(parser.nextText());
+                            } else if (tag.equals("link")) {
+                                currentEpisode.setLink(Uri.parse(parser.nextText()));
+                            } else if (tag.equals("date")) {
+                                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.JAPAN);
+                                currentEpisode.setPostedAt(format.parse(parser.nextText()));
+                            } else if (tag.equals("enclosure")) {
+                                // TODO enclosureの設定
+                                // 現在は仮のコード
+                                currentEpisode.setEnclosure(Uri.parse("http://www.konami.jp"));
+                            } else if (tag.equals("duration")) {
+                                currentEpisode.setDuration(parser.nextText());
                             }
                         }
                         break;
                     case XmlPullParser.END_TAG:
                         tag = parser.getName();
                         if (tag.equals("item")) {
-                            adapter.add(currentEpisode);
+                            if (Episode.findById(currentEpisode.getEpisodeId()) == null) {
+                                currentEpisode.save();
+                                adapter.add(currentEpisode);
+                            }
                         }
                         break;
                 }
