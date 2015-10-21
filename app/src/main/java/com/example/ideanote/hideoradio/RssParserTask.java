@@ -3,6 +3,8 @@ package com.example.ideanote.hideoradio;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Xml;
 
@@ -17,12 +19,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Date;
 
-public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter> {
+public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapter> {
     private MainActivity activity;
-    private EpisodeListAdapter adapter;
+    private RecyclerViewAdapter adapter;
     private ProgressDialog progressDialog;
 
-    public RssParserTask(MainActivity activity, EpisodeListAdapter adapter) {
+    public RssParserTask(MainActivity activity, RecyclerViewAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
     }
@@ -35,8 +37,8 @@ public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter
     }
 
     @Override
-    protected EpisodeListAdapter doInBackground(String... params) {
-        EpisodeListAdapter result = null;
+    protected RecyclerViewAdapter doInBackground(String... params) {
+        RecyclerViewAdapter result = null;
         List<Episode> episodes = Episode.find();
         if (episodes.isEmpty()) {
             try {
@@ -50,18 +52,21 @@ public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter
             Log.d("episodes", String.valueOf(episodes.size()));
             adapter.clear();
             adapter.addAll(episodes);
+            Log.d("adapter.getItemCount", String.valueOf(adapter.getItemCount()));
             result = adapter;
         }
         return result;
     }
 
     @Override
-    protected void onPostExecute(EpisodeListAdapter result) {
+    protected void onPostExecute(RecyclerViewAdapter result) {
         progressDialog.dismiss();
-        activity.setListAdapter(result);
+        RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setAdapter(result);
     }
 
-    public EpisodeListAdapter parseXml(InputStream is) throws IOException {
+    public RecyclerViewAdapter parseXml(InputStream is) throws IOException {
         XmlPullParser parser = Xml.newPullParser();
         try {
             parser.setInput(is, null);

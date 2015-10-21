@@ -23,6 +23,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         episodes.add(episode);
     }
 
+    public void clear() {
+        episodes.clear();
+    }
+
+    public void addAll(List<Episode> episodes) {
+        this.episodes.addAll(episodes);
+    }
+
     @Override
     public int getItemCount() {
         return episodes.size();
