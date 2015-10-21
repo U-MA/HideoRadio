@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Date;
 
@@ -36,12 +37,20 @@ public class RssParserTask extends AsyncTask<String, Integer, EpisodeListAdapter
     @Override
     protected EpisodeListAdapter doInBackground(String... params) {
         EpisodeListAdapter result = null;
-        try {
-            URL url = new URL(params[0]);
-            InputStream is = url.openConnection().getInputStream();
-            result = parseXml(is);
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Episode> episodes = Episode.find();
+        if (episodes.isEmpty()) {
+            try {
+                URL url = new URL(params[0]);
+                InputStream is = url.openConnection().getInputStream();
+                result = parseXml(is);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.d("episodes", String.valueOf(episodes.size()));
+            adapter.clear();
+            adapter.addAll(episodes);
+            result = adapter;
         }
         return result;
     }

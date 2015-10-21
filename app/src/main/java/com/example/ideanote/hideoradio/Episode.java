@@ -9,6 +9,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "episodes")
 public class Episode extends Model {
@@ -126,6 +127,11 @@ public class Episode extends Model {
 
     public static Episode findById(String eid) {
         return new Select().from(Episode.class).where("eid=?", eid).executeSingle();
+    }
+
+    public static List<Episode> find() {
+        List<Episode> episodeList = new Select().from(Episode.class).orderBy("ID ASC").execute();
+        return episodeList;
     }
 
     // from https://github.com/rejasupotaro/Rebuild/blob/master/Rebuild/src/main/java/rejasupotaro/rebuild/utils/DateUtils.java
