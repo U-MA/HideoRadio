@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -64,6 +65,13 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setAdapter(result);
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(activity,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Log.d("Click", String.valueOf(position));
+                    }
+                }));
     }
 
     public RecyclerViewAdapter parseXml(InputStream is) throws IOException {
