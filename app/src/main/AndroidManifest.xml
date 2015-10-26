@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ideanote.hideoradio" >
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:name="com.example.ideanote.hideoradio.HideoRadioApplication"
+    <application
+        android:name=".HideoRadioApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-
-        <meta-data android:name="AA_DB_NAME" android:value="HideoRadio.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="HideoRadio.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
 
         <activity android:name=".MainActivity" >
             <intent-filter>
@@ -20,6 +24,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".EpisodeDetail"
+            android:label="@string/title_activity_episode_detail"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

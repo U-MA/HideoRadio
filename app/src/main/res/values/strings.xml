@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HideoRadio</string>
+    <string name="title_activity_episode_detail">EpisodeDetail</string>
 </resources>
