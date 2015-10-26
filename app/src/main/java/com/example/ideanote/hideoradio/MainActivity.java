@@ -14,6 +14,8 @@ public class MainActivity extends Activity {
     private ArrayList<Episode> episodes;
     private RecyclerViewAdapter adapter;
 
+    public static final String EXTRA_EPISODE_ID = "extra_episode_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -31,6 +31,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.episodes.addAll(episodes);
     }
 
+    public Episode getAt(int position) {
+        return episodes.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return episodes.size();

@@ -6,6 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 
@@ -15,6 +18,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_episode_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        TextView textView = (TextView) findViewById(R.id.detail_title);
+        textView.setText(getIntent().getStringExtra(MainActivity.EXTRA_EPISODE_ID));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

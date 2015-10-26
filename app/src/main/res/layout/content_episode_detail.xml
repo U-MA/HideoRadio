@@ -10,4 +10,8 @@
     tools:showIn="@layout/activity_episode_detail"
     tools:context="com.example.ideanote.hideoradio.EpisodeDetailActivity">
 
+    <TextView android:id="@+id/detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>
