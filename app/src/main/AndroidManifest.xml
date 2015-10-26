@@ -30,6 +30,11 @@
             android:label="@string/title_activity_episode_detail"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".EpisodeDetailActivity"
+            android:label="@string/title_activity_episode_detail"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
