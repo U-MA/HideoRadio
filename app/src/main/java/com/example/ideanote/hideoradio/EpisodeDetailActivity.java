@@ -19,8 +19,13 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView textView = (TextView) findViewById(R.id.detail_title);
-        textView.setText(getIntent().getStringExtra(MainActivity.EXTRA_EPISODE_ID));
+        String episodeId = getIntent().getStringExtra(MainActivity.EXTRA_EPISODE_ID);
+        Episode episode = Episode.findById(episodeId);
+
+        TextView titleView = (TextView) findViewById(R.id.detail_title);
+        titleView.setText(episode.getTitle());
+        TextView descriptionView = (TextView) findViewById(R.id.detail_description);
+        descriptionView.setText(episode.getDescription());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

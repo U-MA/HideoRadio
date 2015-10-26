@@ -71,7 +71,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                     @Override
                     public void onItemClick(View view, int position, Episode episode) {
                         Intent intent = new Intent(activity, EpisodeDetailActivity.class);
-                        intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getTitle());
+                        intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
                         activity.startActivity(intent);
                     }
                 }));
