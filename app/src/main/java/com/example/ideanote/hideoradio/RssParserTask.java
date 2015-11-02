@@ -51,10 +51,8 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                 e.printStackTrace();
             }
         } else {
-            Log.d("episodes", String.valueOf(episodes.size()));
             adapter.clear();
             adapter.addAll(episodes);
-            Log.d("adapter.getItemCount", String.valueOf(adapter.getItemCount()));
             result = adapter;
         }
         return result;
@@ -72,6 +70,14 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                     public void onItemClick(View view, int position, Episode episode) {
                         Intent intent = new Intent(activity, EpisodeDetailActivity.class);
                         intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
+                        if (episode.getEnclosure() != null) {
+                            Log.d("Enclosure", episode.getEnclosure().toString());
+                        } else {
+                            Log.d("Enclosure", "null");
+                        }
+                        if (episode.getDuration() != null) {
+                            Log.d("Duration", episode.getDuration());
+                        }
                         activity.startActivity(intent);
                     }
                 }));
@@ -104,8 +110,8 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                                 currentEpisode.setPostedAt(format.parse(parser.nextText()));
                             } else if (tag.equals("enclosure")) {
                                 // TODO enclosureの設定
-                                // 現在は仮のコード
-                                currentEpisode.setEnclosure(Uri.parse("http://www.konami.jp"));
+                                String url = parser.getAttributeValue(0);
+                                currentEpisode.setEnclosure(Uri.parse(url));
                             } else if (tag.equals("duration")) {
                                 currentEpisode.setDuration(parser.nextText());
                             }
