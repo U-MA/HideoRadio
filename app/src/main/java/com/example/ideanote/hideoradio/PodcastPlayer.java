@@ -10,7 +10,8 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
 
     private static PodcastPlayer instance;
 
-    private  PlayerState state = PlayerState.STOPPED;
+    private PlayerState state = PlayerState.STOPPED;
+    private Episode episode;
 
     @Override
     public boolean isPlaying() {
@@ -38,6 +39,7 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
 
     public void start(Context context, Episode episode) {
         state = PlayerState.PREPARING;
+        this.episode = episode;
 
         try {
             setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -77,6 +79,10 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
         state = PlayerState.PREPARED;
         start();
         state = PlayerState.PLAYING;
+    }
+
+    public Episode getEpisode() {
+        return episode;
     }
 
     private enum PlayerState {
