@@ -10,6 +10,8 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 
+import com.activeandroid.ActiveAndroid;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
@@ -75,6 +77,11 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                         } else {
                             Log.d("Enclosure", "null");
                         }
+                        if (episode.getLink() != null) {
+                            Log.d("Link", episode.getLink().toString());
+                        } else {
+                            Log.d("Link", "null");
+                        }
                         if (episode.getDuration() != null) {
                             Log.d("Duration", episode.getDuration());
                         }
@@ -89,6 +96,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
             parser.setInput(is, null);
             int eventType = parser.getEventType();
             Episode currentEpisode = null;
+            ActiveAndroid.beginTransaction();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String tag;
                 switch (eventType) {
@@ -129,9 +137,11 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                 }
                 eventType = parser.next();
             }
+            ActiveAndroid.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ActiveAndroid.endTransaction();
         return adapter;
     }
 }

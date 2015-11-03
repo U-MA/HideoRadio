@@ -44,6 +44,7 @@ public class Episode extends Model {
 
     public Episode(String id, String title, String description, Uri link,
                    Date postedAt, Uri enclosure, String duration) {
+        super();
         this.id = id;
         this.title = title;
         this.description = description;
