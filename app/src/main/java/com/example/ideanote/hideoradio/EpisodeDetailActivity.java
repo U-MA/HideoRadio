@@ -1,5 +1,6 @@
 package com.example.ideanote.hideoradio;
 
+import android.app.NotificationManager;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -72,6 +73,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                     podcastPlayer.pause();
                 } else if (podcastPlayer.isStopped()) {
                     podcastPlayer.start(getApplicationContext(), episode);
+                    PodcastPlayerNotification.notify(getApplicationContext(), episode);
                 } else if (podcastPlayer.isPaused()) {
                     podcastPlayer.start();
                 } else {
