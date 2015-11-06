@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.pdf.PdfDocument;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPreparedListener {
 
@@ -43,7 +45,13 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
 
         try {
             setAudioStreamType(AudioManager.STREAM_MUSIC);
-            setDataSource(context, episode.getEnclosure());
+            if (episode.isDownload()) {
+                Uri uri = Uri.parse(episode.getMediaLocalPath());
+                setDataSource(context, uri);
+                Log.i("PodcastPlayer", "MediaLocal play");
+            } else {
+                setDataSource(context, episode.getEnclosure());
+            }
             setOnPreparedListener(this);
             prepareAsync();
         } catch (Exception e) {

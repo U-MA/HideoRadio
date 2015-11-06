@@ -8,6 +8,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -124,6 +125,15 @@ public class Episode extends Model {
         }
         // TODO
         return true;
+    }
+
+    public boolean isDownload() {
+        if (TextUtils.isEmpty(mediaLocalPath)) {
+            return false;
+        }
+
+        File file = new File(mediaLocalPath);
+        return file.exists();
     }
 
     public static Episode findById(String eid) {
