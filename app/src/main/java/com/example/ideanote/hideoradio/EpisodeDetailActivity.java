@@ -1,6 +1,7 @@
 package com.example.ideanote.hideoradio;
 
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -23,6 +24,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private Button playAndPauseButton;
     private Button stopButton;
+    private Button downloadButton;
     private Episode episode;
     private PodcastPlayer podcastPlayer;
 
@@ -90,7 +92,18 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 podcastPlayer.stop();
             }
         });
+
+        downloadButton = (Button) findViewById(R.id.download_button);
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("EpisodeDetailActivity", "DownloadOnClick");
+                startService(DownloadService.createIntent(getApplicationContext(), episode));
+            }
+        });
+
         playAndPauseButton.setEnabled(true);
         stopButton.setEnabled(true);
+        downloadButton.setEnabled(true);
     }
 }
