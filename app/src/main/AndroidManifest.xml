@@ -42,6 +42,10 @@
             android:name=".EpisodeDownloadService"
             android:exported="false" >
         </service>
+        <service
+            android:name=".PodcastPlayerService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
