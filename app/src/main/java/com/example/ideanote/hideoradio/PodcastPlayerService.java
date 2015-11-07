@@ -10,6 +10,8 @@ import android.util.Log;
  * Service for playing podcast media
  */
 public class PodcastPlayerService extends IntentService {
+    private final static String TAG = PodcastPlayerService.class.getSimpleName();
+
     private final static String EXTRA_EPISODE_ID = "extra_episode_id";
 
     private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause";
@@ -42,7 +44,9 @@ public class PodcastPlayerService extends IntentService {
      */
     @Override
     public void onCreate() {
+        Log.i(TAG, "onCreate");
         super.onCreate();
+
         podcastPlayer = PodcastPlayer.getInstance();
         // TODO: create notification if you need
     }
@@ -70,7 +74,8 @@ public class PodcastPlayerService extends IntentService {
                 }
                 break;
             case ACTION_STOP:
-                if (podcastPlayer.isStopped()) {
+                Log.i(TAG, "ACTION_STOP");
+                if (!podcastPlayer.isStopped()) {
                     podcastPlayer.stop();
                     podcastPlayer.release();
                     // TODO: Notification
@@ -81,5 +86,11 @@ public class PodcastPlayerService extends IntentService {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i(TAG, "onDestroy");
+        super.onDestroy();
     }
 }

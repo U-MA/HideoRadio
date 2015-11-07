@@ -1,5 +1,6 @@
 package com.example.ideanote.hideoradio;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -62,16 +63,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (podcastPlayer.isPlaying()) {
-                    podcastPlayer.pause();
-                } else if (podcastPlayer.isStopped()) {
-                    podcastPlayer.start(getApplicationContext(), episode);
-                    PodcastPlayerNotification.notify(getApplicationContext(), episode);
-                } else if (podcastPlayer.isPaused()) {
-                    podcastPlayer.start();
-                } else {
-                    // do something
-                }
+                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+                startService(intent);
             }
         });
 
@@ -80,7 +73,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                podcastPlayer.stop();
+                Intent intent = PodcastPlayerService.createStopIntent(getApplicationContext(), episode);
+                startService(intent);
             }
         });
 
