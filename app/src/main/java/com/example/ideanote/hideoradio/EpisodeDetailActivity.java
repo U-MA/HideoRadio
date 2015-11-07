@@ -1,14 +1,7 @@
 package com.example.ideanote.hideoradio;
 
-import android.app.NotificationManager;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 
@@ -98,7 +89,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("EpisodeDetailActivity", "DownloadOnClick");
-                startService(DownloadService.createIntent(getApplicationContext(), episode));
+                startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
             }
         });
 

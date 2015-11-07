@@ -19,7 +19,7 @@ import java.net.URL;
 /**
  * Service for downloading an episode.
  */
-public class DownloadService extends IntentService {
+public class EpisodeDownloadService extends IntentService {
 
     private static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final int BUFFER_SIZE = 23 * 1024;
@@ -28,7 +28,7 @@ public class DownloadService extends IntentService {
 
 
     public static Intent createIntent(Context context, Episode episode) {
-        Intent intent = new Intent(context, DownloadService.class);
+        Intent intent = new Intent(context, EpisodeDownloadService.class);
 
         /* これでうまくいくかはよくわかっていない
          * もしRebuildのようにするのであればEpisodeをParcelableにする必要がありそう */
@@ -36,7 +36,7 @@ public class DownloadService extends IntentService {
         return intent;
     }
 
-    public DownloadService() {
+    public EpisodeDownloadService() {
         super("DownloadService");
     }
 

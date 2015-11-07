@@ -39,7 +39,7 @@
         </activity>
 
         <service
-            android:name=".DownloadService"
+            android:name=".EpisodeDownloadService"
             android:exported="false" >
         </service>
     </application>
