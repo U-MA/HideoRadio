@@ -63,7 +63,7 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
      * Release MediaPlayer instance and nullify instance
      */
     public void release() {
-        instance.release();
+        super.release();
         instance = null;
     }
 
