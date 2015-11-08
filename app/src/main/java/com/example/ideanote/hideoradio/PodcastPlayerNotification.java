@@ -14,7 +14,7 @@ public class PodcastPlayerNotification {
     public static void notify(Context context, Episode episode) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_action_playback_play)
                 .setContentTitle(episode.getTitle())
                 .setContentText(episode.getDescription());
 
