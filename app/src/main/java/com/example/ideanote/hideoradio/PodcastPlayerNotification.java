@@ -38,7 +38,8 @@ public class PodcastPlayerNotification {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_play)
                 .setContentTitle(episode.getTitle())
-                .setContentText(episode.getDescription());
+                .setContentText(episode.getDescription())
+                .setOngoing(true);
 
         PendingIntent intent = PendingIntent.getActivity(context, 0,
                 MainActivity.createIntent(context, episode.getEpisodeId()), PendingIntent.FLAG_ONE_SHOT);
