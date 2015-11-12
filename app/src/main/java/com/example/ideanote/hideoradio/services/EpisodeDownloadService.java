@@ -6,8 +6,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.notifications.EpisodeDownloadCompleteNotification;
 import com.example.ideanote.hideoradio.notifications.EpisodeDownloadNotification;
 
 import java.io.BufferedInputStream;
@@ -101,18 +103,26 @@ public class EpisodeDownloadService extends IntentService {
             String externalFilePath = destFile.getPath();
 
             if (TextUtils.isEmpty(externalFilePath)) {
+                Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
                 Log.e("DownloadService", "TextUtil: Download failed: " + episodeId);
             } else {
                 episode.setMediaLocalPath(externalFilePath);
                 episode.save();
             }
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
             Log.e("DownloadService", "Malformed: Download failed: " + episodeId);
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
             Log.e("DownloadService", "IOException: Download failed: " + episodeId);
+        } catch (Exception e) {
+            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
         isDown = false;
         EpisodeDownloadNotification.cancel(context, episode);
+        EpisodeDownloadCompleteNotification.notify(context, episode);
     }
 }
