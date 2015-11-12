@@ -65,11 +65,16 @@ public class PodcastPlayerService extends IntentService {
             case ACTION_PLAY_AND_PAUSE:
                 if (podcastPlayer.isPlaying()) {
                     podcastPlayer.pause();
+                    PodcastPlayerNotification.notify(getApplicationContext(), episode,
+                            PodcastPlayerNotification.PAUSE);
                 } else if (podcastPlayer.isPaused()) {
                     podcastPlayer.start();
+                    PodcastPlayerNotification.notify(getApplicationContext(), episode,
+                            PodcastPlayerNotification.PLAY);
                 } else if (podcastPlayer.isStopped()) {
                     podcastPlayer.start(getApplicationContext(), episode);
-                    PodcastPlayerNotification.notify(getApplicationContext(), episode);
+                    PodcastPlayerNotification.notify(getApplicationContext(), episode,
+                            PodcastPlayerNotification.PLAY);
                 } else {
                     Log.d("PodcastPlayerService", "Invalid action");
                 }
