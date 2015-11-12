@@ -27,7 +27,7 @@ public class EpisodeDownloadCompleteNotification {
     private static Notification build(Context context, Episode episode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_tick)
-                .setContentTitle("Download Complete")
+                .setContentTitle("Download Completed")
                 .setContentText(episode.getTitle());
 
         PendingIntent launchIntent = PendingIntent.getActivity(
