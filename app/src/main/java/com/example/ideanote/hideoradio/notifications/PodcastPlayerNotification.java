@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -35,6 +36,11 @@ public class PodcastPlayerNotification {
                 Log.i(TAG, "Invalid kind");
                 break;
         }
+    }
+
+    public static void cancel(Context context) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(PLAYBACK_NOTIFICATION_ID);
     }
 
     private static Notification buildPlayNotification(Context context, Episode episode) {

@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
+
 public class MediaBarView extends FrameLayout {
 
     private View rootView;
@@ -54,8 +56,12 @@ public class MediaBarView extends FrameLayout {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (podcastPlayer.isPlaying()) {
                     podcastPlayer.pause();
+                    PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
+                            PodcastPlayerNotification.PAUSE);
                 } else {
                     podcastPlayer.start();
+                    PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
+                            PodcastPlayerNotification.PLAY);
                 }
             }
         });
@@ -69,6 +75,7 @@ public class MediaBarView extends FrameLayout {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     podcastPlayer.stop();
                     rootView.setVisibility(View.GONE);
+                    PodcastPlayerNotification.cancel(getContext());
                     // TODO: PodcastPlayerをメモリから削除
                 }
             }
