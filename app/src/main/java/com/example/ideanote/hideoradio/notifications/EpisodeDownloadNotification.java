@@ -13,18 +13,19 @@ import com.example.ideanote.hideoradio.activities.MainActivity;
  * Notification for donloading an episode
  */
 public class EpisodeDownloadNotification {
+    private static final int DOWNLOAD_NOTIFICATION_ID = 2000;
     private static final String ACTION_CANCEL = "action_cancel";
 
     public static void notify(Context context, Episode episode) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(573573, build(context, episode));
+        notificationManager.notify(DOWNLOAD_NOTIFICATION_ID, build(context, episode));
     }
 
     public static void cancel(Context context, Episode episode) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(573573);
+        notificationManager.cancel(DOWNLOAD_NOTIFICATION_ID);
     }
 
     private static Notification build(Context context, Episode episode) {
