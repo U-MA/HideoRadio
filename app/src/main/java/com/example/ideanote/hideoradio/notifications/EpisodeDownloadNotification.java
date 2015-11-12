@@ -32,6 +32,7 @@ public class EpisodeDownloadNotification {
         builder.setSmallIcon(android.R.drawable.stat_sys_download);
         builder.setContentTitle("Downloading...");
         builder.setContentText(episode.getTitle());
+        builder.setOngoing(true);
 
         PendingIntent launchIntent = PendingIntent.getActivity(
                 context, 0, MainActivity.createIntent(context, null), PendingIntent.FLAG_ONE_SHOT);
