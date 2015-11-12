@@ -11,6 +11,9 @@ import android.util.Xml;
 import android.view.View;
 
 import com.activeandroid.ActiveAndroid;
+import com.example.ideanote.hideoradio.activities.EpisodeDetailActivity;
+import com.example.ideanote.hideoradio.activities.MainActivity;
+import com.example.ideanote.hideoradio.listeners.RecyclerItemClickListener;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -21,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Date;
 
 public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapter> {
     private MainActivity activity;

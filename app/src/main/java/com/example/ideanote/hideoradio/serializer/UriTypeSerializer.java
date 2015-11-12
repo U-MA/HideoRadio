@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.serializer;
 
 import android.net.Uri;
 

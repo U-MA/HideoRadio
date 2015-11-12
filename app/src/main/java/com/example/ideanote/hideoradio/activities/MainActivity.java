@@ -1,15 +1,19 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.activities;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.MediaBarView;
+import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.RecyclerViewAdapter;
+import com.example.ideanote.hideoradio.RssParserTask;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -11,6 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 

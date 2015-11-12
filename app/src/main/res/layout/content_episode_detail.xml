@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_episode_detail"
-    tools:context="com.example.ideanote.hideoradio.EpisodeDetailActivity">
+    tools:context="com.example.ideanote.hideoradio.activities.EpisodeDetailActivity">
 
     <ImageView
         android:layout_width="match_parent"

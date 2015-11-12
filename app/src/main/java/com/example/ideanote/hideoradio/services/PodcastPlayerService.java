@@ -1,10 +1,13 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.services;
 
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 
 /**
  * Service for playing podcast media

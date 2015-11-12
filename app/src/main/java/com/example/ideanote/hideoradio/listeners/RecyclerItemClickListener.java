@@ -1,10 +1,13 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.listeners;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.RecyclerViewAdapter;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener itemClickListener;

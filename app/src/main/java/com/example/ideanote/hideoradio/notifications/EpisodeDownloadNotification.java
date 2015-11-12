@@ -1,11 +1,13 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.activities.MainActivity;
 
 /**
  * Notification for donloading an episode

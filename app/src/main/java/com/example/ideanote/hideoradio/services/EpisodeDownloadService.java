@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.services;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -6,6 +6,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.notifications.EpisodeDownloadNotification;
 
 import java.io.BufferedInputStream;
 import java.io.File;
