@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -49,8 +50,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(EpisodeViewHolder episodeViewHolder, int i) {
-        episodeViewHolder.title.setText(episodes.get(i).getTitle());
-        episodeViewHolder.description.setText(episodes.get(i).getDescription());
+        Episode episode = episodes.get(i);
+        episodeViewHolder.title.setText(episode.getTitle());
+        episodeViewHolder.description.setText(episode.getDescription());
+        if (episode.isDownload()) {
+            // TODO prepare image
+            episodeViewHolder.imageButton.setImageResource(android.R.drawable.btn_minus);
+        } else {
+            // TODO prepare image
+            episodeViewHolder.imageButton.setImageResource(android.R.drawable.btn_plus);
+        }
     }
 
     @Override
@@ -62,12 +71,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         CardView cardView;
         TextView title;
         TextView description;
+        ImageButton imageButton;
 
         EpisodeViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
             title = (TextView) itemView.findViewById(R.id.title);
             description = (TextView) itemView.findViewById(R.id.description);
+            imageButton = (ImageButton) itemView.findViewById(R.id.download_toggle_button);
         }
     }
 }
