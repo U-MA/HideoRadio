@@ -136,6 +136,20 @@ public class Episode extends Model {
         return file.exists();
     }
 
+    /**
+     * mediaLocalPathにあるファイルを削除する
+     */
+    public void clearCache() {
+        if (TextUtils.isEmpty(mediaLocalPath)) {
+            return;
+        }
+
+        File file = new File(mediaLocalPath);
+        file.delete();
+        mediaLocalPath = null;
+        save();
+    }
+
     public static Episode findById(String eid) {
         return new Select().from(Episode.class).where("eid=?", eid).executeSingle();
     }
