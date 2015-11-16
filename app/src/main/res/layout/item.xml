@@ -36,8 +36,10 @@
                 android:ellipsize="end" />
 
             <ImageButton android:id="@+id/download_toggle_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:background="?android:selectableItemBackground" />
 
         </LinearLayout>
 

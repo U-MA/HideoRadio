@@ -54,11 +54,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         episodeViewHolder.title.setText(episode.getTitle());
         episodeViewHolder.description.setText(episode.getDescription());
         if (episode.isDownload()) {
-            // TODO prepare image
-            episodeViewHolder.imageButton.setImageResource(android.R.drawable.btn_minus);
+            episodeViewHolder.imageButton.setImageResource(R.drawable.ic_remove_circle_outline);
         } else {
-            // TODO prepare image
-            episodeViewHolder.imageButton.setImageResource(android.R.drawable.btn_plus);
+            episodeViewHolder.imageButton.setImageResource(R.drawable.ic_get_app);
         }
     }
 
