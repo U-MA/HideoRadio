@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
@@ -15,8 +16,8 @@ public class MediaBarView extends FrameLayout {
 
     private View rootView;
     private TextView episodeTitleTextView;
-    private Button playAndStopButton;
-    private Button exitButton;
+    private ImageButton playAndStopButton;
+    private ImageButton exitButton;
 
     public MediaBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -24,8 +25,8 @@ public class MediaBarView extends FrameLayout {
 
         rootView = View.inflate(getContext(), R.layout.media_bar_view, null);
         episodeTitleTextView = (TextView) rootView.findViewById(R.id.episode_title_text);
-        playAndStopButton = (Button) rootView.findViewById(R.id.play_and_pause);
-        exitButton = (Button) rootView.findViewById(R.id.exit_button);
+        playAndStopButton = (ImageButton) rootView.findViewById(R.id.play_and_pause);
+        exitButton = (ImageButton) rootView.findViewById(R.id.exit_button);
         addView(rootView);
     }
 
@@ -33,6 +34,7 @@ public class MediaBarView extends FrameLayout {
         PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
         if (episode == null ||
                 (!podcastPlayer.isPlaying() && !podcastPlayer.isPaused())) {
+            Log.i("MediaBarView", "View.GONE");
             rootView.setVisibility(View.GONE);
             return;
         }
@@ -58,10 +60,12 @@ public class MediaBarView extends FrameLayout {
                     podcastPlayer.pause();
                     PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
                             PodcastPlayerNotification.PAUSE);
+                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_pause);
                 } else {
                     podcastPlayer.start();
                     PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
                             PodcastPlayerNotification.PLAY);
+                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_play);
                 }
             }
         });
