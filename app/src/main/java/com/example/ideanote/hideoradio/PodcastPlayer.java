@@ -8,7 +8,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPreparedListener {
+public class PodcastPlayer extends MediaPlayer
+        implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private static PodcastPlayer instance;
 
@@ -53,6 +54,7 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
                 setDataSource(context, episode.getEnclosure());
             }
             setOnPreparedListener(this);
+            setOnCompletionListener(this);
             prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,6 +97,11 @@ public class PodcastPlayer extends MediaPlayer implements MediaPlayer.OnPrepared
         state = PlayerState.PREPARED;
         start();
         state = PlayerState.PLAYING;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        release();
     }
 
     public Episode getEpisode() {
