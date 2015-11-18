@@ -65,6 +65,7 @@ public class PodcastPlayer extends MediaPlayer
      * Release MediaPlayer instance and nullify instance
      */
     public void release() {
+        super.reset();
         super.release();
         instance = null;
     }
