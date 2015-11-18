@@ -71,6 +71,12 @@ public class EpisodeDownloadService extends IntentService {
 
         Episode episode = Episode.findById(episodeId);
 
+        // Download済みであれば何もしない
+        if (episode.isDownload()) {
+            Log.i("EpisodeDownloadService", String.valueOf(episodeId) + " is already downloaded");
+            return;
+        }
+
         BufferedInputStream bufferedInputStream = null;
         FileOutputStream fileOutputStream = null;
 
