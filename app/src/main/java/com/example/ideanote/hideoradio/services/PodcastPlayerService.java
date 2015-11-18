@@ -60,9 +60,17 @@ public class PodcastPlayerService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.i(TAG, "onHandleIntent");
         String action = intent.getAction();
         String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
         Episode episode = Episode.findById(episodeId);
+
+        if (podcastPlayer.getEpisode() != null && !podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
+            // 違うEpisodeを再生する必要がある
+            podcastPlayer.stop();
+            podcastPlayer.reset();
+            Log.i(TAG, "different episode");
+        }
 
         switch (action) {
             case ACTION_PLAY_AND_PAUSE:
