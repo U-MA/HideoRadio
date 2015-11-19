@@ -117,14 +117,14 @@ public class EpisodeDownloadService extends IntentService {
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
             Log.e("DownloadService", "Malformed: Download failed: " + episodeId);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
             Log.e("DownloadService", "IOException: Download failed: " + episodeId);
         } catch (Exception e) {
-            Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
         isDown = false;
