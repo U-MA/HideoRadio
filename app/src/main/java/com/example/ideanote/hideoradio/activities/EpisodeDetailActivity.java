@@ -1,7 +1,10 @@
 package com.example.ideanote.hideoradio.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
@@ -89,12 +93,23 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("EpisodeDetailActivity", "DownloadOnClick");
-                startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+                if (isOnline()) {
+                    startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+                } else {
+                    DownloadFailDialog dialog = new DownloadFailDialog();
+                    dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
+                }
             }
         });
 
         playAndPauseButton.setEnabled(true);
         stopButton.setEnabled(true);
         downloadButton.setEnabled(true);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }
