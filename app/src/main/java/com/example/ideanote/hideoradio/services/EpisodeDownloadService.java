@@ -65,7 +65,7 @@ public class EpisodeDownloadService extends IntentService {
 
         // episodeIdがnull, またはそのエピソードがdownload中であれば何もしない
         if (episodeId == null || isDownloading(episodeId)) {
-            Log.i("DownloadService", "episodeId == ull");
+            Log.i("DownloadService", "episodeId == null");
             return;
         }
 
