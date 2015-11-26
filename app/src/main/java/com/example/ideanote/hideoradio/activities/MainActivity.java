@@ -1,6 +1,5 @@
 package com.example.ideanote.hideoradio.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -10,10 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.ideanote.hideoradio.ClearCacheDialog;
-import com.example.ideanote.hideoradio.DownloadFailDialog;
+import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
+import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.MediaBarView;
 import com.example.ideanote.hideoradio.PodcastPlayer;
