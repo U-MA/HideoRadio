@@ -1,6 +1,10 @@
 package com.example.ideanote.hideoradio;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.activities.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.activities.MainActivity;
+import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 
 import org.w3c.dom.Text;
 
@@ -102,7 +107,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View v) {
                     // Download or not
-                    Toast.makeText(view.getContext(), "IMAGE BUTTON CLICKED", Toast.LENGTH_SHORT).show();
+                    ConnectivityManager manager = (ConnectivityManager) view.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo info = manager.getActiveNetworkInfo();
+                    if (info != null && info.isConnected()) {
+                        view.getContext().startService(EpisodeDownloadService.createIntent(view.getContext().getApplicationContext(), episode));
+                    } else {
+                        DownloadFailDialog dialog = new DownloadFailDialog();
+                        dialog.show(((MainActivity)view.getContext()).getSupportFragmentManager(), "DownloadFailDialog");
+                    }
                 }
             });
             view.setOnClickListener(new View.OnClickListener() {
