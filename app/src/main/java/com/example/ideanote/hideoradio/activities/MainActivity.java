@@ -74,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
                         dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
                     }
                 } else {
-                    // TODO: キャッシュファイルの削除
-                    Toast.makeText(MainActivity.this, "already downloaded", Toast.LENGTH_SHORT).show();
+                    // TODO: create Confirm dialog
+                    //       ユーザが間違ってクリックしてしまう可能性がある
+                    episode.clearCache();
+                    episode.save();
                 }
             }
         });
