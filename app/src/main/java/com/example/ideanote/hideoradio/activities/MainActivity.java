@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ideanote.hideoradio.ClearCacheDialog;
 import com.example.ideanote.hideoradio.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.MediaBarView;
@@ -74,10 +75,9 @@ public class MainActivity extends AppCompatActivity {
                         dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
                     }
                 } else {
-                    // TODO: create Confirm dialog
-                    //       ユーザが間違ってクリックしてしまう可能性がある
-                    episode.clearCache();
-                    episode.save();
+                    ClearCacheDialog dialog = new ClearCacheDialog();
+                    dialog.setEpisode(episode);
+                    dialog.show(getSupportFragmentManager(), "ClearCacheDialog");
                 }
             }
         });
