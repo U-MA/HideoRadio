@@ -25,6 +25,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.EpisodeViewHolder> {
 
     private List<Episode> episodes;
+    private OnItemClickListener onItemClickListener;
 
     public RecyclerViewAdapter(List<Episode> episodes) {
         this.episodes = episodes;
@@ -46,6 +47,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return episodes.get(position);
     }
 
+    public void setOnItemClickListener(RecyclerViewAdapter.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     @Override
     public int getItemCount() {
         return episodes.size();
@@ -54,23 +59,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public EpisodeViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
-        EpisodeViewHolder episodeViewHolder = new EpisodeViewHolder(v);
+        EpisodeViewHolder episodeViewHolder = new EpisodeViewHolder(v, onItemClickListener);
         return episodeViewHolder;
     }
 
+    // 指定されたpositionのviewを表示するためにRecyclerViewが呼ぶメソッド
     @Override
     public void onBindViewHolder(EpisodeViewHolder episodeViewHolder, int i) {
-        Episode episode = episodes.get(i);
-        /*
-        episodeViewHolder.title.setText(episode.getTitle());
-        episodeViewHolder.description.setText(episode.getDescription());
-        if (episode.isDownload()) {
-            episodeViewHolder.imageButton.setImageResource(R.drawable.ic_remove_circle_outline);
-        } else {
-            episodeViewHolder.imageButton.setImageResource(R.drawable.ic_get_app);
-        }
-        */
-        episodeViewHolder.bind(episode);
+        episodeViewHolder.bind(episodes.get(i));
     }
 
     @Override
@@ -85,46 +81,52 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ImageButton imageButton;
 
         private View view;
+        private OnItemClickListener onItemClickListener;
 
-        EpisodeViewHolder(View itemView) {
+        EpisodeViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             view = itemView;
             cardView = (CardView) itemView.findViewById(R.id.card_view);
             title = (TextView) itemView.findViewById(R.id.title);
             description = (TextView) itemView.findViewById(R.id.description);
             imageButton = (ImageButton) itemView.findViewById(R.id.download_toggle_button);
+            this.onItemClickListener = onItemClickListener;
         }
 
+        /**
+         * 与えられたEpisodeに対応したViewを準備する
+         *
+         * @param episode
+         */
         public void bind(final Episode episode) {
             title.setText(episode.getTitle());
             description.setText(episode.getDescription());
-            if (episode.isDownload()) {
-                imageButton.setImageResource(R.drawable.ic_remove_circle_outline);
-            } else {
-                imageButton.setImageResource(R.drawable.ic_get_app);
-            }
+            imageButton.setImageResource(episode.isDownload() ?
+                R.drawable.ic_remove_circle_outline :
+                R.drawable.ic_get_app);
+
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Download or not
-                    ConnectivityManager manager = (ConnectivityManager) view.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo info = manager.getActiveNetworkInfo();
-                    if (info != null && info.isConnected()) {
-                        view.getContext().startService(EpisodeDownloadService.createIntent(view.getContext().getApplicationContext(), episode));
-                    } else {
-                        DownloadFailDialog dialog = new DownloadFailDialog();
-                        dialog.show(((MainActivity)view.getContext()).getSupportFragmentManager(), "DownloadFailDialog");
-                    }
+                    onItemClickListener.onDownloadButtonClick(episode);
                 }
             });
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(view.getContext(), EpisodeDetailActivity.class);
-                    intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
-                    view.getContext().startActivity(intent);
+                    onItemClickListener.onClick(episode);
                 }
             });
         }
+    }
+
+    public interface OnItemClickListener {
+
+        // Viewをクリックしたとき用
+        void onClick(Episode episode);
+
+        // Viewの中のDownload buttonをクリックしたとき用
+        void onDownloadButtonClick(Episode episode);
     }
 }

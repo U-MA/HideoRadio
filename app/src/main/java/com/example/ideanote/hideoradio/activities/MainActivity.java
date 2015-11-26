@@ -3,18 +3,23 @@ package com.example.ideanote.hideoradio.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.ideanote.hideoradio.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.MediaBarView;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.RssParserTask;
+import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 
 import java.util.ArrayList;
 
@@ -46,7 +51,36 @@ public class MainActivity extends AppCompatActivity {
 
         episodes = new ArrayList<>();
         adapter = new RecyclerViewAdapter(episodes);
+        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(Episode episode) {
+                // Viewをクリックしたときの処理
+                Intent intent = new Intent(MainActivity.this, EpisodeDetailActivity.class);
+                intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
+                startActivity(intent);
+            }
 
+            @Override
+            public void onDownloadButtonClick(Episode episode) {
+                // DownloadButtonをクリックしたときの処理
+
+                if (!episode.isDownload()) {
+                    ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo info = manager.getActiveNetworkInfo();
+                    if (info != null && info.isConnected()) {
+                        startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+                    } else {
+                        DownloadFailDialog dialog = new DownloadFailDialog();
+                        dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
+                    }
+                } else {
+                    // TODO: キャッシュファイルの削除
+                    Toast.makeText(MainActivity.this, "already downloaded", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
         RssParserTask task = new RssParserTask(this, adapter);
         task.execute(RSS_FEED_URL);
     }
