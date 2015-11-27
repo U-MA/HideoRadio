@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -100,9 +101,15 @@ public class EpisodeDownloadService extends IntentService {
             bufferedInputStream = new BufferedInputStream(inputStream, BUFFER_SIZE);
             fileOutputStream = new FileOutputStream(destFile);
 
+            int max = urlConnection.getContentLength();
+            int total = 0;
             int actual;
             byte[] buffer = new byte[BUFFER_SIZE];
             while ((actual = bufferedInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
+                total += actual;
+                NotificationCompat.Builder builder = EpisodeDownloadNotification.createBuilder(context, episode);
+                builder.setProgress(max, total, false);
+                EpisodeDownloadNotification.notify(context, builder.build());
                 fileOutputStream.write(buffer, 0, actual);
             }
 

@@ -22,13 +22,19 @@ public class EpisodeDownloadNotification {
         notificationManager.notify(DOWNLOAD_NOTIFICATION_ID, build(context, episode));
     }
 
+    public static void notify(Context context, Notification notification) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(DOWNLOAD_NOTIFICATION_ID, notification);
+    }
+
     public static void cancel(Context context, Episode episode) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(DOWNLOAD_NOTIFICATION_ID);
     }
 
-    private static Notification build(Context context, Episode episode) {
+    public static NotificationCompat.Builder createBuilder(Context context, Episode episode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(android.R.drawable.stat_sys_download);
         builder.setContentTitle("Downloading...");
@@ -39,6 +45,11 @@ public class EpisodeDownloadNotification {
                 context, 0, MainActivity.createIntent(context, null), PendingIntent.FLAG_ONE_SHOT);
         builder.setContentIntent(launchIntent);
 
+        return builder;
+    }
+
+    private static Notification build(Context context, Episode episode) {
+        NotificationCompat.Builder builder = createBuilder(context, episode);
         Notification notification = builder.build();
         notification.flags = Notification.FLAG_NO_CLEAR;
 
