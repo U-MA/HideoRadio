@@ -5,12 +5,14 @@ import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.ideanote.hideoradio.Episode;
 
 public class ClearCacheDialog extends DialogFragment {
 
     private Episode episode;
+    private RecyclerView recyclerView;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class ClearCacheDialog extends DialogFragment {
                        if (episode != null) {
                            episode.clearCache();
                            episode.save();
+
+                           recyclerView.getAdapter().notifyDataSetChanged();
                        }
                    }
 
@@ -34,5 +38,9 @@ public class ClearCacheDialog extends DialogFragment {
 
     public void setEpisode(Episode episode) {
         this.episode = episode;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 }

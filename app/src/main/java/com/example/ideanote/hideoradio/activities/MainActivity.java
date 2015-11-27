@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
         mediaBar = (MediaBarView) findViewById(R.id.media_bar);
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     ClearCacheDialog dialog = new ClearCacheDialog();
                     dialog.setEpisode(episode);
+                    dialog.setRecyclerView(recyclerView);
                     dialog.show(getSupportFragmentManager(), "ClearCacheDialog");
                 }
             }
