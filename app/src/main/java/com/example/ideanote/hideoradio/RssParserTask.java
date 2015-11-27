@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapter> {
+
+    private final static String TAG = RssParserTask.class.getName();
+
     private MainActivity activity;
     private RecyclerViewAdapter adapter;
     private ProgressDialog progressDialog;
@@ -37,6 +40,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
 
     @Override
     protected void onPreExecute() {
+        Log.i(TAG, "onPreExecute");
         progressDialog = new ProgressDialog(activity);
         progressDialog.setMessage("Now Loading...");
         progressDialog.show();

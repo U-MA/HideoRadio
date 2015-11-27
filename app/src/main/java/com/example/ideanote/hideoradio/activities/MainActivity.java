@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.ideanote.hideoradio.BusHolder;
+import com.example.ideanote.hideoradio.EpisodeDownloadCompleteEvent;
 import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
@@ -19,8 +23,10 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class MainActivity extends AppCompatActivity {
     private static final String RSS_FEED_URL = "http://www.konami.jp/kojima_pro/radio/hideradio/podcast.xml";
@@ -91,9 +97,29 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i("MainActivity", "onResume");
         setMediaBarIfPossible();
+        BusHolder.getInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BusHolder.getInstance().unregister(this);
     }
 
     public void setMediaBarIfPossible() {
         mediaBar.setEpisode(PodcastPlayer.getInstance().getEpisode());
+    }
+
+    @Subscribe
+    public void onEpisodeDownloadComplete(final EpisodeDownloadCompleteEvent event) {
+        android.os.Handler handler = new android.os.Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // ImageButtonを変更する
+                RssParserTask task = new RssParserTask(MainActivity.this, adapter);
+                task.execute(RSS_FEED_URL);
+            }
+        });
     }
 }
