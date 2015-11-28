@@ -60,12 +60,12 @@ public class MediaBarView extends FrameLayout {
                     podcastPlayer.pause();
                     PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
                             PodcastPlayerNotification.PAUSE);
-                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_pause);
+                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_play);
                 } else {
                     podcastPlayer.start();
                     PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
                             PodcastPlayerNotification.PLAY);
-                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_play);
+                    playAndStopButton.setImageResource(R.drawable.ic_action_playback_pause);
                 }
             }
         });
