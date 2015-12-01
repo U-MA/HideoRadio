@@ -35,6 +35,7 @@
                 android:layout_alignParentBottom="true">
                 
                 <ImageButton
+                    android:id="@+id/image_button"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:scaleType="centerCrop"

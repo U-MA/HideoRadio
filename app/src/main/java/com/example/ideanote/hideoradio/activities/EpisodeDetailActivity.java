@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
@@ -29,6 +30,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private Button downloadButton;
     private Episode episode;
     private PodcastPlayer podcastPlayer;
+    private ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,23 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     protected void initMediaButton() {
+        imageButton = (ImageButton) findViewById(R.id.image_button);
+        imageButton.setEnabled(false);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
+                if (podcastPlayer.isPlaying()) {
+                    imageButton.setImageResource(R.drawable.ic_action_playback_play);
+                } else {
+                    imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+                }
+                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+                startService(intent);
+            }
+        });
+
+
         playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
         playAndPauseButton.setEnabled(false);
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +121,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             }
         });
 
+        imageButton.setEnabled(true);
         playAndPauseButton.setEnabled(true);
         stopButton.setEnabled(true);
         downloadButton.setEnabled(true);
