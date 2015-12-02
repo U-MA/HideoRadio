@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
@@ -31,6 +32,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private Episode episode;
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         podcastPlayer = PodcastPlayer.getInstance();
 
         initMediaButton();
+
+        seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
+        seekBar.setEnabled(podcastPlayer.isPlaying());
     }
 
     @Override
@@ -78,8 +83,10 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (podcastPlayer.isPlaying()) {
                     imageButton.setImageResource(R.drawable.ic_action_playback_play);
+                    seekBar.setEnabled(false);
                 } else {
                     imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+                    seekBar.setEnabled(true);
                 }
                 Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
                 startService(intent);
