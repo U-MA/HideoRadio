@@ -21,6 +21,7 @@ import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.dialog.MediaPlayConfirmationDialog;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 
@@ -85,6 +86,11 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                     imageButton.setImageResource(R.drawable.ic_action_playback_play);
                     seekBar.setEnabled(false);
                 } else {
+                    MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("episodeId", episode.getEpisodeId());
+                    dialog.setArguments(bundle);
+                    dialog.show(getSupportFragmentManager(), "dialog");
                     imageButton.setImageResource(R.drawable.ic_action_playback_pause);
                     seekBar.setEnabled(true);
                 }
