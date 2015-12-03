@@ -64,6 +64,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
         podcastPlayer = PodcastPlayer.getInstance();
 
+        TextView durationText = (TextView) findViewById(R.id.duration);
+        durationText.setText(episode.getDuration());
+
         initMediaButton();
         initSeekBar();
 
