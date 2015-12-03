@@ -104,6 +104,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     protected void initMediaButton() {
         imageButton = (ImageButton) findViewById(R.id.image_button);
+        imageButton.setImageResource(PodcastPlayer.getInstance().isPlaying()
+            ? R.drawable.ic_action_playback_pause
+            : R.drawable.ic_action_playback_play);
         imageButton.setEnabled(false);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +133,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
         seekBar.setEnabled(podcastPlayer.isPlaying());
         seekBar.setMax(durationToMillis(episode.getDuration()));
+        seekBar.setEnabled(true);
 
         if (podcastPlayer.isPlaying()) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
