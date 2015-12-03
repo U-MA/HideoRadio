@@ -16,7 +16,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.ideanote.hideoradio.BusHolder;
+import com.example.ideanote.hideoradio.ClearCacheEvent;
+import com.example.ideanote.hideoradio.DownloadEvent;
+import com.example.ideanote.hideoradio.PlayCacheEvent;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
@@ -24,6 +29,8 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.dialog.MediaPlayConfirmationDialog;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 
@@ -64,6 +71,18 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        BusHolder.getInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BusHolder.getInstance().unregister(this);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -86,16 +105,12 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                     imageButton.setImageResource(R.drawable.ic_action_playback_play);
                     seekBar.setEnabled(false);
                 } else {
-                    MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("episodeId", episode.getEpisodeId());
-                    dialog.setArguments(bundle);
+                    MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
                     dialog.show(getSupportFragmentManager(), "dialog");
-                    imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+                    // TODO imageButtonの変更はdialogをクリックしてから変更すべき
+                    // imageButton.setImageResource(R.drawable.ic_action_playback_pause);
                     seekBar.setEnabled(true);
                 }
-                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
-                startService(intent);
             }
         });
 
@@ -140,9 +155,44 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         downloadButton.setEnabled(true);
     }
 
+    private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
+        MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("episodeId", episode.getEpisodeId());
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Subscribe
+    public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
+        if (!PodcastPlayer.getInstance().isPlaying()) {
+            imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+            Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+            startService(intent);
+        }
+    }
+
+    @Subscribe
+    public void onClearCache(ClearCacheEvent clearCacheEvent) {
+        if (episode != null && episode.isDownload()) {
+            episode.clearCache();
+            episode.save();
+        }
+    }
+
+    @Subscribe
+    public void onDownload(DownloadEvent downloadEvent) {
+        if (isOnline()) {
+            startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+        } else {
+            DownloadFailDialog dialog = new DownloadFailDialog();
+            dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
+        }
     }
 }
