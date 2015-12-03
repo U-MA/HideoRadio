@@ -10,10 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.ideanote.hideoradio.BusHolder;
-import com.example.ideanote.hideoradio.EpisodeDownloadCompleteEvent;
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.EpisodeDownloadCompleteEvent;
 import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
@@ -26,7 +25,6 @@ import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 public class MainActivity extends AppCompatActivity {
     private static final String RSS_FEED_URL = "http://www.konami.jp/kojima_pro/radio/hideradio/podcast.xml";

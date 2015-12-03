@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import com.example.ideanote.hideoradio.BusHolder;
-import com.example.ideanote.hideoradio.ClearCacheEvent;
-import com.example.ideanote.hideoradio.DownloadEvent;
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.ClearCacheEvent;
+import com.example.ideanote.hideoradio.events.DownloadEvent;
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.PlayCacheEvent;
-import com.squareup.otto.Bus;
+import com.example.ideanote.hideoradio.events.PlayCacheEvent;
 
 /**
  * A dialog that confirm playing or downloading/streaming episode

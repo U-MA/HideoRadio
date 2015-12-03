@@ -9,9 +9,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ideanote.hideoradio.BusHolder;
+import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.EpisodeDownloadCompleteEvent;
+import com.example.ideanote.hideoradio.events.EpisodeDownloadCompleteEvent;
 import com.example.ideanote.hideoradio.notifications.EpisodeDownloadCompleteNotification;
 import com.example.ideanote.hideoradio.notifications.EpisodeDownloadNotification;
 
