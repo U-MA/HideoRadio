@@ -24,6 +24,15 @@
             android:layout_height="@dimen/episode_detail_header_height"
             android:background="@color/black_glass" />
 
+        <TextView
+            android:id="@+id/episode_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/episode_detail_header_height"
+            android:gravity="center"
+            android:text="@string/sample_episode_title"
+            android:textSize="15sp"
+            android:textColor="@android:color/white" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/episode_detail_header_height">
@@ -60,10 +69,6 @@
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>
-
-    <TextView android:id="@+id/detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <TextView android:id="@+id/detail_description"
         android:layout_width="match_parent"
