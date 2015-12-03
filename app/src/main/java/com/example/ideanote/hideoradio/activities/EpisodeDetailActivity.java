@@ -112,45 +112,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             }
         });
 
-
-        playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
-        playAndPauseButton.setEnabled(false);
-        playAndPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
-                startService(intent);
-            }
-        });
-
-        stopButton = (Button) findViewById(R.id.stop_button);
-        stopButton.setEnabled(false);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = PodcastPlayerService.createStopIntent(getApplicationContext(), episode);
-                startService(intent);
-            }
-        });
-
-        downloadButton = (Button) findViewById(R.id.download_button);
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("EpisodeDetailActivity", "DownloadOnClick");
-                if (isOnline()) {
-                    startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
-                } else {
-                    DownloadFailDialog dialog = new DownloadFailDialog();
-                    dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
-                }
-            }
-        });
-
         imageButton.setEnabled(true);
-        playAndPauseButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        downloadButton.setEnabled(true);
     }
 
     private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
