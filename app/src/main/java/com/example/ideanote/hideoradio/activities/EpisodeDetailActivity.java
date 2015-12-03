@@ -105,13 +105,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (!podcastPlayer.isStopped()) {
-                    if (podcastPlayer.isPlaying()) {
-                        imageButton.setImageResource(R.drawable.ic_action_playback_play);
-                        seekBar.setEnabled(false);
-                    } else {
-                        imageButton.setImageResource(R.drawable.ic_action_playback_pause);
-                        seekBar.setEnabled(true);
-                    }
+                    imageButton.setImageResource(podcastPlayer.isPlaying()
+                        ? R.drawable.ic_action_playback_play
+                        : R.drawable.ic_action_playback_pause);
                     Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
                     startService(intent);
                 } else {
