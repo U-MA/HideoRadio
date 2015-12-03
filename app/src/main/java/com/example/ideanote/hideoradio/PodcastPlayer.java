@@ -13,6 +13,7 @@ public class PodcastPlayer extends MediaPlayer
 
     private static PodcastPlayer instance;
 
+    private CurrentTimeListener currentTimeListener;
     private PlayerState state = PlayerState.STOPPED;
     private Episode episode;
 
@@ -109,11 +110,33 @@ public class PodcastPlayer extends MediaPlayer
         return episode;
     }
 
+    public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
+        this.currentTimeListener = currentTimeListener;
+
+        // TODO setup Timer
+        Timer timer = new Timer(new Timer.TimerCallback() {
+            @Override
+            public void onTick(long millis) {
+                if (isPlaying() || isPaused()) {
+                    Log.i("onTick", "onTick");
+                    currentTimeListener.onTick(getCurrentPosition());
+                } else {
+                    currentTimeListener.onTick(0);
+                }
+            }
+        });
+        timer.start();
+    }
+
     private enum PlayerState {
         PLAYING,
         STOPPED,
         PAUSED,
         PREPARING,
         PREPARED
+    }
+
+    public interface CurrentTimeListener {
+        void onTick(int currentPosition);
     }
 }

@@ -63,9 +63,14 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         podcastPlayer = PodcastPlayer.getInstance();
 
         initMediaButton();
+        initSeekBar();
 
-        seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
-        seekBar.setEnabled(podcastPlayer.isPlaying());
+        podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
+            @Override
+            public void onTick(int currentPosition) {
+                currentTimeUpdate(currentPosition);
+            }
+        });
     }
 
     @Override
@@ -118,6 +123,25 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         });
 
         imageButton.setEnabled(true);
+    }
+
+    private void initSeekBar() {
+        seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
+        seekBar.setEnabled(podcastPlayer.isPlaying());
+
+        // TODO
+        // seekBar.setMax(episode.getDuration());
+        seekBar.setMax(100000);
+
+        if (podcastPlayer.isPlaying()) {
+            currentTimeUpdate(podcastPlayer.getCurrentPosition());
+        } else {
+            currentTimeUpdate(0);
+        }
+    }
+
+    private void currentTimeUpdate(int currentTimeMillis) {
+        seekBar.setProgress(currentTimeMillis);
     }
 
     private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
