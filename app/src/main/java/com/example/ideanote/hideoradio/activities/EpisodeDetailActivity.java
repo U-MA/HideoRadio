@@ -104,11 +104,11 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 if (podcastPlayer.isPlaying()) {
                     imageButton.setImageResource(R.drawable.ic_action_playback_play);
                     seekBar.setEnabled(false);
+                    Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+                    startService(intent);
                 } else {
                     MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
                     dialog.show(getSupportFragmentManager(), "dialog");
-                    // TODO imageButtonの変更はdialogをクリックしてから変更すべき
-                    // imageButton.setImageResource(R.drawable.ic_action_playback_pause);
                     seekBar.setEnabled(true);
                 }
             }
