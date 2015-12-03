@@ -14,14 +14,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.ClearCacheEvent;
+import com.example.ideanote.hideoradio.events.DownloadEvent;
+import com.example.ideanote.hideoradio.events.PlayCacheEvent;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.dialog.MediaPlayConfirmationDialog;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
+import com.squareup.otto.Subscribe;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 
@@ -31,6 +38,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private Episode episode;
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,21 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         podcastPlayer = PodcastPlayer.getInstance();
 
         initMediaButton();
+
+        seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
+        seekBar.setEnabled(podcastPlayer.isPlaying());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BusHolder.getInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BusHolder.getInstance().unregister(this);
     }
 
     @Override
@@ -76,60 +99,65 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
-                if (podcastPlayer.isPlaying()) {
-                    imageButton.setImageResource(R.drawable.ic_action_playback_play);
+                if (!podcastPlayer.isStopped()) {
+                    if (podcastPlayer.isPlaying()) {
+                        imageButton.setImageResource(R.drawable.ic_action_playback_play);
+                        seekBar.setEnabled(false);
+                    } else {
+                        imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+                        seekBar.setEnabled(true);
+                    }
+                    Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+                    startService(intent);
                 } else {
-                    imageButton.setImageResource(R.drawable.ic_action_playback_pause);
-                }
-                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
-                startService(intent);
-            }
-        });
-
-
-        playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
-        playAndPauseButton.setEnabled(false);
-        playAndPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
-                startService(intent);
-            }
-        });
-
-        stopButton = (Button) findViewById(R.id.stop_button);
-        stopButton.setEnabled(false);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = PodcastPlayerService.createStopIntent(getApplicationContext(), episode);
-                startService(intent);
-            }
-        });
-
-        downloadButton = (Button) findViewById(R.id.download_button);
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("EpisodeDetailActivity", "DownloadOnClick");
-                if (isOnline()) {
-                    startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
-                } else {
-                    DownloadFailDialog dialog = new DownloadFailDialog();
-                    dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
+                    MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
+                    dialog.show(getSupportFragmentManager(), "dialog");
+                    seekBar.setEnabled(true);
                 }
             }
         });
 
         imageButton.setEnabled(true);
-        playAndPauseButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        downloadButton.setEnabled(true);
+    }
+
+    private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
+        MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("episodeId", episode.getEpisodeId());
+        dialog.setArguments(bundle);
+        return dialog;
     }
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Subscribe
+    public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
+        if (!PodcastPlayer.getInstance().isPlaying()) {
+            imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+            Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+            startService(intent);
+        }
+    }
+
+    @Subscribe
+    public void onClearCache(ClearCacheEvent clearCacheEvent) {
+        if (episode != null && episode.isDownload()) {
+            episode.clearCache();
+            episode.save();
+        }
+    }
+
+    @Subscribe
+    public void onDownload(DownloadEvent downloadEvent) {
+        if (isOnline()) {
+            startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+        } else {
+            DownloadFailDialog dialog = new DownloadFailDialog();
+            dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
+        }
     }
 }
