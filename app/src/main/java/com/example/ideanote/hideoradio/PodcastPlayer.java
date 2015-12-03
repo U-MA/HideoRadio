@@ -113,12 +113,10 @@ public class PodcastPlayer extends MediaPlayer
     public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
         this.currentTimeListener = currentTimeListener;
 
-        // TODO setup Timer
         Timer timer = new Timer(new Timer.TimerCallback() {
             @Override
             public void onTick(long millis) {
                 if (isPlaying() || isPaused()) {
-                    Log.i("onTick", "onTick");
                     currentTimeListener.onTick(getCurrentPosition());
                 } else {
                     currentTimeListener.onTick(0);

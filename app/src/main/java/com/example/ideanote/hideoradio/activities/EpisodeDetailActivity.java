@@ -32,6 +32,8 @@ import com.squareup.otto.Subscribe;
 
 public class EpisodeDetailActivity extends AppCompatActivity {
 
+    private final static String TAG = EpisodeDetailActivity.class.getName();
+
     private Button playAndPauseButton;
     private Button stopButton;
     private Button downloadButton;
@@ -106,8 +108,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (!podcastPlayer.isStopped()) {
                     imageButton.setImageResource(podcastPlayer.isPlaying()
-                        ? R.drawable.ic_action_playback_play
-                        : R.drawable.ic_action_playback_pause);
+                            ? R.drawable.ic_action_playback_play
+                            : R.drawable.ic_action_playback_pause);
                     Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
                     startService(intent);
                 } else {
@@ -124,10 +126,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private void initSeekBar() {
         seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
         seekBar.setEnabled(podcastPlayer.isPlaying());
-
-        // TODO
-        // seekBar.setMax(episode.getDuration());
-        seekBar.setMax(100000);
+        seekBar.setMax(durationToMillis(episode.getDuration()));
 
         if (podcastPlayer.isPlaying()) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
@@ -152,6 +151,24 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    /**
+     * HH:MM:SSのフォーマットの文字列をミリ秒に変換する
+     *
+     * @param duration
+     * @return
+     */
+    public int durationToMillis(String duration) {
+        String[] data = duration.split(":");
+
+        int sec = 0;
+        for (int i=0; i < data.length - 1; ++i) {
+            sec = (sec + Integer.valueOf(data[i])) * 60;
+        }
+        sec += Integer.valueOf(data[data.length - 1]);
+
+        return sec * 1000;
     }
 
     @Subscribe
