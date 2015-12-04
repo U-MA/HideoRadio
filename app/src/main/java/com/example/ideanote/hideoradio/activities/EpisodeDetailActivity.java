@@ -132,6 +132,25 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         seekBar.setEnabled(podcastPlayer.isPlaying());
         seekBar.setMax(durationToMillis(episode.getDuration()));
         seekBar.setEnabled(true);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!PodcastPlayer.getInstance().isPlaying()) {
+                    return;
+                }
+                PodcastPlayer.getInstance().seekTo(seekBar.getProgress());
+            }
+        });
 
         if (podcastPlayer.isPlaying()) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
