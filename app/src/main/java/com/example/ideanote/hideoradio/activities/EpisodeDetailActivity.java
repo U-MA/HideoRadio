@@ -120,7 +120,6 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 } else {
                     MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
                     dialog.show(getSupportFragmentManager(), "dialog");
-                    seekBar.setEnabled(true);
                 }
             }
         });
@@ -199,8 +198,11 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
         if (!PodcastPlayer.getInstance().isPlaying()) {
             imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+            seekBar.setEnabled(true);
             Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
             startService(intent);
+        } else {
+            seekBar.setEnabled(false);
         }
     }
 
