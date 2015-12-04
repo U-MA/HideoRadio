@@ -114,6 +114,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                     imageButton.setImageResource(podcastPlayer.isPlaying()
                             ? R.drawable.ic_action_playback_play
                             : R.drawable.ic_action_playback_pause);
+                    seekBar.setEnabled(!podcastPlayer.isPlaying());
                     Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
                     startService(intent);
                 } else {
@@ -131,7 +132,6 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
         seekBar.setEnabled(podcastPlayer.isPlaying());
         seekBar.setMax(durationToMillis(episode.getDuration()));
-        seekBar.setEnabled(true);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
