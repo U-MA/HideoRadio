@@ -103,6 +103,8 @@ public class PodcastPlayer extends MediaPlayer
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        super.pause();
+        state = PlayerState.STOPPED;
         release();
     }
 
