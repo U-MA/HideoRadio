@@ -119,8 +119,8 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                                 currentEpisode.setDescription(parser.nextText());
                             } else if (tag.equals("link")) {
                                 currentEpisode.setLink(Uri.parse(parser.nextText()));
-                            } else if (tag.equals("date")) {
-                                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.JAPAN);
+                            } else if (tag.equals("pubDate")) {
+                                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
                                 currentEpisode.setPostedAt(format.parse(parser.nextText()));
                             } else if (tag.equals("enclosure")) {
                                 // TODO enclosureの設定
