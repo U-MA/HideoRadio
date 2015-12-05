@@ -34,9 +34,6 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private final static String TAG = EpisodeDetailActivity.class.getName();
 
-    private Button playAndPauseButton;
-    private Button stopButton;
-    private Button downloadButton;
     private Episode episode;
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
