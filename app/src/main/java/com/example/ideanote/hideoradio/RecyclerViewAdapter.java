@@ -79,6 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView title;
         TextView description;
         ImageButton imageButton;
+        TextView postedAt;
 
         private View view;
         private OnItemClickListener onItemClickListener;
@@ -90,6 +91,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             title = (TextView) itemView.findViewById(R.id.title);
             description = (TextView) itemView.findViewById(R.id.description);
             imageButton = (ImageButton) itemView.findViewById(R.id.download_toggle_button);
+            postedAt = (TextView) itemView.findViewById(R.id.posted_at);
             this.onItemClickListener = onItemClickListener;
         }
 
@@ -118,6 +120,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     onItemClickListener.onClick(episode);
                 }
             });
+            postedAt.setText(episode.getPostedAtAsString());
         }
     }
 
