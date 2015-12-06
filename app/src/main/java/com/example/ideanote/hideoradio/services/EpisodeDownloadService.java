@@ -104,15 +104,19 @@ public class EpisodeDownloadService extends IntentService {
             fileOutputStream = new FileOutputStream(destFile);
 
             int max = urlConnection.getContentLength();
-            int total = 0;
-            int actual;
+            int actual, total = 0, progress = 0;
+            final int fivePercent = (int) (max * 0.05);
             byte[] buffer = new byte[BUFFER_SIZE];
             while ((actual = bufferedInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
                 total += actual;
-                NotificationCompat.Builder builder = EpisodeDownloadNotification.createBuilder(context, episode);
-                builder.setProgress(max, total, false);
-                EpisodeDownloadNotification.notify(context, builder.build());
                 fileOutputStream.write(buffer, 0, actual);
+
+                if (total > progress) {
+                    NotificationCompat.Builder builder = EpisodeDownloadNotification.createBuilder(context, episode);
+                    builder.setProgress(max, total, false);
+                    EpisodeDownloadNotification.notify(context, builder.build());
+                    progress += fivePercent;
+                }
             }
 
             String externalFilePath = destFile.getPath();
