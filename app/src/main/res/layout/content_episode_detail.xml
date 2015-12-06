@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/episode_detail_header_height"
             android:gravity="center"
-            android:text="@string/sample_episode_title"
+            tools:text="@string/sample_episode_title"
             android:textSize="15sp"
             android:textColor="@android:color/white" />
 
