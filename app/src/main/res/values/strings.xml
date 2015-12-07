@@ -9,4 +9,9 @@
     <string name="episode_detail_header">episode detail header</string>
 
     <string name="playback_play_pause">playback play and pause</string>
+
+    <string name="loading_episodes_text">Loading episodes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

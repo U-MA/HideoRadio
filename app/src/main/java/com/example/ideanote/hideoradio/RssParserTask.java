@@ -1,19 +1,17 @@
 package com.example.ideanote.hideoradio;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.Xml;
-import android.view.View;
 
 import com.activeandroid.ActiveAndroid;
-import com.example.ideanote.hideoradio.activities.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.activities.MainActivity;
-import com.example.ideanote.hideoradio.listeners.RecyclerItemClickListener;
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.UpdateEpisodeListEvent;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -29,11 +27,10 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
 
     private final static String TAG = RssParserTask.class.getName();
 
-    private MainActivity activity;
+    private Context activity;
     private RecyclerViewAdapter adapter;
-    private ProgressDialog progressDialog;
 
-    public RssParserTask(MainActivity activity, RecyclerViewAdapter adapter) {
+    public RssParserTask(Context activity, RecyclerViewAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
     }
@@ -41,9 +38,6 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
     @Override
     protected void onPreExecute() {
         Log.i(TAG, "onPreExecute");
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage("Now Loading...");
-        progressDialog.show();
     }
 
     @Override
@@ -68,32 +62,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
 
     @Override
     protected void onPostExecute(RecyclerViewAdapter result) {
-        progressDialog.dismiss();
-        RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        recyclerView.setAdapter(result);
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(activity,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position, Episode episode) {
-                        Intent intent = new Intent(activity, EpisodeDetailActivity.class);
-                        intent.putExtra(MainActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
-                        if (episode.getEnclosure() != null) {
-                            Log.d("Enclosure", episode.getEnclosure().toString());
-                        } else {
-                            Log.d("Enclosure", "null");
-                        }
-                        if (episode.getLink() != null) {
-                            Log.d("Link", episode.getLink().toString());
-                        } else {
-                            Log.d("Link", "null");
-                        }
-                        if (episode.getDuration() != null) {
-                            Log.d("Duration", episode.getDuration());
-                        }
-                        activity.startActivity(intent);
-                    }
-                }));
+        BusHolder.getInstance().post(new UpdateEpisodeListEvent());
     }
 
     public RecyclerViewAdapter parseXml(InputStream is) throws IOException {

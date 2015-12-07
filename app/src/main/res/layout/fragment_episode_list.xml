@@ -1,0 +1,44 @@
+<layout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.ideanote.hideoradio.EpisodeListFragment"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/episode_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+            android:visibility="visible"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/progress_bar"
+                android:layout_centerHorizontal="true"
+                android:text="@string/loading_episodes_text"
+                android:visibility="gone"
+                />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

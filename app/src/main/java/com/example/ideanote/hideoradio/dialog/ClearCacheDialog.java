@@ -8,11 +8,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.UpdateEpisodeListEvent;
 
 public class ClearCacheDialog extends DialogFragment {
 
     private Episode episode;
-    private RecyclerView recyclerView;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class ClearCacheDialog extends DialogFragment {
                            episode.clearCache();
                            episode.save();
 
-                           recyclerView.getAdapter().notifyDataSetChanged();
+                           BusHolder.getInstance().post(new UpdateEpisodeListEvent());
                        }
                    }
 
@@ -38,9 +39,5 @@ public class ClearCacheDialog extends DialogFragment {
 
     public void setEpisode(Episode episode) {
         this.episode = episode;
-    }
-
-    public void setRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
     }
 }
