@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -71,7 +70,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
             @Override
             public void onTick(int currentPosition) {
-                currentTimeUpdate(currentPosition);
+                if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode)) {
+                    currentTimeUpdate(currentPosition);
+                }
             }
         });
     }
@@ -151,7 +152,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (podcastPlayer.isPlaying()) {
+        if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode)) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
         } else {
             currentTimeUpdate(0);
