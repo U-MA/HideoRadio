@@ -103,15 +103,17 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     protected void initMediaButton() {
         imageButton = (ImageButton) findViewById(R.id.image_button);
-        imageButton.setImageResource(PodcastPlayer.getInstance().isPlaying()
-            ? R.drawable.ic_action_playback_pause
-            : R.drawable.ic_action_playback_play);
+        if (PodcastPlayer.getInstance().isPlaying() && PodcastPlayer.getInstance().getEpisode().equals(episode)) {
+            imageButton.setImageResource(R.drawable.ic_action_playback_pause);
+        } else {
+            imageButton.setImageResource(R.drawable.ic_action_playback_play);
+        }
         imageButton.setEnabled(false);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
-                if (!podcastPlayer.isStopped()) {
+                if (!podcastPlayer.isStopped() && podcastPlayer.getEpisode().equals(episode)) {
                     imageButton.setImageResource(podcastPlayer.isPlaying()
                             ? R.drawable.ic_action_playback_play
                             : R.drawable.ic_action_playback_pause);
@@ -130,7 +132,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private void initSeekBar() {
         seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
-        seekBar.setEnabled(podcastPlayer.isPlaying());
+        seekBar.setEnabled(podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode));
         seekBar.setMax(durationToMillis(episode.getDuration()));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -197,7 +199,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     @Subscribe
     public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
-        if (!PodcastPlayer.getInstance().isPlaying()) {
+        if (!PodcastPlayer.getInstance().isPlaying() || !PodcastPlayer.getInstance().getEpisode().equals(episode)) {
             imageButton.setImageResource(R.drawable.ic_action_playback_pause);
             seekBar.setEnabled(true);
             Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);

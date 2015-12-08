@@ -67,8 +67,8 @@ public class PodcastPlayerService extends IntentService {
 
         if (podcastPlayer.getEpisode() != null && !podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
             // 違うEpisodeを再生する必要がある
-            podcastPlayer.stop();
-            podcastPlayer.reset();
+                podcastPlayer.stop();
+                podcastPlayer.reset();
             Log.i(TAG, "different episode");
         }
 
