@@ -54,6 +54,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         String episodeId = getIntent().getStringExtra(MainActivity.EXTRA_EPISODE_ID);
         episode = Episode.findById(episodeId);
 
+        TextView titleText = (TextView) findViewById(R.id.episode_title);
+        titleText.setText(episode.getTitle());
+
         TextView descriptionView = (TextView) findViewById(R.id.detail_description);
         descriptionView.setText(episode.getDescription());
 
