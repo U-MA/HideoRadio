@@ -71,7 +71,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
             @Override
             public void onTick(int currentPosition) {
-                currentTimeUpdate(currentPosition);
+                if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode)) {
+                    currentTimeUpdate(currentPosition);
+                }
             }
         });
     }
@@ -151,7 +153,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
             }
         });
 
-        if (podcastPlayer.isPlaying()) {
+        if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode)) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
         } else {
             currentTimeUpdate(0);
