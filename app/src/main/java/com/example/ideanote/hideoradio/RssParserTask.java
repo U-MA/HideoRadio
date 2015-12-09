@@ -2,6 +2,7 @@ package com.example.ideanote.hideoradio;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Network;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import android.util.Xml;
 import com.activeandroid.ActiveAndroid;
 import com.example.ideanote.hideoradio.activities.MainActivity;
 import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
 import com.example.ideanote.hideoradio.events.UpdateEpisodeListEvent;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -50,6 +52,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                 InputStream is = url.openConnection().getInputStream();
                 result = parseXml(is);
             } catch (Exception e) {
+                BusHolder.getInstance().post(new NetworkErrorEvent());
                 e.printStackTrace();
             }
         } else {

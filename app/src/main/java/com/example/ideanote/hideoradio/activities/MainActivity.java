@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.activeandroid.query.Select;
+import com.example.ideanote.hideoradio.EpisodeListFragment;
+import com.example.ideanote.hideoradio.NetworkErrorFragment;
 import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
@@ -16,7 +20,10 @@ import com.example.ideanote.hideoradio.MediaBarView;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.RecyclerViewAdapter;
+import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
+import com.squareup.otto.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
@@ -45,13 +52,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 startActivity(intent);
             }
         });
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new EpisodeListFragment());
+        transaction.commit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        BusHolder.getInstance().register(this);
         Log.i("MainActivity", "onResume");
         setMediaBarIfPossible();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusHolder.getInstance().unregister(this);
     }
 
     public void setMediaBarIfPossible() {
@@ -81,6 +99,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             ClearCacheDialog dialog = new ClearCacheDialog();
             dialog.setEpisode(episode);
             dialog.show(getSupportFragmentManager(), "ClearCacheDialog");
+        }
+    }
+
+    @Subscribe
+    public void onNetworkErrorWhenInitialize(NetworkErrorEvent event) {
+        if (new Select().from(Episode.class).execute().size() == 0) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new NetworkErrorFragment());
+            transaction.commit();
         }
     }
 }
