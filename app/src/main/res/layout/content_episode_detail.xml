@@ -75,8 +75,32 @@
         </RelativeLayout>
     </FrameLayout>
 
-    <TextView android:id="@+id/detail_description"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        >
 
+        <TextView
+            android:id="@+id/description_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_small"
+            android:layout_marginStart="@dimen/space_small"
+            android:textSize="24sp"
+            android:text="@string/description"
+            />
+
+        <TextView
+            android:id="@+id/detail_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_large"
+            android:layout_marginStart="@dimen/space_large"
+            android:layout_marginRight="@dimen/space_large"
+            android:layout_marginEnd="@dimen/space_large"
+            android:layout_below="@+id/description_header"
+            tools:text="@string/sample_episode_description"
+            />
+
+    </RelativeLayout>
 </LinearLayout>
