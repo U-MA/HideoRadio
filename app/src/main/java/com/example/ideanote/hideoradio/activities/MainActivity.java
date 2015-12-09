@@ -20,7 +20,9 @@ import com.example.ideanote.hideoradio.MediaBarView;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.RecyclerViewAdapter;
+import com.example.ideanote.hideoradio.dialog.EpisodeDownloadCancelDialog;
 import com.example.ideanote.hideoradio.events.BusHolder;
+import com.example.ideanote.hideoradio.events.EpisodeDownloadCancelEvent;
 import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.squareup.otto.Subscribe;
@@ -91,7 +93,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo info = manager.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
-                startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+                if (!EpisodeDownloadService.isDownloading(episode.getEpisodeId())) {
+                    startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
+                } else {
+                    // create episode download cancel dialog
+                    EpisodeDownloadCancelDialog dialog = new EpisodeDownloadCancelDialog();
+                    dialog.setEpisode(episode);
+                    dialog.show(getSupportFragmentManager(), "DownloadCancelDialog");
+                }
             } else {
                 DownloadFailDialog dialog = new DownloadFailDialog();
                 dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
@@ -110,5 +119,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             transaction.replace(R.id.fragment_container, new NetworkErrorFragment());
             transaction.commit();
         }
+    }
+
+    @Subscribe
+    public void onEpisodeDownloadCancel(EpisodeDownloadCancelEvent event) {
     }
 }

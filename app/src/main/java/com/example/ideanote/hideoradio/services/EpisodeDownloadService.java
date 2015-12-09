@@ -31,11 +31,14 @@ import java.util.List;
  */
 public class EpisodeDownloadService extends IntentService {
 
+    private static final String TAG = EpisodeDownloadService.class.getName();
+
     private static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final int BUFFER_SIZE = 23 * 1024;
 
     private static List<Episode> downloadingList = new ArrayList<>();
 
+    private static boolean isCancel;
 
     public static Intent createIntent(Context context, Episode episode) {
         Intent intent = new Intent(context, EpisodeDownloadService.class);
@@ -73,6 +76,9 @@ public class EpisodeDownloadService extends IntentService {
         final Context context = getApplicationContext();
 
         String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
+        isCancel = false;
+        Log.i(TAG, "Download: " + episodeId);
+        Log.i(TAG, "List size: " + String.valueOf(downloadingList.size()));
 
         // episodeIdがnull, またはそのエピソードがdownload中であれば何もしない
         if (episodeId == null || isDownloading(episodeId)) {
@@ -126,6 +132,10 @@ public class EpisodeDownloadService extends IntentService {
                     EpisodeDownloadNotification.notify(context, builder.build());
                     progress += fivePercent;
                 }
+
+                if (isCancel) {
+                    break;
+                }
             }
 
             String externalFilePath = destFile.getPath();
@@ -134,11 +144,15 @@ public class EpisodeDownloadService extends IntentService {
                 Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
                 Log.e("DownloadService", "TextUtil: Download failed: " + episodeId);
             } else {
-                Log.i("DownloadService", "Download Complete");
-                episode.setMediaLocalPath(externalFilePath);
-                episode.save();
-                removeEpisodeFromDownloadingList(episode);
-                BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
+                if (isDownloading(episodeId)) {
+                    Log.i("DownloadService", "Download Complete");
+                    episode.setMediaLocalPath(externalFilePath);
+                    episode.save();
+                    removeEpisodeFromDownloadingList(episode);
+                    BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
+                } else {
+                    episode.clearCache();
+                }
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -156,12 +170,19 @@ public class EpisodeDownloadService extends IntentService {
         EpisodeDownloadCompleteNotification.notify(context, episode);
     }
 
+    public static void cancel(Context context, Episode episode) {
+        Log.i(TAG, "cancel");
+        removeEpisodeFromDownloadingList(episode);
+        EpisodeDownloadNotification.cancel(context, episode);
+        isCancel = true;
+    }
+
     /**
      * downloadingListから指定されたエピソードを削除する
      *
      * @param episode
      */
-    private void removeEpisodeFromDownloadingList(Episode episode) {
+    private static void removeEpisodeFromDownloadingList(Episode episode) {
         for (Episode e : downloadingList) {
             if (episode.isEquals(e)) {
                 downloadingList.remove(e);
