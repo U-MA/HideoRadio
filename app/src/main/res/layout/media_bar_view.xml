@@ -21,8 +21,6 @@
             android:id="@+id/episode_title_text"
             tools:text="@string/sample_episode_title"
             android:textSize="15sp"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:layout_width="400dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
@@ -30,6 +28,11 @@
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/play_and_pause"
             android:layout_toStartOf="@+id/play_and_pause"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:gravity="center_vertical" />
 
         <ImageButton
