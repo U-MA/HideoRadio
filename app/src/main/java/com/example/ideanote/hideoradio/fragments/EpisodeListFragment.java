@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.activeandroid.query.Select;
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.RecyclerViewAdapter;
+import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.databinding.FragmentEpisodeListBinding;
 import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.EpisodeDownloadCompleteEvent;

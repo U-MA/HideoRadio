@@ -1,8 +1,7 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.databinding.FragmentNetworkErrorBinding;
+import com.example.ideanote.hideoradio.fragments.EpisodeListFragment;
 
 
 public class NetworkErrorFragment extends Fragment {

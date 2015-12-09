@@ -11,8 +11,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.activeandroid.query.Select;
-import com.example.ideanote.hideoradio.EpisodeListFragment;
-import com.example.ideanote.hideoradio.NetworkErrorFragment;
+import com.example.ideanote.hideoradio.fragments.EpisodeListFragment;
+import com.example.ideanote.hideoradio.fragments.NetworkErrorFragment;
 import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
