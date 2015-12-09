@@ -31,7 +31,10 @@
             android:gravity="center"
             tools:text="@string/sample_episode_title"
             android:textSize="15sp"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="@dimen/space_large"
+            android:layout_marginRight="@dimen/space_large"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -65,6 +68,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
+                    tools:text="@string/sample_episode_duration"
+                    android:layout_marginRight="@dimen/space_small"
                     />
             </LinearLayout>
         </RelativeLayout>
