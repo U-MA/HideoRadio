@@ -89,6 +89,13 @@
             android:textSize="24sp"
             android:text="@string/description"
             />
+        
+        <RelativeLayout
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_below="@+id/description_header"
+            />
 
         <TextView
             android:id="@+id/detail_description"
@@ -98,7 +105,7 @@
             android:layout_marginStart="@dimen/space_large"
             android:layout_marginRight="@dimen/space_large"
             android:layout_marginEnd="@dimen/space_large"
-            android:layout_below="@+id/description_header"
+            android:layout_below="@+id/space"
             tools:text="@string/sample_episode_description"
             />
 
