@@ -154,6 +154,16 @@ public class Episode extends Model {
         return new Select().from(Episode.class).where("eid=?", eid).executeSingle();
     }
 
+    /**
+     * 同じエピソードかどうか
+     *
+     * @param episode
+     * @return
+     */
+    public boolean isEquals(Episode episode) {
+        return title.equals(episode.getTitle());
+    }
+
     public static List<Episode> find() {
         List<Episode> episodeList = new Select().from(Episode.class).orderBy("ID ASC").execute();
         return episodeList;

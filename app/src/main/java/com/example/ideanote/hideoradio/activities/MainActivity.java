@@ -56,12 +56,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, new EpisodeListFragment());
         transaction.commit();
+
+        BusHolder.getInstance().register(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        BusHolder.getInstance().register(this);
         Log.i("MainActivity", "onResume");
         setMediaBarIfPossible();
     }

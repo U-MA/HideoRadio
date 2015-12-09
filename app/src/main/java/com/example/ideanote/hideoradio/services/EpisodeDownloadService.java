@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service for downloading an episode.
@@ -32,7 +34,7 @@ public class EpisodeDownloadService extends IntentService {
     private static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final int BUFFER_SIZE = 23 * 1024;
 
-    private boolean isDown = false; // whether episode is downloading, or not.
+    private static List<Episode> downloadingList = new ArrayList<>();
 
 
     public static Intent createIntent(Context context, Episode episode) {
@@ -53,8 +55,14 @@ public class EpisodeDownloadService extends IntentService {
      * @param episodeId
      * @return whether an episode is downloading, or not.
      */
-    public boolean isDownloading(String episodeId) {
-        return isDown;
+    public static boolean isDownloading(String episodeId) {
+        Episode e = Episode.findById(episodeId);
+        for (Episode episode : downloadingList) {
+            if (e.isEquals(episode)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -80,10 +88,11 @@ public class EpisodeDownloadService extends IntentService {
             return;
         }
 
+
         BufferedInputStream bufferedInputStream = null;
         FileOutputStream fileOutputStream = null;
 
-        isDown = true;
+        downloadingList.add(episode);
         EpisodeDownloadNotification.notify(context, episode);
         try {
             Uri enclosure = episode.getEnclosure();
@@ -128,6 +137,7 @@ public class EpisodeDownloadService extends IntentService {
                 Log.i("DownloadService", "Download Complete");
                 episode.setMediaLocalPath(externalFilePath);
                 episode.save();
+                removeEpisodeFromDownloadingList(episode);
                 BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
             }
         } catch (MalformedURLException e) {
@@ -142,8 +152,20 @@ public class EpisodeDownloadService extends IntentService {
             Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-        isDown = false;
         EpisodeDownloadNotification.cancel(context, episode);
         EpisodeDownloadCompleteNotification.notify(context, episode);
+    }
+
+    /**
+     * downloadingListから指定されたエピソードを削除する
+     *
+     * @param episode
+     */
+    private void removeEpisodeFromDownloadingList(Episode episode) {
+        for (Episode e : downloadingList) {
+            if (episode.isEquals(e)) {
+                downloadingList.remove(e);
+            }
+        }
     }
 }
