@@ -29,6 +29,9 @@ import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 import com.squareup.otto.Subscribe;
 
+import java.util.Formatter;
+import java.util.Locale;
+
 public class EpisodeDetailActivity extends AppCompatActivity {
 
     private final static String TAG = EpisodeDetailActivity.class.getName();
@@ -37,6 +40,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
     private SeekBar seekBar;
+    private TextView durationText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
         podcastPlayer = PodcastPlayer.getInstance();
 
-        TextView durationText = (TextView) findViewById(R.id.duration);
+        durationText = (TextView) findViewById(R.id.duration);
         durationText.setText(episode.getDuration());
 
         initMediaButton();
@@ -162,7 +166,26 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     private void currentTimeUpdate(int currentTimeMillis) {
+        final int duration = durationToMillis(episode.getDuration());
+        durationText.setText(formatMillis(duration - currentTimeMillis));
         seekBar.setProgress(currentTimeMillis);
+    }
+
+    private String formatMillis(int timeMillis) {
+        int totalSeconds = timeMillis / 1000;
+
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours   = totalSeconds / 3600;
+
+        StringBuilder builder = new StringBuilder();
+        Formatter formatter = new Formatter(builder, Locale.getDefault());
+
+        if (hours > 0) {
+            return formatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+        } else {
+            return formatter.format("%02d:%02d", minutes, seconds).toString();
+        }
     }
 
     private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
