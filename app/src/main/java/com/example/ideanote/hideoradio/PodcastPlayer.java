@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.File;
+
 public class PodcastPlayer extends MediaPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
@@ -48,10 +50,11 @@ public class PodcastPlayer extends MediaPlayer
         try {
             setAudioStreamType(AudioManager.STREAM_MUSIC);
             if (episode.isDownload()) {
-                Uri uri = Uri.parse(episode.getMediaLocalPath());
-                setDataSource(context, uri);
+                Log.i("PodcastPlayer", episode.getMediaLocalPath());
+                setDataSource(context, Uri.fromFile(new File(episode.getMediaLocalPath())));
                 Log.i("PodcastPlayer", "MediaLocal play");
             } else {
+                Log.i("PodcastPlayer", episode.getEnclosure().toString());
                 setDataSource(context, episode.getEnclosure());
             }
             setOnPreparedListener(this);
