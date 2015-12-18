@@ -13,6 +13,8 @@ import java.io.File;
 public class PodcastPlayer extends MediaPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
+    private static String TAG = PodcastPlayer.class.getName();
+
     private static PodcastPlayer instance;
 
     private CurrentTimeListener currentTimeListener;
@@ -50,11 +52,11 @@ public class PodcastPlayer extends MediaPlayer
         try {
             setAudioStreamType(AudioManager.STREAM_MUSIC);
             if (episode.isDownload()) {
-                Log.i("PodcastPlayer", episode.getMediaLocalPath());
+                Log.i(TAG, episode.getMediaLocalPath());
                 setDataSource(context, Uri.fromFile(new File(episode.getMediaLocalPath())));
-                Log.i("PodcastPlayer", "MediaLocal play");
+                Log.i(TAG, "MediaLocal play");
             } else {
-                Log.i("PodcastPlayer", episode.getEnclosure().toString());
+                Log.i(TAG, episode.getEnclosure().toString());
                 setDataSource(context, episode.getEnclosure());
             }
             setOnPreparedListener(this);
