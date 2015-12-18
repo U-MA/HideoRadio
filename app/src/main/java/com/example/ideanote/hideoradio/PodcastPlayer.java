@@ -46,6 +46,10 @@ public class PodcastPlayer extends MediaPlayer
     }
 
     public void start(Context context, Episode episode) {
+
+        // ちょっと怪しいコード
+        super.reset();
+
         state = PlayerState.PREPARING;
         this.episode = episode;
 
