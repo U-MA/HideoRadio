@@ -12,8 +12,8 @@ public class UriTypeSerializer extends TypeSerializer {
     }
 
     @Override
-    public SerializedType getSerializedType() {
-        return SerializedType.STRING;
+    public Class<?> getSerializedType() {
+        return String.class;
     }
 
     @Override
