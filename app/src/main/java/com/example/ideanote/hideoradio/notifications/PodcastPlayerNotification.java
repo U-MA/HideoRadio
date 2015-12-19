@@ -56,7 +56,7 @@ public class PodcastPlayerNotification {
         return PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
-    private static Notification buildPlayNotification(Context context, Episode episode) {
+    public static Notification buildPlayNotification(Context context, Episode episode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_play)
                 .setContentTitle(episode.getTitle())
@@ -72,7 +72,7 @@ public class PodcastPlayerNotification {
         return builder.build();
     }
 
-    private static Notification buildPauseNotification(Context context, Episode episode) {
+    public static Notification buildPauseNotification(Context context, Episode episode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_pause)
                 .setContentTitle(episode.getTitle())

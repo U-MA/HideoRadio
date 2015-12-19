@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
+import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 
 public class MediaBarView extends FrameLayout {
 
