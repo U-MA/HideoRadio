@@ -104,7 +104,7 @@ public class EpisodeDownloadService extends Service {
             public void run() {
                 BufferedInputStream bufferedInputStream;
                 FileOutputStream fileOutputStream;
-                // startForeground(); // Create download notification
+                startForeground(EpisodeDownloadNotification.DOWNLOAD_NOTIFICATION_ID, EpisodeDownloadNotification.createBuilder(context, episode).build()); // Create download notification
                 try {
                     Uri enclosure = episode.getEnclosure();
                     if (enclosure == null) {
@@ -160,7 +160,7 @@ public class EpisodeDownloadService extends Service {
                     e.printStackTrace();
                 }
 
-                // stopForeground();
+                stopForeground(false);
                 EpisodeDownloadNotification.cancel(context, episode);
                 EpisodeDownloadCompleteNotification.notify(context, episode);
             }
