@@ -79,7 +79,7 @@ public class PodcastPlayerService extends Service {
                         podcastPlayer.pause();
                         PodcastPlayerNotification.notify(getApplicationContext(), episode,
                                 PodcastPlayerNotification.PAUSE);
-                        startForeground(1000, PodcastPlayerNotification.buildPauseNotification(getApplicationContext(), episode));
+                        stopForeground(false);
                     } else if (podcastPlayer.isPaused()) {
                         podcastPlayer.start();
                         PodcastPlayerNotification.notify(getApplicationContext(), episode,
