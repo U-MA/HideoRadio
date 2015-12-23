@@ -1,13 +1,14 @@
 package com.example.ideanote.hideoradio.services;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.Episode;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * Service for downloading an episode.
  */
-public class EpisodeDownloadService extends IntentService {
+public class EpisodeDownloadService extends Service {
 
     private static final String TAG = EpisodeDownloadService.class.getName();
 
@@ -39,6 +40,8 @@ public class EpisodeDownloadService extends IntentService {
     private static List<Episode> downloadingList = new ArrayList<>();
 
     private static boolean isCancel;
+    private static Episode episode;
+    private static Context context;
 
     public static Intent createIntent(Context context, Episode episode) {
         Intent intent = new Intent(context, EpisodeDownloadService.class);
@@ -47,10 +50,6 @@ public class EpisodeDownloadService extends IntentService {
          * もしRebuildのようにするのであればEpisodeをParcelableにする必要がありそう */
         intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
         return intent;
-    }
-
-    public EpisodeDownloadService() {
-        super("DownloadService");
     }
 
     /**
@@ -68,106 +67,106 @@ public class EpisodeDownloadService extends IntentService {
         return false;
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
     /**
      * Download a specified episode.
      */
     @Override
-    protected void onHandleIntent(Intent intent) {
-        final Context context = getApplicationContext();
+    public int onStartCommand(Intent intent, int flag, int id) {
+        isCancel = false;
+        context = getApplicationContext();
 
         String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
-        isCancel = false;
-        Log.i(TAG, "Download: " + episodeId);
-        Log.i(TAG, "List size: " + String.valueOf(downloadingList.size()));
 
         // episodeIdがnull, またはそのエピソードがdownload中であれば何もしない
         if (episodeId == null || isDownloading(episodeId)) {
-            Log.i("DownloadService", "episodeId == null");
-            return;
+            Log.i(TAG, "episodeId == null");
+            stopSelf();
+            return START_STICKY;
         }
 
-        Episode episode = Episode.findById(episodeId);
+        episode = Episode.findById(episodeId);
 
         // Download済みであれば何もしない
         if (episode.isDownload()) {
-            Log.i("EpisodeDownloadService", String.valueOf(episodeId) + " is already downloaded");
-            return;
+            Log.i(TAG, String.valueOf(episodeId) + " is already downloaded");
+            stopSelf();
+            return START_STICKY;
         }
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BufferedInputStream bufferedInputStream;
+                FileOutputStream fileOutputStream;
+                // startForeground(); // Create download notification
+                try {
+                    Uri enclosure = episode.getEnclosure();
+                    if (enclosure == null) {
+                        return;
+                    }
+                    URL url = new URL(enclosure.toString());
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-        BufferedInputStream bufferedInputStream = null;
-        FileOutputStream fileOutputStream = null;
+                    /* episodeIdが.mp3で終わっていることを仮定 */
+                    final String episodeId = episode.getEpisodeId();
+                    int index = episodeId.lastIndexOf('/');
+                    String filename = episodeId.substring(index+1);
+                    Log.i(TAG, episodeId + " " + index);
+                    File destFile = new File(context.getExternalFilesDir(null), filename);
 
-        downloadingList.add(episode);
-        EpisodeDownloadNotification.notify(context, episode);
-        try {
-            Uri enclosure = episode.getEnclosure();
-            if (enclosure == null) {
-                return;
-            }
-            URL url = new URL(enclosure.toString());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream inputStream = urlConnection.getInputStream();
+                    bufferedInputStream = new BufferedInputStream(inputStream, BUFFER_SIZE);
+                    fileOutputStream = new FileOutputStream(destFile);
 
-            /* episodeIdが.mp3で終わっていることを仮定 */
-            int index = episodeId.lastIndexOf('/');
-            String filename = episodeId.substring(index+1);
-            Log.i("DownloadService", episodeId + " " + index);
-            File destFile = new File(context.getExternalFilesDir(null), filename);
+                    int max = urlConnection.getContentLength();
+                    int actual, total = 0, progress = 0;
+                    final int fivePercent = (int) (max * 0.05);
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    while ((actual = bufferedInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
+                        total += actual;
+                        fileOutputStream.write(buffer, 0, actual);
 
-            InputStream inputStream = urlConnection.getInputStream();
-            bufferedInputStream = new BufferedInputStream(inputStream, BUFFER_SIZE);
-            fileOutputStream = new FileOutputStream(destFile);
+                        if (total > progress) {
+                            NotificationCompat.Builder builder = EpisodeDownloadNotification.createBuilder(context, episode);
+                            builder.setProgress(max, total, false);
+                            EpisodeDownloadNotification.notify(context, builder.build());
+                            progress += fivePercent;
+                        }
 
-            int max = urlConnection.getContentLength();
-            int actual, total = 0, progress = 0;
-            final int fivePercent = (int) (max * 0.05);
-            byte[] buffer = new byte[BUFFER_SIZE];
-            while ((actual = bufferedInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
-                total += actual;
-                fileOutputStream.write(buffer, 0, actual);
+                        if (isCancel) {
+                            break;
+                        }
+                    }
 
-                if (total > progress) {
-                    NotificationCompat.Builder builder = EpisodeDownloadNotification.createBuilder(context, episode);
-                    builder.setProgress(max, total, false);
-                    EpisodeDownloadNotification.notify(context, builder.build());
-                    progress += fivePercent;
+                    String externalFilePath = destFile.getPath();
+
+                    if (TextUtils.isEmpty(externalFilePath)) {
+                        Log.e(TAG, "TextUtil: Download failed: " + episodeId);
+                    } else {
+                        Log.i(TAG, "Download Complete");
+                        episode.setMediaLocalPath(externalFilePath);
+                        episode.save();
+                        BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                if (isCancel) {
-                    break;
-                }
+                // stopForeground();
+                EpisodeDownloadNotification.cancel(context, episode);
+                EpisodeDownloadCompleteNotification.notify(context, episode);
             }
+        }).start();
 
-            String externalFilePath = destFile.getPath();
-
-            if (TextUtils.isEmpty(externalFilePath)) {
-                Toast.makeText(this, "Download failed", Toast.LENGTH_LONG).show();
-                Log.e("DownloadService", "TextUtil: Download failed: " + episodeId);
-            } else {
-                if (isDownloading(episodeId)) {
-                    Log.i("DownloadService", "Download Complete");
-                    episode.setMediaLocalPath(externalFilePath);
-                    episode.save();
-                    removeEpisodeFromDownloadingList(episode);
-                    BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
-                } else {
-                    episode.clearCache();
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
-            Log.e("DownloadService", "Malformed: Download failed: " + episodeId);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
-            Log.e("DownloadService", "IOException: Download failed: " + episodeId);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Download failed", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-        EpisodeDownloadNotification.cancel(context, episode);
-        EpisodeDownloadCompleteNotification.notify(context, episode);
+        return START_STICKY;
     }
 
     public static void cancel(Context context, Episode episode) {

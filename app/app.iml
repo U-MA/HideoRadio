@@ -121,7 +121,6 @@
     <orderEntry type="library" exported="" name="adapters-1.0-rc3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="objenesis-2.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-core-2.2.1" level="project" />
-    <orderEntry type="library" exported="" name="activeandroid-3.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="runner-0.4.1" level="project" />
     <orderEntry type="library" exported="" name="compiler-1.0-rc5" level="project" />
     <orderEntry type="library" exported="" name="baseLibrary-1.0-rc5" level="project" />

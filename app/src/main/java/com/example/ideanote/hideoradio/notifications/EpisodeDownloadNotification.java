@@ -13,7 +13,7 @@ import com.example.ideanote.hideoradio.activities.MainActivity;
  * Notification for donloading an episode
  */
 public class EpisodeDownloadNotification {
-    private static final int DOWNLOAD_NOTIFICATION_ID = 2000;
+    public static final int DOWNLOAD_NOTIFICATION_ID = 2000;
     private static final String ACTION_CANCEL = "action_cancel";
 
     public static void notify(Context context, Episode episode) {
