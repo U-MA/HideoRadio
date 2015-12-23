@@ -24,6 +24,7 @@ import com.example.ideanote.hideoradio.dialog.EpisodeDownloadCancelDialog;
 import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.EpisodeDownloadCancelEvent;
 import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
+import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.squareup.otto.Subscribe;
 
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (!PodcastPlayer.getInstance().isPlaying()) {
+            PodcastPlayerNotification.cancel(this);
+        }
+
         BusHolder.getInstance().unregister(this);
     }
 

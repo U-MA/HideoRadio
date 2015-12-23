@@ -25,6 +25,7 @@ import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.dialog.MediaPlayConfirmationDialog;
+import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 import com.squareup.otto.Subscribe;
@@ -91,6 +92,15 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         BusHolder.getInstance().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (!PodcastPlayer.getInstance().isPlaying()) {
+            PodcastPlayerNotification.cancel(this);
+        }
     }
 
     @Override
