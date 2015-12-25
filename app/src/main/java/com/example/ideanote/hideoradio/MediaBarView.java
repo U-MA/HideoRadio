@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 
 public class MediaBarView extends FrameLayout {
+    private static String TAG = MediaBarView.class.getSimpleName();
 
     private View rootView;
     private TextView episodeTitleTextView;
@@ -19,7 +20,7 @@ public class MediaBarView extends FrameLayout {
 
     public MediaBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.i("MediaBarView", "Constructor");
+        Log.i(TAG, "Constructor");
 
         rootView = View.inflate(getContext(), R.layout.media_bar_view, null);
         episodeTitleTextView = (TextView) rootView.findViewById(R.id.episode_title_text);
@@ -32,11 +33,11 @@ public class MediaBarView extends FrameLayout {
         PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
         if (episode == null ||
                 (!podcastPlayer.isPlaying() && !podcastPlayer.isPaused())) {
-            Log.i("MediaBarView", "View.GONE");
+            Log.i(TAG, "View.GONE");
             rootView.setVisibility(View.GONE);
             return;
         }
-        Log.i("MediaBarView.setEpisode", episode.getTitle());
+        Log.i(TAG, episode.getTitle());
 
         show(episode);
     }
