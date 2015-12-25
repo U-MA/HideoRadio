@@ -54,6 +54,11 @@ public class MediaBarView extends FrameLayout {
     }
 
     public void setMediaPlayAndPauseButton() {
+        playAndStopButton.setImageResource(
+                PodcastPlayer.getInstance().isPlaying() ?
+                R.drawable.ic_action_playback_pause :
+                R.drawable.ic_action_playback_play);
+
         playAndStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
