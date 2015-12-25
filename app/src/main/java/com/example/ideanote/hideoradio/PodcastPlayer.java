@@ -1,5 +1,6 @@
 package com.example.ideanote.hideoradio;
 
+import android.app.Service;
 import android.content.Context;
 import android.graphics.pdf.PdfDocument;
 import android.media.AudioManager;
@@ -20,6 +21,7 @@ public class PodcastPlayer extends MediaPlayer
     private CurrentTimeListener currentTimeListener;
     private PlayerState state = PlayerState.STOPPED;
     private Episode episode;
+    private Service service;
 
     @Override
     public boolean isPlaying() {
@@ -115,6 +117,14 @@ public class PodcastPlayer extends MediaPlayer
         super.pause();
         state = PlayerState.STOPPED;
         release();
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
+    public Service getService() {
+        return service;
     }
 
     public Episode getEpisode() {

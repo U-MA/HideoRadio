@@ -49,6 +49,7 @@ public class PodcastPlayerService extends Service {
         super.onCreate();
 
         podcastPlayer = PodcastPlayer.getInstance();
+        podcastPlayer.setService(this);
         // TODO: create notification if you need
     }
 
