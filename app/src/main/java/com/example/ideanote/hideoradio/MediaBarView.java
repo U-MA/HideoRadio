@@ -1,17 +1,14 @@
 package com.example.ideanote.hideoradio;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
-import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 
 public class MediaBarView extends FrameLayout {
 
