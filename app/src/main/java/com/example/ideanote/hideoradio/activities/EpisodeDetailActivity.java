@@ -98,7 +98,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (!PodcastPlayer.getInstance().isPlaying()) {
+        PodcastPlayer player = PodcastPlayer.getInstance();
+        if (!player.isPlaying() && player.getService() != null) {
             PodcastPlayer.getInstance().getService().stopSelf();
         }
     }
