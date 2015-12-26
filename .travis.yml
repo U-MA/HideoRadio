@@ -17,6 +17,7 @@ android:
 env:
   global:
     - ADB_INSTALL_TIMEOUT=10
+    - TERM=dumb
   matrix:
     - ANDROID_SDKS=android-22 ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
     - ANDROID_SDKS=android-21 ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
