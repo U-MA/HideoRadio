@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         super.onDestroy();
 
         if (!PodcastPlayer.getInstance().isPlaying()) {
-            PodcastPlayerNotification.cancel(this);
+            PodcastPlayer.getInstance().getService().stopSelf();
         }
 
         BusHolder.getInstance().unregister(this);

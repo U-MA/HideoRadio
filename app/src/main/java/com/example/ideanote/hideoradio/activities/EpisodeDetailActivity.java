@@ -99,7 +99,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         super.onDestroy();
 
         if (!PodcastPlayer.getInstance().isPlaying()) {
-            PodcastPlayerNotification.cancel(this);
+            PodcastPlayer.getInstance().getService().stopSelf();
         }
     }
 
