@@ -32,10 +32,9 @@ public class IntentTest {
 
     @Before
     public void setup() {
-        // do something
     }
 
-    @Test
+    @Test(timeout = 60000)
     public void test1() {
         onView(withId(R.id.episode_list_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
