@@ -55,16 +55,13 @@ public class PodcastPlayer extends MediaPlayer
         state = PlayerState.PREPARING;
         this.episode = episode;
 
+        setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            setAudioStreamType(AudioManager.STREAM_MUSIC);
-            if (episode.isDownload()) {
-                Log.i(TAG, episode.getMediaLocalPath());
-                setDataSource(context, Uri.fromFile(new File(episode.getMediaLocalPath())));
-                Log.i(TAG, "MediaLocal play");
-            } else {
-                Log.i(TAG, episode.getEnclosure().toString());
-                setDataSource(context, episode.getEnclosure());
-            }
+            Uri uri = episode.isDownloaded() ?
+                    Uri.fromFile(new File(episode.getMediaLocalPath())) :
+                    episode.getEnclosure();
+            setDataSource(context, uri);
+
             setOnPreparedListener(this);
             setOnCompletionListener(this);
             prepareAsync();
