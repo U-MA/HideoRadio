@@ -1,19 +1,15 @@
 package com.example.ideanote.hideoradio;
 
-import android.util.Log;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(manifest = "app/test/resources/TestManifest.xml", constants = BuildConfig.class,
-        application = TestApplication.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(manifest = Config.NONE)
 public class PodcastPlayerTest {
 
     private PodcastPlayer podcastPlayer;
@@ -23,18 +19,8 @@ public class PodcastPlayerTest {
         podcastPlayer = PodcastPlayer.getInstance();
     }
 
-    @After
-    public void teardown() {
-        podcastPlayer.release();
-    }
-
     @Test
-    public void preconditions() {
-        assertThat(podcastPlayer).isNotNull();
-    }
-
-    @Test
-    public void isStoppedAtFirst() {
-        assertThat(podcastPlayer.isStopped()).isTrue();
+    public void StopStateWhenInit() {
+        assertTrue(podcastPlayer.isStopped());
     }
 }
