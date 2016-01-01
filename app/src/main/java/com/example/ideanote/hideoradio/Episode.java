@@ -119,12 +119,23 @@ public class Episode extends Model {
         this.mediaLocalPath = mediaLocalPath;
     }
 
+    /**
+     * Return {@link Uri} of episode data.
+     * @return
+     */
+    public Uri getUri() {
+        return isDownloaded() ?
+                Uri.fromFile(new File(getMediaLocalPath())) :
+                getEnclosure();
+    }
+
     public Boolean isDownloaded() {
         if(TextUtils.isEmpty(mediaLocalPath)) {
             return false;
         }
-        // TODO
-        return true;
+
+        File file = new File(mediaLocalPath);
+        return file.exists();
     }
 
     public boolean isDownload() {

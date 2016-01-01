@@ -57,10 +57,7 @@ public class PodcastPlayer extends MediaPlayer
 
         setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            Uri uri = episode.isDownloaded() ?
-                    Uri.fromFile(new File(episode.getMediaLocalPath())) :
-                    episode.getEnclosure();
-            setDataSource(context, uri);
+            setDataSource(context, episode.getUri());
 
             setOnPreparedListener(this);
             setOnCompletionListener(this);
