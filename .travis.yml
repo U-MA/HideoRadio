@@ -32,7 +32,7 @@ before_script:
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 script:
-  - ./gradlew clean connectedAndroidTest
+  - ./gradlew clean test
 notifications:
   slack:
     secure: aVQ7O2rIU5m5eCshZ9h+7vxDP1rBtpxkI3lhLNtdQP4SlgWTpG3gZICxUBCakNXC7aEOOm9q1voJaFJb7n7D02waffDIVB9tAKbhJGx+dVmylW9cCy1BwqIx5MakhrpuLSSLGvCB+fouAkJbkc+gJR7LB9t87cyTrUME6IQbCEl+7Luh5RmiDxXMMvvul2SPWYne3/6Sv5eOoo5gnloYhOJLibKc65GbYdI5euAT2nUbw05kK2lnWNqhQwqczwM9dO19u0g2aSuI8DgzatYELldSSe2rkHZkXr4I+1LjDjnpx5MfReGuDShVsFc84ellYy628/Y0tsDFW88XBIesdTbEKae20nAFc+cbwvvG4CD5qC2Pyvon8I5F4tpyLBeY3VQ8PByZDDZdwDgEVEpDiMjrUfZRDTBgcow8jjFKeloQNmCO5LKrZenaDwUDStDPUL2po51JHV57AwtU/ryQvrvzy7c72fiPl+d22xELmDyC7X6N7RZQPnQmyGpMihKeGx98obGUx4cHcw+Jq4Sk2BIY/QHSak0N46BYSDuTLye67D1lv42a9RROsH6rKXeTE3uiqMJ+TCkNiO+pVzhvCsSgrF6+FPM5UmYtyWSLxUYz43EclN24DZ4Uz7cNnBAVeEF0//fXBi/vK95wBWXucyMeMPFT63gwmM752S+ANUo=
