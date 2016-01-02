@@ -1,7 +1,6 @@
 package com.example.ideanote.hideoradio;
 
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
 
 import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
 
@@ -23,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = "app/src/main/AndroidManifest.xml")
@@ -33,9 +31,13 @@ public class PodcastPlayerTest {
 
     private PodcastPlayer podcastPlayer;
 
+    MediaPlayer mockMediaPlayer;
+
     @Before
     public void setup() {
-        ApplicationComponent applicationComponent = DaggerPodcastPlayerTest_TestApplicationComponent.create();
+        ApplicationComponent applicationComponent = DaggerPodcastPlayerTest_TestApplicationComponent.builder()
+                .testApplicationModule(new TestApplicationModule())
+                .build();
         ((HideoRadioApplication) RuntimeEnvironment.application).setComponent(applicationComponent);
 
         podcastPlayer = new PodcastPlayer();
@@ -57,16 +59,6 @@ public class PodcastPlayerTest {
         assertTrue(podcastPlayer.isStopped());
     }
 
-    /*
-    @Test
-    public void playingStateAfterPodcastPlayEpisode() {
-        Episode mockEpisode = mock(Episode.class);
-        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
-
-        assertTrue(podcastPlayer.isPlaying());
-    }
-    */
-
     @Test
     public void pauseStateAfterPodcastPause() {
         Episode mockEpisode = mock(Episode.class);
@@ -85,6 +77,14 @@ public class PodcastPlayerTest {
         assertTrue(podcastPlayer.isStopped());
     }
 
+    @Test
+    public void prepareAfterPodcastPlayerStart() {
+        Episode mockEpisode = mock(Episode.class);
+        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
+
+        verify(mockMediaPlayer).prepareAsync();
+    }
+
 
     @Singleton
     @Component(modules = TestApplicationModule.class)
@@ -92,7 +92,7 @@ public class PodcastPlayerTest {
     }
 
     @Module
-    static class TestApplicationModule {
+    class TestApplicationModule {
         @Provides
         @Singleton
         public PodcastPlayer providePodcastPlayer() {
@@ -102,7 +102,7 @@ public class PodcastPlayerTest {
         @Provides
         @Singleton
         public MediaPlayer provideMediaPlayer() {
-            MediaPlayer mockMediaPlayer = mock(MediaPlayer.class);
+            mockMediaPlayer = mock(MediaPlayer.class);
             return mockMediaPlayer;
         }
     }
