@@ -69,6 +69,13 @@ public class PodcastPlayerTest {
     }
 
     @Test
+    public void playingStateWhenPodcastPlay() {
+        podcastPlayer.start();
+
+        assertTrue(podcastPlayer.isPlaying());
+    }
+
+    @Test
     public void prepareAfterPodcastPlayerStart() {
         Episode mockEpisode = mock(Episode.class);
         podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
