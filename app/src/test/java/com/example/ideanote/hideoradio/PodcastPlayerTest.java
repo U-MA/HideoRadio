@@ -2,21 +2,16 @@ package com.example.ideanote.hideoradio;
 
 import android.media.MediaPlayer;
 
-import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
-import dagger.Module;
-import dagger.Provides;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -29,19 +24,15 @@ public class PodcastPlayerTest {
 
     private static final String DUMMY_FILE = "com.example.ideanote.hideoradio.test.assets.hideoradio_0322.mp3";
 
+    @InjectMocks
     private PodcastPlayer podcastPlayer;
 
+    @Mock
     MediaPlayer mockMediaPlayer;
 
     @Before
     public void setup() {
-        ApplicationComponent applicationComponent = DaggerPodcastPlayerTest_TestApplicationComponent.builder()
-                .testApplicationModule(new TestApplicationModule())
-                .build();
-        ((HideoRadioApplication) RuntimeEnvironment.application).setComponent(applicationComponent);
-
-        podcastPlayer = new PodcastPlayer();
-        applicationComponent.inject(podcastPlayer);
+        MockitoAnnotations.initMocks(this);
     }
 
     @After
@@ -83,27 +74,5 @@ public class PodcastPlayerTest {
         podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
 
         verify(mockMediaPlayer).prepareAsync();
-    }
-
-
-    @Singleton
-    @Component(modules = TestApplicationModule.class)
-    interface TestApplicationComponent extends ApplicationComponent {
-    }
-
-    @Module
-    class TestApplicationModule {
-        @Provides
-        @Singleton
-        public PodcastPlayer providePodcastPlayer() {
-            return PodcastPlayer.getInstance();
-        }
-
-        @Provides
-        @Singleton
-        public MediaPlayer provideMediaPlayer() {
-            mockMediaPlayer = mock(MediaPlayer.class);
-            return mockMediaPlayer;
-        }
     }
 }
