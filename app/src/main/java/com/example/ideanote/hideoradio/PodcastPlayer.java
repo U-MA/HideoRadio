@@ -2,28 +2,29 @@ package com.example.ideanote.hideoradio;
 
 import android.app.Service;
 import android.content.Context;
-import android.graphics.pdf.PdfDocument;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Log;
 
-import java.io.File;
+import javax.inject.Inject;
 
-public class PodcastPlayer extends MediaPlayer
+public class PodcastPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private static String TAG = PodcastPlayer.class.getName();
 
+
     private static PodcastPlayer instance;
+
+    @Inject
+    MediaPlayer mediaPlayer;
 
     private CurrentTimeListener currentTimeListener;
     private PlayerState state = PlayerState.STOPPED;
     private Episode episode;
     private Service service;
 
-    @Override
+    public PodcastPlayer() {}
+
     public boolean isPlaying() {
         return (state == PlayerState.PLAYING);
     }
@@ -36,10 +37,6 @@ public class PodcastPlayer extends MediaPlayer
         return (state == PlayerState.PAUSED);
     }
 
-    private PodcastPlayer() {
-        super();
-    }
-
     public static PodcastPlayer getInstance() {
         if (instance == null) {
             instance = new PodcastPlayer();
@@ -50,18 +47,18 @@ public class PodcastPlayer extends MediaPlayer
     public void start(Context context, Episode episode) {
 
         // ちょっと怪しいコード
-        super.reset();
+        mediaPlayer.reset();
 
         state = PlayerState.PREPARING;
         this.episode = episode;
 
-        setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            setDataSource(context, episode.getUri());
+            mediaPlayer.setDataSource(context, episode.getUri());
 
-            setOnPreparedListener(this);
-            setOnCompletionListener(this);
-            prepareAsync();
+            mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,32 +68,41 @@ public class PodcastPlayer extends MediaPlayer
      * Release MediaPlayer instance and nullify instance
      */
     public void release() {
-        super.reset();
-        super.release();
+        mediaPlayer.reset();
+        mediaPlayer.release();
         instance = null;
     }
 
-    @Override
     public void start() {
         restart();
     }
 
     public void restart() {
-        super.start();
+        mediaPlayer.start();
         state = PlayerState.PLAYING;
     }
 
-    @Override
     public void pause() {
-        super.pause();
+        mediaPlayer.pause();
         state = PlayerState.PAUSED;
     }
 
-    @Override
+    public void reset() {
+        mediaPlayer.reset();
+    }
+
     public void stop() {
-        super.pause();
-        super.seekTo(0);
+        mediaPlayer.pause();
+        mediaPlayer.seekTo(0);
         state = PlayerState.STOPPED;
+    }
+
+    public void seekTo(int msec) {
+        mediaPlayer.seekTo(msec);
+    }
+
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
     }
 
     @Override
@@ -108,7 +114,7 @@ public class PodcastPlayer extends MediaPlayer
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        super.pause();
+        mp.pause();
         state = PlayerState.STOPPED;
         release();
     }
@@ -132,7 +138,7 @@ public class PodcastPlayer extends MediaPlayer
             @Override
             public void onTick(long millis) {
                 if (isPlaying() || isPaused()) {
-                    currentTimeListener.onTick(getCurrentPosition());
+                    currentTimeListener.onTick(mediaPlayer.getCurrentPosition());
                 } else {
                     currentTimeListener.onTick(0);
                 }

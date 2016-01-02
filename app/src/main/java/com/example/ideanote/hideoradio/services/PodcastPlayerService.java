@@ -8,8 +8,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
+
+import javax.inject.Inject;
 
 /**
  * Service for playing podcast media
@@ -22,7 +25,8 @@ public class PodcastPlayerService extends Service {
     private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause";
     private final static String ACTION_STOP = "action_stop";
 
-    private PodcastPlayer podcastPlayer;
+    @Inject
+    PodcastPlayer podcastPlayer;
 
     public static Intent createPlayPauseIntent(Context context, Episode episode) {
         Intent intent = new Intent(context, PodcastPlayerService.class);
@@ -48,7 +52,9 @@ public class PodcastPlayerService extends Service {
         Log.i(TAG, "onCreate");
         super.onCreate();
 
-        podcastPlayer = PodcastPlayer.getInstance();
+        ((HideoRadioApplication) getApplication()).getComponent().inject(this);
+
+        // podcastPlayer = PodcastPlayer.getInstance();
         podcastPlayer.setService(this);
         // TODO: create notification if you need
     }
