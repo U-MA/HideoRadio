@@ -44,6 +44,12 @@ public class PodcastPlayer
         return instance;
     }
 
+    /**
+     * Start a specified episode.
+     *
+     * @param context {@link Context}.
+     * @param episode An {@link Episode} to play.
+     */
     public void start(Context context, Episode episode) {
 
         // ちょっと怪しいコード
@@ -109,7 +115,6 @@ public class PodcastPlayer
     @Override
     public void onPrepared(MediaPlayer mp) {
         start();
-        state = PlayerState.PLAYING;
     }
 
     @Override
