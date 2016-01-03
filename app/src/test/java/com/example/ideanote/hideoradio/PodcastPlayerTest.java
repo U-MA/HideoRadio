@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -21,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertTrue;
@@ -43,9 +46,8 @@ public class PodcastPlayerTest {
     public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMediaPlayer).setDataSource((Context) anyObject(), (Uri) anyObject());
-        doNothing().when(mockMediaPlayer).start();
-        doNothing().when(mockMediaPlayer).prepareAsync();
         doNothing().when(mockMediaPlayer).seekTo(anyInt());
+        doNothing().when(mockMediaPlayer).prepareAsync();
     }
 
     @After
@@ -84,6 +86,7 @@ public class PodcastPlayerTest {
 
     @Test
     public void playingStateWhenPodcastPlay() {
+        doNothing().when(mockMediaPlayer).start();
         podcastPlayer.start();
 
         assertTrue(podcastPlayer.isPlaying());
@@ -91,6 +94,8 @@ public class PodcastPlayerTest {
 
     @Test
     public void prepareAfterPodcastPlayerStart() {
+        doNothing().when(mockMediaPlayer).start();
+
         Episode mockEpisode = mock(Episode.class);
         podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
 
@@ -126,6 +131,7 @@ public class PodcastPlayerTest {
 
     @Test
     public void onPrepared() {
+        doNothing().when(mockMediaPlayer).start();
         podcastPlayer.onPrepared(mockMediaPlayer);
 
         verify(mockMediaPlayer).start();
