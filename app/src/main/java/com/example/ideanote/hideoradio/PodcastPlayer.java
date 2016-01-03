@@ -108,7 +108,6 @@ public class PodcastPlayer
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        state = PlayerState.PREPARED;
         start();
         state = PlayerState.PLAYING;
     }
