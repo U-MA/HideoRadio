@@ -9,7 +9,9 @@ import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.Injector;
 import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 
 import javax.inject.Inject;
@@ -52,7 +54,8 @@ public class PodcastPlayerService extends Service {
         Log.i(TAG, "onCreate");
         super.onCreate();
 
-        ((HideoRadioApplication) getApplication()).getComponent().inject(this);
+        ApplicationComponent applicationComponent = Injector.obtain(getApplication());
+        applicationComponent.inject(this);
 
         // podcastPlayer = PodcastPlayer.getInstance();
         podcastPlayer.setService(this);

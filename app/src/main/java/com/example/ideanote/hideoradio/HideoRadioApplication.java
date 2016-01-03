@@ -47,4 +47,12 @@ public class HideoRadioApplication extends Application {
     public void setComponent(ApplicationComponent applicationComponent) {
         this.applicationComponent = applicationComponent;
     }
+
+    @Override
+    public Object getSystemService(String name) {
+        if (Injector.matchesService(name)) {
+            return applicationComponent;
+        }
+        return super.getSystemService(name);
+    }
 }
