@@ -7,23 +7,47 @@ import android.media.MediaPlayer;
 
 import javax.inject.Inject;
 
+/**
+ * {@link MediaPlayer} wrapper class.
+ * This class menage playing episode.
+ */
 public class PodcastPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private static String TAG = PodcastPlayer.class.getName();
 
 
-    private static PodcastPlayer instance;
-
     @Inject
     MediaPlayer mediaPlayer;
 
-    private CurrentTimeListener currentTimeListener;
+    private static PodcastPlayer instance;
+
     private PlayerState state = PlayerState.STOPPED;
     private Episode episode;
     private Service service;
+    private CurrentTimeListener currentTimeListener;
+
 
     public PodcastPlayer() {}
+
+    public static PodcastPlayer getInstance() {
+        if (instance == null) {
+            instance = new PodcastPlayer();
+        }
+        return instance;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public Episode getEpisode() {
+        return episode;
+    }
 
     public boolean isPlaying() {
         return (state == PlayerState.PLAYING);
@@ -35,13 +59,6 @@ public class PodcastPlayer
 
     public boolean isPaused() {
         return (state == PlayerState.PAUSED);
-    }
-
-    public static PodcastPlayer getInstance() {
-        if (instance == null) {
-            instance = new PodcastPlayer();
-        }
-        return instance;
     }
 
     /**
@@ -74,8 +91,10 @@ public class PodcastPlayer
      * Release MediaPlayer instance and nullify instance
      */
     public void release() {
+        mediaPlayer.pause();
         mediaPlayer.reset();
         mediaPlayer.release();
+
         instance = null;
     }
 
@@ -119,21 +138,8 @@ public class PodcastPlayer
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mp.pause();
         state = PlayerState.STOPPED;
         release();
-    }
-
-    public void setService(Service service) {
-        this.service = service;
-    }
-
-    public Service getService() {
-        return service;
-    }
-
-    public Episode getEpisode() {
-        return episode;
     }
 
     public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
