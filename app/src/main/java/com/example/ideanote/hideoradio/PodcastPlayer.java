@@ -74,6 +74,7 @@ public class PodcastPlayer
      * Release MediaPlayer instance and nullify instance
      */
     public void release() {
+        mediaPlayer.pause();
         mediaPlayer.reset();
         mediaPlayer.release();
         instance = null;
@@ -119,7 +120,6 @@ public class PodcastPlayer
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mp.pause();
         state = PlayerState.STOPPED;
         release();
     }
