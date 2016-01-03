@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             />
 
-        <com.example.ideanote.hideoradio.MediaBarView
+        <com.example.ideanote.hideoradio.view.MediaBarView
             android:id="@+id/media_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

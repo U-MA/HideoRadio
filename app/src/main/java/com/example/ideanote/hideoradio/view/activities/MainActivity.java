@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.activities;
+package com.example.ideanote.hideoradio.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,20 +11,19 @@ import android.util.Log;
 import android.view.View;
 
 import com.activeandroid.query.Select;
-import com.example.ideanote.hideoradio.fragments.EpisodeListFragment;
-import com.example.ideanote.hideoradio.fragments.NetworkErrorFragment;
-import com.example.ideanote.hideoradio.dialog.ClearCacheDialog;
-import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
+import com.example.ideanote.hideoradio.view.fragments.EpisodeListFragment;
+import com.example.ideanote.hideoradio.view.fragments.NetworkErrorFragment;
+import com.example.ideanote.hideoradio.view.dialog.ClearCacheDialog;
+import com.example.ideanote.hideoradio.view.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.MediaBarView;
+import com.example.ideanote.hideoradio.view.MediaBarView;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.RecyclerViewAdapter;
-import com.example.ideanote.hideoradio.dialog.EpisodeDownloadCancelDialog;
+import com.example.ideanote.hideoradio.view.dialog.EpisodeDownloadCancelDialog;
 import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.EpisodeDownloadCancelEvent;
 import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
-import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.squareup.otto.Subscribe;
 

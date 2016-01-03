@@ -5,6 +5,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.view.activities.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +25,7 @@ import static android.support.test.espresso.intent.matcher.ComponentNameMatchers
 public class IntentTest {
 
     private static final String EPISODE_DETAIL_ACTIVITY_NAME =
-            "com.example.ideanote.hideoradio.activities.EpisodeDetailActivity";
+            "com.example.ideanote.hideoradio.view.activities.EpisodeDetailActivity";
 
     @Rule
     public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule<>(

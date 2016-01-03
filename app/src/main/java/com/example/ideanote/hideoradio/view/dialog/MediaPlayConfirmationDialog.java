@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.dialog;
+package com.example.ideanote.hideoradio.view.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +10,6 @@ import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.events.DownloadEvent;
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.events.EpisodeDownloadCancelEvent;
 import com.example.ideanote.hideoradio.events.PlayCacheEvent;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 

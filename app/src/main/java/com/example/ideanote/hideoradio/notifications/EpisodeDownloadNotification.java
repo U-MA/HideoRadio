@@ -7,7 +7,7 @@ import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.activities.MainActivity;
+import com.example.ideanote.hideoradio.view.activities.MainActivity;
 
 /**
  * Notification for donloading an episode

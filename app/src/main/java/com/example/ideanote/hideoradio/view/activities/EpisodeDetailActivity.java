@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.activities;
+package com.example.ideanote.hideoradio.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,12 +19,11 @@ import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.events.DownloadEvent;
 import com.example.ideanote.hideoradio.events.PlayCacheEvent;
-import com.example.ideanote.hideoradio.dialog.DownloadFailDialog;
+import com.example.ideanote.hideoradio.view.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
-import com.example.ideanote.hideoradio.dialog.MediaPlayConfirmationDialog;
-import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
+import com.example.ideanote.hideoradio.view.dialog.MediaPlayConfirmationDialog;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 import com.squareup.otto.Subscribe;

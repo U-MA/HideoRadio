@@ -1,10 +1,5 @@
 package com.example.ideanote.hideoradio;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,13 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.ideanote.hideoradio.activities.EpisodeDetailActivity;
-import com.example.ideanote.hideoradio.activities.MainActivity;
-import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 

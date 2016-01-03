@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.fragments;
+package com.example.ideanote.hideoradio.view.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;

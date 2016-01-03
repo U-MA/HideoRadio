@@ -5,14 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
-import com.example.ideanote.hideoradio.activities.MainActivity;
+import com.example.ideanote.hideoradio.view.activities.MainActivity;
 import com.example.ideanote.hideoradio.services.PodcastPlayerService;
 
 public class PodcastPlayerNotification {

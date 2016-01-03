@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.dialog;
+package com.example.ideanote.hideoradio.view.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,8 +8,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.events.BusHolder;
-import com.example.ideanote.hideoradio.events.EpisodeDownloadCancelEvent;
 import com.example.ideanote.hideoradio.services.EpisodeDownloadService;
 
 public class EpisodeDownloadCancelDialog extends DialogFragment {

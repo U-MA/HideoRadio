@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.dialog;
+package com.example.ideanote.hideoradio.view.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

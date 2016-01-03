@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,6 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
 
 public class MediaBarView extends FrameLayout {

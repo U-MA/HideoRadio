@@ -1,16 +1,12 @@
 package com.example.ideanote.hideoradio;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Network;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.util.Xml;
 
 import com.activeandroid.ActiveAndroid;
-import com.example.ideanote.hideoradio.activities.MainActivity;
 import com.example.ideanote.hideoradio.events.BusHolder;
 import com.example.ideanote.hideoradio.events.NetworkErrorEvent;
 import com.example.ideanote.hideoradio.events.UpdateEpisodeListEvent;

@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
-import com.example.ideanote.hideoradio.activities.MainActivity;
+import com.example.ideanote.hideoradio.view.activities.MainActivity;
 
 public class EpisodeDownloadCompleteNotification {
     private final static int DOWNLOAD_COMPLETE_NOTIFICATION_ID = 3000;
