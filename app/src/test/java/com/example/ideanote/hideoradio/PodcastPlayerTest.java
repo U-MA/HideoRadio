@@ -1,22 +1,31 @@
 package com.example.ideanote.hideoradio;
 
+import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -27,12 +36,16 @@ public class PodcastPlayerTest {
     @InjectMocks
     private PodcastPlayer podcastPlayer;
 
-    @Mock
+    @Spy
     MediaPlayer mockMediaPlayer;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
+        doNothing().when(mockMediaPlayer).setDataSource((Context) anyObject(), (Uri) anyObject());
+        doNothing().when(mockMediaPlayer).start();
+        doNothing().when(mockMediaPlayer).prepareAsync();
+        doNothing().when(mockMediaPlayer).seekTo(anyInt());
     }
 
     @After
@@ -65,6 +78,7 @@ public class PodcastPlayerTest {
         podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
         podcastPlayer.stop();
 
+        verify(mockMediaPlayer).seekTo(0);
         assertTrue(podcastPlayer.isStopped());
     }
 
@@ -81,5 +95,40 @@ public class PodcastPlayerTest {
         podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
 
         verify(mockMediaPlayer).prepareAsync();
+    }
+
+    @Test
+    public void currentPosition() {
+        final int CURRENT_MILLIS = 123;
+        when(mockMediaPlayer.getCurrentPosition()).thenReturn(CURRENT_MILLIS);
+
+        assertEquals(CURRENT_MILLIS, podcastPlayer.getCurrentPosition());
+    }
+
+    @Test
+    public void getEpisode() {
+        final String DUMMY_TITLE = "episode_title";
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.getTitle()).thenReturn(DUMMY_TITLE);
+
+        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
+
+        assertEquals(DUMMY_TITLE, podcastPlayer.getEpisode().getTitle());
+    }
+
+    @Test
+    public void onCompletion() {
+        podcastPlayer.onCompletion(mockMediaPlayer);
+
+        verify(mockMediaPlayer).release();
+        assertTrue(podcastPlayer.isStopped());
+    }
+
+    @Test
+    public void onPrepared() {
+        podcastPlayer.onPrepared(mockMediaPlayer);
+
+        verify(mockMediaPlayer).start();
+        assertTrue(podcastPlayer.isPlaying());
     }
 }

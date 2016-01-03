@@ -93,7 +93,8 @@ public class PodcastPlayer
 
     public void stop() {
         mediaPlayer.pause();
-        mediaPlayer.seekTo(0);
+
+        this.seekTo(0);
         state = PlayerState.STOPPED;
     }
 
