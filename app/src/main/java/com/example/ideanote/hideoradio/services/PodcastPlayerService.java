@@ -51,15 +51,13 @@ public class PodcastPlayerService extends Service {
      */
     @Override
     public void onCreate() {
-        Log.i(TAG, "onCreate");
         super.onCreate();
+        Log.i(TAG, "onCreate");
 
         ApplicationComponent applicationComponent = Injector.obtain(getApplication());
         applicationComponent.inject(this);
 
-        // podcastPlayer = PodcastPlayer.getInstance();
         podcastPlayer.setService(this);
-        // TODO: create notification if you need
     }
 
     /**
