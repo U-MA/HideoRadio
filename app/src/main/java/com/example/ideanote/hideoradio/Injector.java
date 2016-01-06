@@ -2,7 +2,7 @@ package com.example.ideanote.hideoradio;
 
 import android.content.Context;
 
-import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 
 public class Injector {
     private static final String INJECTOR_SERVICE = "com.example.ideanote.hideoradio.injector";

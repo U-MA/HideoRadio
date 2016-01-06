@@ -4,28 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 
-import com.example.ideanote.hideoradio.executor.JobExecutor;
-import com.example.ideanote.hideoradio.executor.PostExecutionThread;
-import com.example.ideanote.hideoradio.executor.ThreadExecutor;
-import com.example.ideanote.hideoradio.executor.UIThread;
-import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
-import com.example.ideanote.hideoradio.notifications.PodcastNotificationManager;
-import com.example.ideanote.hideoradio.repository.EpisodeDataRepository;
-import com.example.ideanote.hideoradio.repository.EpisodeRepository;
-import com.example.ideanote.hideoradio.services.PodcastPlayerService;
+import com.example.ideanote.hideoradio.data.executor.JobExecutor;
+import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
+import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
+import com.example.ideanote.hideoradio.presentation.UIThread;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
+import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
+import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;

@@ -25,7 +25,7 @@
             android:name="AA_SERIALIZERS"
             android:value="com.example.ideanote.hideoradio.UriTypeSerializer" />
 
-        <activity android:name=".view.activities.MainActivity"
+        <activity android:name=".presentation.view.activity.EpisodeListActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,21 +34,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activities.EpisodeDetailActivity"
+            android:name=".presentation.view.activity.EpisodeDetailActivity"
             android:label="@string/title_activity_episode_detail"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.activities.MainActivity" >
+                android:value=".presentation.view.activity.EpisodeListActivity" >
             </meta-data>
         </activity>
 
         <service
-            android:name=".services.EpisodeDownloadService"
+            android:name=".presentation.services.EpisodeDownloadService"
             android:exported="false" >
         </service>
         <service
-            android:name=".services.PodcastPlayerService"
+            android:name=".presentation.services.PodcastPlayerService"
             android:exported="false" >
         </service>
     </application>

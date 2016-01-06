@@ -5,9 +5,9 @@ import android.app.Application;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.deploygate.sdk.DeployGate;
-import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
-import com.example.ideanote.hideoradio.internal.di.ApplicationModule;
-import com.example.ideanote.hideoradio.internal.di.DaggerApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationModule;
+import com.example.ideanote.hideoradio.presentation.internal.di.DaggerApplicationComponent;
 
 public class HideoRadioApplication extends Application {
 

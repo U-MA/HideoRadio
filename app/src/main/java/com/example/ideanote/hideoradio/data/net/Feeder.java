@@ -1,71 +1,56 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.data.net;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.util.Xml;
 
 import com.activeandroid.ActiveAndroid;
-import com.example.ideanote.hideoradio.presentation.events.BusHolder;
-import com.example.ideanote.hideoradio.presentation.events.NetworkErrorEvent;
-import com.example.ideanote.hideoradio.presentation.events.UpdateEpisodeListEvent;
-import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
+import com.example.ideanote.hideoradio.Episode;
 
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapter> {
+import rx.Observable;
+import rx.Scheduler;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
-    private final static String TAG = RssParserTask.class.getName();
+/**
+ * a class which request feed.
+ */
+public class Feeder {
+    private static final String RSS_FEED_URL = "http://www.konami.jp/kojima_pro/radio/hideradio/podcast.xml";
 
-    private Context activity;
-    private RecyclerViewAdapter adapter;
-
-    public RssParserTask(Context activity, RecyclerViewAdapter adapter) {
-        this.activity = activity;
-        this.adapter = adapter;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        Log.i(TAG, "onPreExecute");
-    }
-
-    @Override
-    protected RecyclerViewAdapter doInBackground(String... params) {
-        RecyclerViewAdapter result = null;
-        List<Episode> episodes = Episode.find();
-        if (episodes.isEmpty()) {
-            try {
-                URL url = new URL(params[0]);
-                InputStream is = url.openConnection().getInputStream();
-                result = parseXml(is);
-            } catch (Exception e) {
-                BusHolder.getInstance().post(new NetworkErrorEvent());
-                e.printStackTrace();
+    public static Observable<List<Episode>> requestFeed() {
+        return Observable.create(new Observable.OnSubscribe<List<Episode>>() {
+            @Override
+            public void call(Subscriber<? super List<Episode>> subscriber) {
+                InputStream is = null;
+                try {
+                    URL url = new URL(RSS_FEED_URL);
+                    is = url.openConnection().getInputStream();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+                List<Episode> episodes = parseXml(is);
+                subscriber.onNext(episodes);
+                subscriber.onCompleted();
             }
-        } else {
-            adapter.clear();
-            adapter.addAll(episodes);
-            result = adapter;
-        }
-        return result;
+        });
     }
 
-    @Override
-    protected void onPostExecute(RecyclerViewAdapter result) {
-        BusHolder.getInstance().post(new UpdateEpisodeListEvent());
-    }
+    private static List<Episode> parseXml(InputStream is) {
+        ArrayList<Episode> episodes = new ArrayList<>();
 
-    public RecyclerViewAdapter parseXml(InputStream is) throws IOException {
         XmlPullParser parser = Xml.newPullParser();
         try {
             parser.setInput(is, null);
@@ -105,7 +90,6 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
                         if (tag.equals("item")) {
                             if (Episode.findById(currentEpisode.getEpisodeId()) == null) {
                                 currentEpisode.save();
-                                adapter.add(currentEpisode);
                             }
                         }
                         break;
@@ -117,6 +101,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RecyclerViewAdapte
             e.printStackTrace();
         }
         ActiveAndroid.endTransaction();
-        return adapter;
+
+        return episodes;
     }
 }
