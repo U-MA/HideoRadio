@@ -50,7 +50,7 @@ public class PodcastPlayerNotification {
     }
 
     private static PendingIntent createStopIntent(Context context, Episode episode) {
-        Intent intent = PodcastPlayerService.createStopIntent(context, episode);
+        Intent intent = PodcastPlayerService.createStopIntent(context);
         return PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 

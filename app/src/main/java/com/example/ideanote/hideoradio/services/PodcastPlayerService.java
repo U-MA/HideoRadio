@@ -8,28 +8,65 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.Injector;
 import com.example.ideanote.hideoradio.PodcastPlayer;
 import com.example.ideanote.hideoradio.internal.di.ApplicationComponent;
-import com.example.ideanote.hideoradio.notifications.PodcastPlayerNotification;
+import com.example.ideanote.hideoradio.notifications.PodcastNotificationManager;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Service for playing podcast media
  */
+@Singleton
 public class PodcastPlayerService extends Service {
-    private final static String TAG = PodcastPlayerService.class.getSimpleName();
+    private final static String TAG = PodcastPlayerService.class.getName();
 
-    private final static String EXTRA_EPISODE_ID = "extra_episode_id";
+    private final static String EXTRA_EPISODE_ID = "com.example.ideanote.hideoradio.extra_episode_id";
 
-    private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause";
-    private final static String ACTION_STOP = "action_stop";
+    private final static String ACTION_START   = "com.example.ideanote.hideoradio.start";
+    private final static String ACTION_RESTART = "com.example.ideanote.hideoradio.restart";
+    private final static String ACTION_PAUSE   = "com.example.ideanote.hideoradio.pause";
+    private final static String ACTION_STOP    = "com.example.ideanote.hideoradio.stop";
+
+    private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause"; // deprecated
 
     @Inject
     PodcastPlayer podcastPlayer;
 
+    PodcastNotificationManager podcastNotificationManager;
+
+    public static Intent createStartIntent(Context context, String episodeId) {
+        Intent intent = new Intent(context, PodcastPlayerService.class);
+        intent.setAction(ACTION_START);
+        intent.putExtra(EXTRA_EPISODE_ID, episodeId);
+
+        return intent;
+    }
+
+    public static Intent createRestartIntent(Context context) {
+        Intent intent = new Intent(context, PodcastPlayerService.class);
+        intent.setAction(ACTION_RESTART);
+
+        return intent;
+    }
+
+    public static Intent createPauseIntent(Context context) {
+        Intent intent = new Intent(context, PodcastPlayerService.class);
+        intent.setAction(ACTION_PAUSE);
+
+        return intent;
+    }
+
+    public static Intent createStopIntent(Context context) {
+        Intent intent = new Intent(context, PodcastPlayerService.class);
+        intent.setAction(ACTION_STOP);
+
+        return intent;
+    }
+
+    @Deprecated
     public static Intent createPlayPauseIntent(Context context, Episode episode) {
         Intent intent = new Intent(context, PodcastPlayerService.class);
         intent.setAction(ACTION_PLAY_AND_PAUSE);
@@ -38,12 +75,8 @@ public class PodcastPlayerService extends Service {
         return intent;
     }
 
-    public static Intent createStopIntent(Context context, Episode episode) {
-        Intent intent = new Intent(context, PodcastPlayerService.class);
-        intent.setAction(ACTION_STOP);
-        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
-
-        return intent;
+    public void setManager(PodcastNotificationManager podcastNotificationManager) {
+        this.podcastNotificationManager = podcastNotificationManager;
     }
 
     /**
@@ -66,59 +99,28 @@ public class PodcastPlayerService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int id) {
-        Log.i(TAG, "onStartCommand");
-
-        if (intent != null) {
-
-            String action = intent.getAction();
-            String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
-            Episode episode = Episode.findById(episodeId);
-
-            if (podcastPlayer.getEpisode() != null && !podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
-                // 違うEpisodeを再生する必要がある
-                podcastPlayer.stop();
-                podcastPlayer.reset();
-                Log.i(TAG, "different episode");
-            }
-
-            switch (action) {
-                case ACTION_PLAY_AND_PAUSE:
-                    if (podcastPlayer.isPlaying()) {
-                        podcastPlayer.pause();
-                        PodcastPlayerNotification.notify(getApplicationContext(), episode,
-                                PodcastPlayerNotification.PAUSE);
-                        stopForeground(false);
-                    } else if (podcastPlayer.isPaused()) {
-                        podcastPlayer.start();
-                        PodcastPlayerNotification.notify(getApplicationContext(), episode,
-                                PodcastPlayerNotification.PLAY);
-                        startForeground(1000, PodcastPlayerNotification.buildPlayNotification(getApplicationContext(), episode));
-                    } else if (podcastPlayer.isStopped()) {
-                        podcastPlayer.start(getApplicationContext(), episode);
-                        PodcastPlayerNotification.notify(getApplicationContext(), episode,
-                                PodcastPlayerNotification.PLAY);
-                        startForeground(1000, PodcastPlayerNotification.buildPlayNotification(getApplicationContext(), episode));
-                    } else {
-                        Log.d("PodcastPlayerService", "Invalid action");
-                    }
-                    break;
-                case ACTION_STOP:
-                    Log.i(TAG, "ACTION_STOP");
-                    if (!podcastPlayer.isStopped()) {
-                        podcastPlayer.stop();
-                        podcastPlayer.release();
-                        PodcastPlayerNotification.cancel(getApplicationContext());
-                        stopService(createStopIntent(getApplicationContext(), episode));
-                    } else {
-                        Log.d("PodcastPlayerService", "Invalid action");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            Log.i(TAG, "podcastPlayer is playing?" + podcastPlayer.isPlaying());
+        if (intent == null) {
+            throw new IllegalArgumentException("intent must not be null");
         }
+
+        String action = intent.getAction();
+        String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
+
+        switch (action) {
+            case ACTION_START:
+                start(episodeId);
+                break;
+            case ACTION_RESTART:
+                restart();
+                break;
+            case ACTION_PAUSE:
+                pause();
+                break;
+            case ACTION_STOP:
+                stop();
+                break;
+        }
+
         return START_STICKY;
     }
 
@@ -132,5 +134,58 @@ public class PodcastPlayerService extends Service {
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
         super.onDestroy();
+    }
+
+    /**
+     * Start a new episode.
+     *
+     * @param episodeId An episode id to newly play.
+     */
+    private void start(String episodeId) {
+        if (podcastPlayer.getEpisode() != null && !podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
+            // 違うEpisodeを再生する必要がある
+            podcastPlayer.stop();
+            podcastPlayer.reset();
+            Log.i(TAG, "different episode");
+        }
+
+        Episode episode = Episode.findById(episodeId);
+
+        podcastPlayer.start(getApplicationContext(), episode);
+        podcastNotificationManager.startForeground();
+    }
+
+    /**
+     * Restart a previous episode.
+     */
+    private void restart() {
+        podcastPlayer.restart();
+        podcastNotificationManager.startForeground();
+    }
+
+    /**
+     * Pause a playing episode.
+     */
+    private void pause() {
+        podcastPlayer.pause();
+        podcastNotificationManager.stopForeground();
+    }
+
+    /**
+     * Stop a episode.
+     */
+    private void stop() {
+        podcastPlayer.stop();
+        podcastPlayer.release();
+        podcastNotificationManager.cancel();
+        stopSelf();
+    }
+
+    public boolean isPlaying() {
+        return podcastPlayer.isPlaying();
+    }
+
+    public Episode getEpisode() {
+        return podcastPlayer.getEpisode();
     }
 }

@@ -4,21 +4,23 @@ import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.provider.MediaStore;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * {@link MediaPlayer} wrapper class.
  * This class menage playing episode.
  */
+@Singleton
 public class PodcastPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private static String TAG = PodcastPlayer.class.getName();
 
 
-    @Inject
-    MediaPlayer mediaPlayer;
+    private final MediaPlayer mediaPlayer;
 
     private static PodcastPlayer instance;
 
@@ -27,12 +29,14 @@ public class PodcastPlayer
     private Service service;
     private CurrentTimeListener currentTimeListener;
 
-
-    public PodcastPlayer() {}
+    @Inject
+    public PodcastPlayer(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
+    }
 
     public static PodcastPlayer getInstance() {
         if (instance == null) {
-            instance = new PodcastPlayer();
+            instance = new PodcastPlayer(new MediaPlayer());
         }
         return instance;
     }
