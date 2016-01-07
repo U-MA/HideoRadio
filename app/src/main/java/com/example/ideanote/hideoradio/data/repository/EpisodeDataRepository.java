@@ -39,7 +39,8 @@ public class EpisodeDataRepository implements EpisodeRepository {
 
     @Override
     public Observable<Episode> episode(String episodeId) {
-        return null;
+        Episode episode = Episode.findById(episodeId);
+        return Observable.from(new Episode[] {episode});
     }
 
     private Observable<List<Episode>> requestFeed() {

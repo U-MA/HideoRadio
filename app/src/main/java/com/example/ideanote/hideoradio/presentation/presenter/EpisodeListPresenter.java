@@ -8,6 +8,7 @@ import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class EpisodeListPresenter implements Presenter {
 
@@ -16,7 +17,7 @@ public class EpisodeListPresenter implements Presenter {
     private final UseCase episodeListUseCase;
 
     @Inject
-    public EpisodeListPresenter(UseCase episodeListUseCase) {
+    public EpisodeListPresenter(@Named("episodeList") UseCase episodeListUseCase) {
         this.episodeListUseCase = episodeListUseCase;
     }
 

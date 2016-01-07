@@ -3,25 +3,27 @@ package com.example.ideanote.hideoradio.presentation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.databinding.ActivityEpisodeDetailBinding;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.presentation.events.DownloadEvent;
 import com.example.ideanote.hideoradio.presentation.events.PlayCacheEvent;
+import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
+import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDetailPresenter;
 import com.example.ideanote.hideoradio.presentation.view.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
@@ -34,16 +36,23 @@ import com.squareup.otto.Subscribe;
 import java.util.Formatter;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class EpisodeDetailActivity extends AppCompatActivity {
 
     private final static String TAG = EpisodeDetailActivity.class.getName();
 
+    private String episodeId;
     private Episode episode;
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
     private SeekBar seekBar;
 
     private ActivityEpisodeDetailBinding binding;
+    private EpisodeComponent episodeComponent;
+
+    @Inject
+    EpisodeDetailPresenter episodeDetailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +65,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        String episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
+        episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
         episode = Episode.findById(episodeId);
-
-        binding.episodeDetail.episodeTitle.setText(episode.getTitle());
-        binding.episodeDetail.detailDescription.setText(episode.getDescription());
-        binding.episodeDetail.duration.setText(episode.getDuration());
 
         // TODO: このクラスがPodcastPlayerを持っている必要はあるのか
         //       PodcastPlayerServiceが一括していても良いのでは？
@@ -77,6 +82,11 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
         initMediaButton();
         initSeekBar();
+
+        initializeComponent();
+
+        episodeDetailPresenter.initialize(episodeId);
+        episodeDetailPresenter.setView(this);
     }
 
     @Override
@@ -111,6 +121,15 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeComponent() {
+        this.episodeComponent = DaggerEpisodeComponent.builder()
+                .applicationComponent(((HideoRadioApplication) getApplication()).getComponent())
+                .episodeModule(new EpisodeModule(episodeId))
+                .build();
+
+        episodeComponent.inject(this);
     }
 
     protected void initMediaButton() {
@@ -228,6 +247,13 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         sec += Integer.valueOf(data[data.length - 1]);
 
         return sec * 1000;
+    }
+
+    public void renderEpisode(Episode episode) {
+        Log.i(TAG, "renderEpisode");
+        binding.episodeDetail.episodeTitle.setText(episode.getTitle());
+        binding.episodeDetail.detailDescription.setText(episode.getDescription());
+        binding.episodeDetail.duration.setText(episode.getDuration());
     }
 
     @Subscribe
