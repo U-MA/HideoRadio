@@ -71,6 +71,10 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         // TODO: このクラスがPodcastPlayerを持っている必要はあるのか
         //       PodcastPlayerServiceが一括していても良いのでは？
         podcastPlayer = PodcastPlayer.getInstance();
+
+        initMediaButton();
+        initSeekBar();
+
         podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
             @Override
             public void onTick(int currentPosition) {
@@ -79,9 +83,6 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
-        initMediaButton();
-        initSeekBar();
 
         initializeComponent();
 
@@ -150,7 +151,13 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                             ? R.drawable.ic_action_playback_play
                             : R.drawable.ic_action_playback_pause);
                     seekBar.setEnabled(!podcastPlayer.isPlaying());
-                    Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+
+                    Intent intent = null;
+                    if (podcastPlayer.isPlaying()) {
+                        intent = PodcastPlayerService.createPauseIntent(getApplicationContext());
+                    } else {
+                        intent = PodcastPlayerService.createRestartIntent(getApplicationContext());
+                    }
                     startService(intent);
                 } else {
                     MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
