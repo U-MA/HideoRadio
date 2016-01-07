@@ -2,6 +2,7 @@ package com.example.ideanote.hideoradio.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,19 +10,21 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.ideanote.hideoradio.databinding.ActivityEpisodeDetailBinding;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.presentation.events.DownloadEvent;
 import com.example.ideanote.hideoradio.presentation.events.PlayCacheEvent;
 import com.example.ideanote.hideoradio.presentation.view.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.view.dialog.MediaPlayConfirmationDialog;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
@@ -39,37 +42,30 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     private PodcastPlayer podcastPlayer;
     private ImageButton imageButton;
     private SeekBar seekBar;
-    private TextView durationText;
+
+    private ActivityEpisodeDetailBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_episode_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_left);
-        Drawable d = toolbar.getBackground();
-        d.setAlpha(0);
-        setSupportActionBar(toolbar);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_episode_detail);
+
+        binding.toolbar.setNavigationIcon(R.drawable.ic_action_arrow_left);
+        binding.toolbar.getBackground().setAlpha(0);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
         String episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
         episode = Episode.findById(episodeId);
 
-        TextView titleText = (TextView) findViewById(R.id.episode_title);
-        titleText.setText(episode.getTitle());
+        binding.episodeDetail.episodeTitle.setText(episode.getTitle());
+        binding.episodeDetail.detailDescription.setText(episode.getDescription());
+        binding.episodeDetail.duration.setText(episode.getDuration());
 
-        TextView descriptionView = (TextView) findViewById(R.id.detail_description);
-        descriptionView.setText(episode.getDescription());
-
+        // TODO: このクラスがPodcastPlayerを持っている必要はあるのか
+        //       PodcastPlayerServiceが一括していても良いのでは？
         podcastPlayer = PodcastPlayer.getInstance();
-
-        durationText = (TextView) findViewById(R.id.duration);
-        durationText.setText(episode.getDuration());
-
-        initMediaButton();
-        initSeekBar();
-
         podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
             @Override
             public void onTick(int currentPosition) {
@@ -78,6 +74,9 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        initMediaButton();
+        initSeekBar();
     }
 
     @Override
@@ -115,7 +114,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     protected void initMediaButton() {
-        imageButton = (ImageButton) findViewById(R.id.image_button);
+        imageButton = binding.episodeDetail.imageButton;
+
         if (PodcastPlayer.getInstance().isPlaying() && PodcastPlayer.getInstance().getEpisode().equals(episode)) {
             imageButton.setImageResource(R.drawable.ic_action_playback_pause);
         } else {
@@ -144,7 +144,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     private void initSeekBar() {
-        seekBar = (SeekBar) findViewById(R.id.media_seek_bar);
+        seekBar = binding.episodeDetail.mediaSeekBar;
+
         seekBar.setEnabled(podcastPlayer.isPlaying() && podcastPlayer.getEpisode().equals(episode));
         seekBar.setMax(durationToMillis(episode.getDuration()));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -176,7 +177,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private void currentTimeUpdate(int currentTimeMillis) {
         final int duration = durationToMillis(episode.getDuration());
-        durationText.setText(formatMillis(duration - currentTimeMillis));
+        binding.episodeDetail.duration.setText(formatMillis(duration - currentTimeMillis));
         seekBar.setProgress(currentTimeMillis);
     }
 
@@ -231,10 +232,11 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     @Subscribe
     public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
+        Log.i(TAG, "onPlayEpisode");
         if (!PodcastPlayer.getInstance().isPlaying() || !PodcastPlayer.getInstance().getEpisode().equals(episode)) {
             imageButton.setImageResource(R.drawable.ic_action_playback_pause);
             seekBar.setEnabled(true);
-            Intent intent = PodcastPlayerService.createPlayPauseIntent(getApplicationContext(), episode);
+            Intent intent = PodcastPlayerService.createStartIntent(getApplicationContext(), episode.getEpisodeId());
             startService(intent);
         } else {
             seekBar.setEnabled(false);
