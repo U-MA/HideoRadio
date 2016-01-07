@@ -121,12 +121,15 @@ public class Episode extends Model {
 
     /**
      * Return {@link Uri} of episode data.
-     * @return
+     *
+     * Note: Enclosureが何故かDBに書き込まれないのでepisodeIdから
+     *       ストリーミング用のUriを生成している.
+     *       理想はgetEnclosure()で返すこと
      */
     public Uri getUri() {
         return isDownloaded() ?
                 Uri.fromFile(new File(getMediaLocalPath())) :
-                getEnclosure();
+                Uri.parse(getEpisodeId());
     }
 
     public Boolean isDownloaded() {

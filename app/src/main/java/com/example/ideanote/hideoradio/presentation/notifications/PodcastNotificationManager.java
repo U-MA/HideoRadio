@@ -2,7 +2,9 @@ package com.example.ideanote.hideoradio.presentation.notifications;
 
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -17,19 +19,19 @@ public class PodcastNotificationManager {
     private final static int NOTIFICATION_ID = 1000;
     private final static int REQUEST_CODE = 100;
 
-    private final PodcastPlayerService podcastPlayerService;
+    private PodcastPlayerService podcastPlayerService;
 
     private Episode episode;
-    private NotificationManagerCompat managerCompat;
+    private NotificationManager managerCompat;
 
-    public PodcastNotificationManager(PodcastPlayerService podcastPlayerService) {
-        this.podcastPlayerService = podcastPlayerService;
-        episode = podcastPlayerService.getEpisode();
-        managerCompat = NotificationManagerCompat.from(podcastPlayerService);
+    public PodcastNotificationManager() {
     }
 
     public void startForeground() {
         Notification notification = createNotification();
+        managerCompat =
+                (NotificationManager) podcastPlayerService.getSystemService(
+                        Context.NOTIFICATION_SERVICE);
         managerCompat.notify(NOTIFICATION_ID, notification);
         podcastPlayerService.startForeground(NOTIFICATION_ID, notification);
     }
@@ -41,7 +43,12 @@ public class PodcastNotificationManager {
     public void cancel() {
     }
 
+    public void setService(PodcastPlayerService podcastPlayerService) {
+        this.podcastPlayerService = podcastPlayerService;
+    }
+
     private Notification createNotification() {
+        episode = podcastPlayerService.getEpisode();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(podcastPlayerService)
                 .setSmallIcon(R.drawable.ic_action_playback_play)
                 .setContentTitle(episode.getTitle())

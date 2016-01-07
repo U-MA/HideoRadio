@@ -8,9 +8,7 @@ import com.example.ideanote.hideoradio.Episode;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,9 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 /**
  * a class which request feed.
@@ -90,6 +86,7 @@ public class Feeder {
                         if (tag.equals("item")) {
                             if (Episode.findById(currentEpisode.getEpisodeId()) == null) {
                                 currentEpisode.save();
+                                episodes.add(currentEpisode);
                             }
                         }
                         break;

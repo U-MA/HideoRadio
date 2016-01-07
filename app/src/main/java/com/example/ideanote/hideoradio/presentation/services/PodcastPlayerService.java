@@ -35,6 +35,7 @@ public class PodcastPlayerService extends Service {
     @Inject
     PodcastPlayer podcastPlayer;
 
+    @Inject
     PodcastNotificationManager podcastNotificationManager;
 
     public static Intent createStartIntent(Context context, String episodeId) {
@@ -152,6 +153,7 @@ public class PodcastPlayerService extends Service {
         Episode episode = Episode.findById(episodeId);
 
         podcastPlayer.start(getApplicationContext(), episode);
+        podcastNotificationManager.setService(this);
         podcastNotificationManager.startForeground();
     }
 
