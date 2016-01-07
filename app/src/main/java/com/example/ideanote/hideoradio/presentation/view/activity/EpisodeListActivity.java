@@ -16,14 +16,13 @@ import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeCom
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
 import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
-import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 import com.example.ideanote.hideoradio.presentation.view.fragment.EpisodeListFragment;
 import com.example.ideanote.hideoradio.presentation.view.fragment.NetworkErrorFragment;
 import com.example.ideanote.hideoradio.presentation.view.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.presentation.view.dialog.DownloadFailDialog;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.presentation.view.MediaBarView;
-import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.presentation.view.dialog.EpisodeDownloadCancelDialog;

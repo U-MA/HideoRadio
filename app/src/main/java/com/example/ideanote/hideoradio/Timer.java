@@ -49,7 +49,7 @@ public class Timer extends Handler {
         }
     }
 
-    interface TimerCallback {
+    public interface TimerCallback {
         void onTick(long millis);
     }
 }

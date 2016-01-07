@@ -1,6 +1,6 @@
 package com.example.ideanote.hideoradio.presentation.internal.di;
 
-import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
 import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;

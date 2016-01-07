@@ -4,6 +4,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.Injector;
-import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 

@@ -1,10 +1,12 @@
-package com.example.ideanote.hideoradio;
+package com.example.ideanote.hideoradio.presentation.media;
 
 import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
+
+import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.Timer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

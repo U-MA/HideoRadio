@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
 
