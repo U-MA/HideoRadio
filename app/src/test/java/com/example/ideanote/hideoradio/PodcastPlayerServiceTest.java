@@ -9,6 +9,7 @@ import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
 import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
 import com.example.ideanote.hideoradio.presentation.UIThread;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
@@ -169,6 +170,12 @@ public class PodcastPlayerServiceTest {
         @Provides
         EpisodeRepository provideEpisodeRepository(EpisodeDataRepository episodeDataRepository) {
             return episodeDataRepository;
+        }
+
+        @Provides
+        @Singleton
+        public PodcastNotificationManager providePodcastNotificationManager() {
+            return new PodcastNotificationManager();
         }
     }
 }

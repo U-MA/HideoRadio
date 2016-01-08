@@ -18,7 +18,7 @@ import dagger.Component;
  * アプリケーションというよりServiceかもしれん
  */
 @Singleton
-@Component(modules = ApplicationModule.class)
+@Component(modules = { ApplicationModule.class, PodcastModule.class })
 public interface ApplicationComponent {
     void inject(PodcastPlayer podcastPlayer);
     void inject(PodcastPlayerService podcastPlayerService);

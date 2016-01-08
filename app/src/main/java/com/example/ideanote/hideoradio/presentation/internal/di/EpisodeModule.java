@@ -6,7 +6,6 @@ import com.example.ideanote.hideoradio.domain.interactor.EpisodeDetailUseCase;
 import com.example.ideanote.hideoradio.domain.interactor.EpisodeListUseCase;
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
-import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 
 import javax.inject.Named;
 

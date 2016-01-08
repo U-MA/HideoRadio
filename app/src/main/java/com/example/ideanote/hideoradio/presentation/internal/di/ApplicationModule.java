@@ -2,7 +2,6 @@ package com.example.ideanote.hideoradio.presentation.internal.di;
 
 import android.media.MediaPlayer;
 
-import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.data.executor.JobExecutor;
 import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
 import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
@@ -10,7 +9,6 @@ import com.example.ideanote.hideoradio.presentation.UIThread;
 import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
-import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 
 import javax.inject.Singleton;
 
@@ -19,11 +17,6 @@ import dagger.Provides;
 
 @Module
 public class ApplicationModule {
-    @Provides
-    @Singleton
-    public PodcastPlayer providePodcastPlayer() {
-        return PodcastPlayer.getInstance();
-    }
 
     @Provides
     @Singleton
