@@ -2,18 +2,25 @@ package com.example.ideanote.hideoradio.presentation.presenter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.presentation.events.DownloadEvent;
+import com.example.ideanote.hideoradio.presentation.events.PlayCacheEvent;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.dialog.DownloadFailDialog;
+import com.example.ideanote.hideoradio.presentation.view.dialog.MediaPlayConfirmationDialog;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -22,19 +29,31 @@ import javax.inject.Named;
 public class EpisodeDetailPresenter implements Presenter {
 
     private final UseCase episodeDetailUseCase;
-
-    EpisodeDetailActivity episodeDetailActivity;
+    private final PodcastPlayer podcastPlayer;
 
     private Episode episode;
 
+    EpisodeDetailActivity episodeDetailActivity;
+
     @Inject
-    EpisodeDetailPresenter(@Named("episodeDetail") UseCase episodeDetailUseCase) {
+    EpisodeDetailPresenter(@Named("episodeDetail") UseCase episodeDetailUseCase, PodcastPlayer podcastPlayer) {
         this.episodeDetailUseCase = episodeDetailUseCase;
+        this.podcastPlayer = podcastPlayer;
     }
 
     @Override
     public void onCreate() {
+        if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().isEquals(episode)) {
+            currentTimeUpdate(podcastPlayer.getCurrentPosition());
+            episodeDetailActivity.setPauseMediaButton();
+            episodeDetailActivity.setSeekBarEnabled(true);
+        } else {
+            currentTimeUpdate(0);
+            episodeDetailActivity.setPlayMediaButton();
+            episodeDetailActivity.setSeekBarEnabled(false);
+        }
 
+        podcastPlayer.setCurrentTimeListener(currentTimeListener);
     }
 
     @Override
@@ -46,6 +65,39 @@ public class EpisodeDetailPresenter implements Presenter {
     public void onDestroy() {
         BusHolder.getInstance().unregister(this);
 
+        if (!podcastPlayer.isPlaying() && podcastPlayer.getService() != null) {
+            PodcastPlayer.getInstance().getService().stopSelf();
+        }
+    }
+
+    public void onClick(View v) {
+        if (!podcastPlayer.isStopped() && podcastPlayer.getEpisode().isEquals(episode)) {
+            Context applicationContext = episodeDetailActivity.getApplicationContext();
+            Intent intent;
+            if (podcastPlayer.isPlaying()) {
+                // 今から一時停止する
+                intent = PodcastPlayerService.createPauseIntent(applicationContext);
+                episodeDetailActivity.setPlayMediaButton();
+                episodeDetailActivity.setSeekBarEnabled(false);
+            } else {
+                // 今から再生する
+                intent = PodcastPlayerService.createRestartIntent(applicationContext);
+                episodeDetailActivity.setPauseMediaButton();
+                episodeDetailActivity.setSeekBarEnabled(true);
+            }
+            episodeDetailActivity.startService(intent);
+        } else {
+            MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
+            dialog.show(episodeDetailActivity.getSupportFragmentManager(), "dialog");
+        }
+    }
+
+    private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
+        MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("episodeId", episode.getEpisodeId());
+        dialog.setArguments(bundle);
+        return dialog;
     }
 
     public void setView(EpisodeDetailActivity episodeDetailActivity) {
@@ -56,6 +108,15 @@ public class EpisodeDetailPresenter implements Presenter {
         episodeDetailUseCase.execute(new EpisodeDetailSubscriber());
     }
 
+    private void currentTimeUpdate(int currentTimeMillis) {
+        episodeDetailActivity.currentTimeUpdate(currentTimeMillis);
+    }
+
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if (podcastPlayer.isPlaying()) {
+            podcastPlayer.seekTo(seekBar.getProgress());
+        }
+    }
 
     private final class EpisodeDetailSubscriber extends rx.Subscriber<Episode> {
         @Override
@@ -100,4 +161,26 @@ public class EpisodeDetailPresenter implements Presenter {
             dialog.show(episodeDetailActivity.getSupportFragmentManager(), "DownloadFailDialog");
         }
     }
+
+    @Subscribe
+    public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
+        if (!podcastPlayer.isPlaying() || !podcastPlayer.getEpisode().isEquals(episode)) {
+            episodeDetailActivity.setPauseMediaButton();
+            episodeDetailActivity.setSeekBarEnabled(true);
+            Intent intent = PodcastPlayerService.createStartIntent(episodeDetailActivity.getApplicationContext(), episode.getEpisodeId());
+            episodeDetailActivity.startService(intent);
+        } else {
+            episodeDetailActivity.setSeekBarEnabled(false);
+        }
+    }
+
+    private PodcastPlayer.CurrentTimeListener currentTimeListener =
+            new PodcastPlayer.CurrentTimeListener() {
+                @Override
+                public void onTick(int currentPosition) {
+                    if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().isEquals(episode)) {
+                        currentTimeUpdate(currentPosition);
+                    }
+                }
+            };
 }

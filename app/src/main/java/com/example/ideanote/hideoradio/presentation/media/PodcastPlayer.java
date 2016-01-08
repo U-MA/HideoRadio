@@ -9,13 +9,11 @@ import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.Timer;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * {@link MediaPlayer} wrapper class.
  * This class menage playing episode.
  */
-@Singleton
 public class PodcastPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 

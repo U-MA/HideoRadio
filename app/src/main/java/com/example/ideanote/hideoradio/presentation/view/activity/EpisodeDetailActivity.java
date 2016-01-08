@@ -1,6 +1,5 @@
 package com.example.ideanote.hideoradio.presentation.view.activity;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -12,8 +11,6 @@ import android.widget.SeekBar;
 
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.databinding.ActivityEpisodeDetailBinding;
-import com.example.ideanote.hideoradio.presentation.events.BusHolder;
-import com.example.ideanote.hideoradio.presentation.events.PlayCacheEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
@@ -21,9 +18,6 @@ import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDetailPrese
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
-import com.example.ideanote.hideoradio.presentation.view.dialog.MediaPlayConfirmationDialog;
-import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
-import com.squareup.otto.Subscribe;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -34,15 +28,10 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private final static String TAG = EpisodeDetailActivity.class.getName();
 
-    private String episodeId;
-    private ImageButton imageButton;
-    private SeekBar seekBar;
-    private int durationMax;
 
+    private int durationMax;
     private ActivityEpisodeDetailBinding binding;
     private EpisodeComponent episodeComponent;
-
-    private PodcastPlayer podcastPlayer; // TODO: need not
 
     @Inject
     EpisodeDetailPresenter episodeDetailPresenter;
@@ -54,55 +43,29 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
 
         initializeComponent();
         episodeComponent.inject(this);
 
+        // TODO: ここの命名を決め直す. 今のメソッド名は何をするか分かりづらい
         episodeDetailPresenter.setView(this);
+        episodeDetailPresenter.onCreate();
         episodeDetailPresenter.initialize();
 
-
-        // TODO: このクラスがPodcastPlayerを持っている必要はあるのか
-        //       PodcastPlayerServiceが一括していても良いのでは？
-        podcastPlayer = PodcastPlayer.getInstance();
-
-        initMediaButton();
-        initSeekBar();
-
-        podcastPlayer.setCurrentTimeListener(new PodcastPlayer.CurrentTimeListener() {
-            @Override
-            public void onTick(int currentPosition) {
-                if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
-                    currentTimeUpdate(currentPosition);
-                }
-            }
-        });
+        binding.episodeDetail.imageButton.setOnClickListener(onClickListener);
+        binding.episodeDetail.mediaSeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         episodeDetailPresenter.onResume();
-
-        BusHolder.getInstance().register(this); // TODO: deleted this line;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        BusHolder.getInstance().unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         episodeDetailPresenter.onDestroy();
-
-        PodcastPlayer player = PodcastPlayer.getInstance();
-        if (!player.isPlaying() && player.getService() != null) {
-            PodcastPlayer.getInstance().getService().stopSelf();
-        }
     }
 
     @Override
@@ -126,6 +89,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
     }
 
     private void initializeComponent() {
+        String episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
         this.episodeComponent = DaggerEpisodeComponent.builder()
                 .applicationComponent(((HideoRadioApplication) getApplication()).getComponent())
                 .episodeModule(new EpisodeModule(episodeId))
@@ -140,76 +104,22 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         binding.episodeDetail.imageButton.setImageResource(R.drawable.ic_action_playback_pause);
     }
 
-    protected void initMediaButton() {
-        imageButton = binding.episodeDetail.imageButton;
-
-        if (PodcastPlayer.getInstance().isPlaying() && PodcastPlayer.getInstance().getEpisode().getEpisodeId().equals(episodeId)) {
-            setPauseMediaButton();
-        } else {
-            setPlayMediaButton();
-        }
-
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: episodeDetailPresenter.onclick(View v);
-
-                PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
-                if (!podcastPlayer.isStopped() && podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
-                    imageButton.setImageResource(podcastPlayer.isPlaying()
-                            ? R.drawable.ic_action_playback_play
-                            : R.drawable.ic_action_playback_pause);
-                    seekBar.setEnabled(!podcastPlayer.isPlaying());
-
-                    Intent intent = null;
-                    if (podcastPlayer.isPlaying()) {
-                        intent = PodcastPlayerService.createPauseIntent(getApplicationContext());
-                    } else {
-                        intent = PodcastPlayerService.createRestartIntent(getApplicationContext());
-                    }
-                    startService(intent);
-                } else {
-                    MediaPlayConfirmationDialog dialog = createPlayConfirmationDialog();
-                    dialog.show(getSupportFragmentManager(), "dialog");
-                }
-            }
-        });
+    public void setSeekBarEnabled(boolean enabled) {
+        binding.episodeDetail.mediaSeekBar.setEnabled(enabled);
     }
 
-    private void initSeekBar() {
-        seekBar = binding.episodeDetail.mediaSeekBar;
-
-        seekBar.setEnabled(podcastPlayer.isPlaying() && podcastPlayer.getEpisode().getEpisodeId().equals(episodeId));
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (!PodcastPlayer.getInstance().isPlaying()) {
-                    return;
-                }
-                PodcastPlayer.getInstance().seekTo(seekBar.getProgress());
-            }
-        });
-
-        if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().getEpisodeId().equals(episodeId)) {
-            currentTimeUpdate(podcastPlayer.getCurrentPosition());
-        } else {
-            currentTimeUpdate(0);
-        }
-    }
-
-    private void currentTimeUpdate(int currentTimeMillis) {
+    public void currentTimeUpdate(int currentTimeMillis) {
         binding.episodeDetail.duration.setText(formatMillis(durationMax - currentTimeMillis));
-        seekBar.setProgress(currentTimeMillis);
+        binding.episodeDetail.mediaSeekBar.setProgress(currentTimeMillis);
+    }
+
+    public void renderEpisode(Episode episode) {
+        binding.episodeDetail.episodeTitle.setText(episode.getTitle());
+        binding.episodeDetail.detailDescription.setText(episode.getDescription());
+        binding.episodeDetail.duration.setText(episode.getDuration());
+
+        durationMax = durationToMillis(episode.getDuration());
+        binding.episodeDetail.mediaSeekBar.setMax(durationMax);
     }
 
     private String formatMillis(int timeMillis) {
@@ -227,14 +137,6 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         } else {
             return formatter.format("%02d:%02d", minutes, seconds).toString();
         }
-    }
-
-    private MediaPlayConfirmationDialog createPlayConfirmationDialog() {
-        MediaPlayConfirmationDialog dialog = new MediaPlayConfirmationDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString("episodeId", episodeId);
-        dialog.setArguments(bundle);
-        return dialog;
     }
 
     /**
@@ -255,25 +157,29 @@ public class EpisodeDetailActivity extends AppCompatActivity {
         return sec * 1000;
     }
 
-    public void renderEpisode(Episode episode) {
-        binding.episodeDetail.episodeTitle.setText(episode.getTitle());
-        binding.episodeDetail.detailDescription.setText(episode.getDescription());
-        binding.episodeDetail.duration.setText(episode.getDuration());
+    private View.OnClickListener onClickListener =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    episodeDetailPresenter.onClick(v);
+                }
+            };
 
-        durationMax = durationToMillis(episode.getDuration());
-        binding.episodeDetail.mediaSeekBar.setMax(durationMax);
+    private SeekBar.OnSeekBarChangeListener onSeekBarChangeListener =
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // do nothing
+                }
 
-    }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    // do nothing
+                }
 
-    @Subscribe
-    public void onPlayEpisode(PlayCacheEvent playCacheEvent) {
-        if (!PodcastPlayer.getInstance().isPlaying() || !PodcastPlayer.getInstance().getEpisode().getEpisodeId().equals(episodeId)) {
-            imageButton.setImageResource(R.drawable.ic_action_playback_pause);
-            seekBar.setEnabled(true);
-            Intent intent = PodcastPlayerService.createStartIntent(getApplicationContext(), episodeId);
-            startService(intent);
-        } else {
-            seekBar.setEnabled(false);
-        }
-    }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    episodeDetailPresenter.onStopTrackingTouch(seekBar);
+                }
+            };
 }
