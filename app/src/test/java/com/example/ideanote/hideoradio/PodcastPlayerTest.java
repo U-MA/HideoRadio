@@ -22,6 +22,7 @@ import org.robolectric.annotation.Config;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
@@ -138,5 +139,48 @@ public class PodcastPlayerTest {
 
         verify(mockMediaPlayer).start();
         assertTrue(podcastPlayer.isPlaying());
+    }
+
+    @Test
+    public void isNowEpisode_trueCase() {
+        final String EPISODE_ID = "episode_id";
+
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.getEpisodeId()).thenReturn(EPISODE_ID);
+
+        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
+
+        assertTrue(podcastPlayer.isNowEpisode(EPISODE_ID));
+    }
+
+    @Test
+    public void isNowEpisode_falseCase() {
+        final String EPISODE_ID = "episode_id1";
+        final String ANOTHER_ID = "episode_id2";
+
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.getEpisodeId()).thenReturn(EPISODE_ID);
+
+        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
+
+        assertFalse(podcastPlayer.isNowEpisode(ANOTHER_ID));
+    }
+
+    @Test
+    public void isNowEpisode_parameterIsNull() {
+        final String EPISODE_ID = "episode_id";
+
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.getEpisodeId()).thenReturn(EPISODE_ID);
+
+        podcastPlayer.start(RuntimeEnvironment.application, mockEpisode);
+
+        assertFalse(podcastPlayer.isNowEpisode(null));
+    }
+
+    @Test
+    public void isNowEpisode_playerHaveNotStarted() {
+        final String EPISODE_ID = "episode_id";
+        assertFalse(podcastPlayer.isNowEpisode(EPISODE_ID));
     }
 }

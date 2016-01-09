@@ -146,6 +146,16 @@ public class PodcastPlayer
         release();
     }
 
+    /**
+     * Whether episode is the same episode to specified episodeId or not.
+     */
+    public boolean isNowEpisode(String episodeId) {
+        if (episode != null && episodeId != null) {
+            return episodeId.equals(episode.getEpisodeId());
+        }
+        return false;
+    }
+
     public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
         this.currentTimeListener = currentTimeListener;
 
