@@ -39,7 +39,11 @@ public class HideoRadioApplication extends Application {
     }
 
     private void initializeInjector() {
-        this.applicationComponent = DaggerApplicationComponent.builder()
+        this.applicationComponent = createComponent();
+    }
+
+    protected ApplicationComponent createComponent() {
+        return DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule())
                 .build();
     }

@@ -43,7 +43,8 @@ public class EpisodeDetailPresenter implements Presenter {
 
     @Override
     public void onCreate() {
-        if (podcastPlayer.isPlaying() && podcastPlayer.getEpisode().isEquals(episode)) {
+        if ((podcastPlayer.getEpisode() != null) &&
+            podcastPlayer.isPlaying() && podcastPlayer.getEpisode().isEquals(episode)) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
             episodeDetailActivity.setPauseMediaButton();
             episodeDetailActivity.setSeekBarEnabled(true);
@@ -71,7 +72,8 @@ public class EpisodeDetailPresenter implements Presenter {
     }
 
     public void onClick(View v) {
-        if (!podcastPlayer.isStopped() && podcastPlayer.getEpisode().isEquals(episode)) {
+        if ((podcastPlayer.getEpisode() != null) &&
+            (!podcastPlayer.isStopped() &&  podcastPlayer.isNowEpisode(episode.getEpisodeId()))) {
             Context applicationContext = episodeDetailActivity.getApplicationContext();
             Intent intent;
             if (podcastPlayer.isPlaying()) {

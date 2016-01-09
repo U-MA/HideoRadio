@@ -6,7 +6,7 @@ import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationCompo
 
 public class MockApplication extends HideoRadioApplication {
     @Override
-    public ApplicationComponent getComponent() {
+    public ApplicationComponent createComponent() {
         return DaggerEpisodeDetailActivityTest_TestApplicationComponent.builder()
                 .testApplicationModule(new TestApplicationModule())
                 .build();

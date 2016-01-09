@@ -17,6 +17,7 @@ import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationCompo
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,15 +48,7 @@ public class EpisodeDetailActivityTest {
 
     @Rule
     public ActivityTestRule<EpisodeDetailActivity> activityTestRule =
-            new ActivityTestRule<EpisodeDetailActivity>(EpisodeDetailActivity.class) {
-                @Override
-                protected Intent getActivityIntent() {
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
-
-                    return intent;
-                }
-            };
+            new ActivityTestRule<EpisodeDetailActivity>(EpisodeDetailActivity.class, true, false);
 
     @Before
     public void setup() {
@@ -73,14 +66,33 @@ public class EpisodeDetailActivityTest {
         component.inject(this);
     }
 
+    @After
+    public void teardown() {
+        // TODO: bad smell
+        //       テストケースごとにアプリケーションが再構築されないので
+        //       injectされるmockPodcastPlayerが同じオブジェクトとなってしまっている
+        //       (@Singletonのため)
+        //       mockをリセットするのはあまり良いとは言えないが一時的な措置として行っている
+        reset(mockPodcastPlayer);
+    }
+
     @Test
     public void titleAndDescriptionCheck() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
+        activityTestRule.launchActivity(intent);
+
+
         onView(withText(episode.getTitle())).check(matches(isDisplayed()));
         onView(withText(episode.getDescription())).check(matches(isDisplayed()));
     }
 
     @Test
     public void launchDialogWhenPushPlayButton() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
+        activityTestRule.launchActivity(intent);
+
         onView(withId(R.id.image_button)).perform(click());
 
         onView(withText("DOWNLOAD")).inRoot(isDialog()).check(matches(isDisplayed()));
@@ -88,10 +100,32 @@ public class EpisodeDetailActivityTest {
 
     @Test
     public void startEpisodeWhenLaunchingDialogClick() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
+        activityTestRule.launchActivity(intent);
+
+        when(mockPodcastPlayer.isPlaying()).thenReturn(false);
+
         onView(withId(R.id.image_button)).perform(click());
         onView(withText("PLAY STREAMING")).inRoot(isDialog()).perform(click());
 
         verify(mockPodcastPlayer).start((Context) anyObject(), (Episode) anyObject());
+    }
+
+    @Test
+    public void pause() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
+        activityTestRule.launchActivity(intent);
+
+        when(mockPodcastPlayer.isPlaying()).thenReturn(true);
+        when(mockPodcastPlayer.isStopped()).thenReturn(false);
+        when(mockPodcastPlayer.isNowEpisode((String) anyObject())).thenReturn(true);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(episode);
+
+        onView(withId(R.id.image_button)).perform(click());
+
+        verify(mockPodcastPlayer).pause();
     }
 
     @Singleton
