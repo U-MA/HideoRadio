@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.activities;
+package com.example.ideanote.hideoradio.activity;
 
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;

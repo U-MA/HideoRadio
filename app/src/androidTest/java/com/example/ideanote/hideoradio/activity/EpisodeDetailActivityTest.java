@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.activities;
+package com.example.ideanote.hideoradio.activity;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -12,6 +12,8 @@ import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.di.TestApplicationModule;
+import com.example.ideanote.hideoradio.di.TestPodcastModule;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;

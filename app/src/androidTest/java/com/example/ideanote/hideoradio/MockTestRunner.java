@@ -1,4 +1,4 @@
-package com.example.ideanote.hideoradio.activities;
+package com.example.ideanote.hideoradio;
 
 import android.app.Application;
 import android.content.Context;
