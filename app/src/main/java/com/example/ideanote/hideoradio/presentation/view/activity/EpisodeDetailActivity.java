@@ -8,10 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.databinding.ActivityEpisodeDetailBinding;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
-import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationModule;
-import com.example.ideanote.hideoradio.presentation.internal.di.DaggerApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDetailPresenter;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
@@ -28,7 +30,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private int durationMax;
     private ActivityEpisodeDetailBinding binding;
-    private ApplicationComponent applicationComponent;
+    private EpisodeComponent episodeComponent;
 
     @Inject
     EpisodeDetailPresenter episodeDetailPresenter;
@@ -42,7 +44,7 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
 
         initializeComponent();
-        applicationComponent.inject(this);
+        episodeComponent.inject(this);
 
         // TODO: ここの命名を決め直す. 今のメソッド名は何をするか分かりづらい
         episodeDetailPresenter.setView(this);
@@ -87,8 +89,13 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
     private void initializeComponent() {
         String episodeId = getIntent().getStringExtra(EpisodeListActivity.EXTRA_EPISODE_ID);
-        this.applicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(episodeId))
+
+        ApplicationComponent applicationComponent =
+                ((HideoRadioApplication) getApplicationContext()).getComponent();
+
+        this.episodeComponent = DaggerEpisodeComponent.builder()
+                .applicationComponent(applicationComponent)
+                .episodeModule(new EpisodeModule(episodeId))
                 .build();
     }
 

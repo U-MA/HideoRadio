@@ -15,6 +15,7 @@ import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.databinding.FragmentEpisodeListBinding;
@@ -76,7 +77,7 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getComponent(ApplicationComponent.class).inject(this);
+        getComponent(EpisodeComponent.class).inject(this);
         episodeListPresenter.setView(this);
 
         loadEpisodeList();
