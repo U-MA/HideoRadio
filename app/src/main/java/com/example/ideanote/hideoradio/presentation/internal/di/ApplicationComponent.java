@@ -20,7 +20,6 @@ import dagger.Component;
 @Singleton
 @Component(modules = { ApplicationModule.class, PodcastModule.class })
 public interface ApplicationComponent {
-    void inject(PodcastPlayer podcastPlayer);
     void inject(PodcastPlayerService podcastPlayerService);
 
     ThreadExecutor threadExecutor();
