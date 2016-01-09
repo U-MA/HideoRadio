@@ -11,10 +11,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.activeandroid.query.Select;
-import com.example.ideanote.hideoradio.HideoRadioApplication;
-import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
-import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
-import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationModule;
+import com.example.ideanote.hideoradio.presentation.internal.di.DaggerApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
 import com.example.ideanote.hideoradio.presentation.view.fragment.EpisodeListFragment;
 import com.example.ideanote.hideoradio.presentation.view.fragment.NetworkErrorFragment;
@@ -34,9 +33,9 @@ import com.squareup.otto.Subscribe;
 
 
 public class EpisodeListActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.OnItemClickListener, HasComponent<EpisodeComponent> {
+        implements RecyclerViewAdapter.OnItemClickListener, HasComponent<ApplicationComponent> {
 
-    private EpisodeComponent episodeComponent;
+    private ApplicationComponent applicationComponent;
 
     private MediaBarView mediaBar;
 
@@ -74,15 +73,14 @@ public class EpisodeListActivity extends AppCompatActivity
     }
 
     private void initializeComponent() {
-        this.episodeComponent = DaggerEpisodeComponent.builder()
-                .applicationComponent(((HideoRadioApplication) getApplication()).getComponent())
-                .episodeModule(new EpisodeModule())
+        this.applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule())
                 .build();
     }
 
     @Override
-    public EpisodeComponent getComponent() {
-        return episodeComponent;
+    public ApplicationComponent getComponent() {
+        return applicationComponent;
     }
 
     @Override

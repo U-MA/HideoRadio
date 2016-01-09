@@ -14,15 +14,14 @@ import android.view.ViewGroup;
 import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.databinding.FragmentEpisodeListBinding;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.EpisodeDownloadCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.UpdateEpisodeListEvent;
-import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
-import com.example.ideanote.hideoradio.presentation.internal.di.PerActivity;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 import com.squareup.otto.Subscribe;
@@ -33,7 +32,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 
-@PerActivity
 public class EpisodeListFragment extends Fragment implements EpisodeListView {
     private static final String RSS_FEED_URL = "http://www.konami.jp/kojima_pro/radio/hideradio/podcast.xml";
     private static final String TAG = EpisodeListFragment.class.getName();
@@ -78,7 +76,7 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getComponent(EpisodeComponent.class).inject(this);
+        getComponent(ApplicationComponent.class).inject(this);
         episodeListPresenter.setView(this);
 
         loadEpisodeList();
