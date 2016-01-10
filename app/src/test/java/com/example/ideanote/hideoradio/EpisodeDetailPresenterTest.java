@@ -6,7 +6,6 @@ import android.view.View;
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDetailPresenter;
-import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 
 import org.junit.Before;

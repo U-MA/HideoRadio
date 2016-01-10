@@ -169,7 +169,11 @@ public class EpisodeDetailPresenter implements Presenter {
         if (!podcastPlayer.isPlaying() || !podcastPlayer.getEpisode().isEquals(episode)) {
             episodeDetailActivity.setPauseMediaButton();
             episodeDetailActivity.setSeekBarEnabled(true);
-            Intent intent = PodcastPlayerService.createStartIntent(episodeDetailActivity.getApplicationContext(), episode.getEpisodeId());
+
+            Context context = episodeDetailActivity.getApplicationContext();
+            Intent intent = new Intent(context, PodcastPlayerService.class);
+            intent.setAction(PodcastPlayerService.ACTION_START);
+            intent.putExtra(PodcastPlayerService.EXTRA_EPISODE_ID, episode.getEpisodeId());
             episodeDetailActivity.startService(intent);
         } else {
             episodeDetailActivity.setSeekBarEnabled(false);

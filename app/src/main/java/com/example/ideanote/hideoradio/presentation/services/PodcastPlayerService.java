@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
-import com.example.ideanote.hideoradio.Injector;
+import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
@@ -23,9 +23,9 @@ import javax.inject.Singleton;
 public class PodcastPlayerService extends Service {
     private final static String TAG = PodcastPlayerService.class.getName();
 
-    private final static String EXTRA_EPISODE_ID = "com.example.ideanote.hideoradio.extra_episode_id";
+    public final static String EXTRA_EPISODE_ID = "com.example.ideanote.hideoradio.extra_episode_id";
 
-    private final static String ACTION_START   = "com.example.ideanote.hideoradio.start";
+    public final static String ACTION_START   = "com.example.ideanote.hideoradio.start";
     public final static String ACTION_RESTART = "com.example.ideanote.hideoradio.restart";
     public final static String ACTION_PAUSE   = "com.example.ideanote.hideoradio.pause";
     private final static String ACTION_STOP    = "com.example.ideanote.hideoradio.stop";
@@ -88,7 +88,8 @@ public class PodcastPlayerService extends Service {
         super.onCreate();
         Log.i(TAG, "onCreate");
 
-        ApplicationComponent applicationComponent = Injector.obtain(getApplication());
+        ApplicationComponent applicationComponent =
+                ((HideoRadioApplication) getApplicationContext()).getComponent();
         applicationComponent.inject(this);
 
         podcastPlayer.setService(this);
