@@ -48,8 +48,8 @@ public class EpisodeDetailActivity extends AppCompatActivity {
 
         // TODO: ここの命名を決め直す. 今のメソッド名は何をするか分かりづらい
         episodeDetailPresenter.setView(this);
-        episodeDetailPresenter.onCreate();
         episodeDetailPresenter.initialize();
+        episodeDetailPresenter.onCreate();
 
         binding.episodeDetail.imageButton.setOnClickListener(onClickListener);
         binding.episodeDetail.mediaSeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);

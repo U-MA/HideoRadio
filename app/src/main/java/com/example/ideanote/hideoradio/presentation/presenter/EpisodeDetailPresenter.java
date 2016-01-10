@@ -43,8 +43,7 @@ public class EpisodeDetailPresenter implements Presenter {
 
     @Override
     public void onCreate() {
-        if ((podcastPlayer.getEpisode() != null) &&
-            podcastPlayer.isPlaying() && podcastPlayer.getEpisode().isEquals(episode)) {
+        if (podcastPlayer.isPlaying()) {
             currentTimeUpdate(podcastPlayer.getCurrentPosition());
             episodeDetailActivity.setPauseMediaButton();
             episodeDetailActivity.setSeekBarEnabled(true);

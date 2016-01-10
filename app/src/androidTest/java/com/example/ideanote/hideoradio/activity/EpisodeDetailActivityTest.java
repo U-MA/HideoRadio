@@ -114,14 +114,14 @@ public class EpisodeDetailActivityTest {
 
     @Test
     public void pause() {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
-        activityTestRule.launchActivity(intent);
-
         when(mockPodcastPlayer.isPlaying()).thenReturn(true);
         when(mockPodcastPlayer.isStopped()).thenReturn(false);
         when(mockPodcastPlayer.isNowEpisode((String) anyObject())).thenReturn(true);
         when(mockPodcastPlayer.getEpisode()).thenReturn(episode);
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
+        activityTestRule.launchActivity(intent);
 
         onView(withId(R.id.image_button)).perform(click());
 
