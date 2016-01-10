@@ -39,8 +39,6 @@ public class EpisodeListActivity extends AppCompatActivity
 
     private EpisodeComponent episodeComponent;
 
-    private MediaBarView mediaBar;
-
     public static final String EXTRA_EPISODE_ID = "extra_episode_id";
 
     private static final String TAG = EpisodeListActivity.class.getName();
@@ -54,16 +52,6 @@ public class EpisodeListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mediaBar = (MediaBarView) findViewById(R.id.media_bar);
-        mediaBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EpisodeListActivity.this, EpisodeDetailActivity.class);
-                intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, PodcastPlayer.getInstance().getEpisode().getEpisodeId());
-                startActivity(intent);
-            }
-        });
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, new EpisodeListFragment());
@@ -93,7 +81,6 @@ public class EpisodeListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity", "onResume");
-        setMediaBarIfPossible();
     }
 
     @Override
@@ -106,10 +93,6 @@ public class EpisodeListActivity extends AppCompatActivity
         }
 
         BusHolder.getInstance().unregister(this);
-    }
-
-    public void setMediaBarIfPossible() {
-        mediaBar.setEpisode(PodcastPlayer.getInstance().getEpisode());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.ideanote.hideoradio.presentation.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Looper;
@@ -16,6 +17,9 @@ import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
 import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.databinding.FragmentEpisodeListBinding;
@@ -70,6 +74,15 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_episode_list, container, false);
         setupEpisodeListView();
 
+        binding.mediaBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EpisodeDetailActivity.class);
+                intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, PodcastPlayer.getInstance().getEpisode().getEpisodeId());
+                startActivity(intent);
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -79,6 +92,8 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
         getComponent(EpisodeComponent.class).inject(this);
         episodeListPresenter.setView(this);
+
+        setupMediaBarView();
 
         loadEpisodeList();
     }
@@ -94,6 +109,10 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     public void onDestroy() {
         super.onDestroy();
         episodeListPresenter.onDestroy();
+    }
+
+    public void setupMediaBarView() {
+        episodeListPresenter.setupMediaBarView();
     }
 
     public void setupEpisodeListView() {
@@ -155,6 +174,16 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Override
     public void hideRetryView() {
 
+    }
+
+    @Override
+    public void showMediaBarView() {
+        binding.mediaBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMediaBarView() {
+        binding.mediaBar.setVisibility(View.GONE);
     }
 
     @Subscribe

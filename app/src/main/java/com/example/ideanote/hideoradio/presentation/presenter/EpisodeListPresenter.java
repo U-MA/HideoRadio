@@ -3,6 +3,7 @@ package com.example.ideanote.hideoradio.presentation.presenter;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 
 import java.util.List;
@@ -15,10 +16,12 @@ public class EpisodeListPresenter implements Presenter {
     private EpisodeListView episodeListView;
 
     private final UseCase episodeListUseCase;
+    private final PodcastPlayer podcastPlayer;
 
     @Inject
-    public EpisodeListPresenter(@Named("episodeList") UseCase episodeListUseCase) {
+    public EpisodeListPresenter(@Named("episodeList") UseCase episodeListUseCase, PodcastPlayer podcastPlayer) {
         this.episodeListUseCase = episodeListUseCase;
+        this.podcastPlayer = podcastPlayer;
     }
 
     @Override
@@ -68,6 +71,22 @@ public class EpisodeListPresenter implements Presenter {
 
     private void hideRetryView() {
         episodeListView.hideRetryView();
+    }
+
+    private void showMediaBarView() {
+        episodeListView.showMediaBarView();
+    }
+
+    private void hideMediaBarView() {
+        episodeListView.hideMediaBarView();
+    }
+
+    public void setupMediaBarView() {
+        if (podcastPlayer.isStopped()) {
+            hideMediaBarView();
+        } else {
+            showMediaBarView();
+        }
     }
 
     private final class EpisodeListSubscriber extends rx.Subscriber<List<Episode>> {
