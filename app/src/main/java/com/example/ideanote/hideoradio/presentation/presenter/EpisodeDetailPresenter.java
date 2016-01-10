@@ -32,11 +32,12 @@ public class EpisodeDetailPresenter implements Presenter {
     private final PodcastPlayer podcastPlayer;
 
     private Episode episode;
+    private String episodeId;
 
     EpisodeDetailActivity episodeDetailActivity;
 
     @Inject
-    EpisodeDetailPresenter(@Named("episodeDetail") UseCase episodeDetailUseCase, PodcastPlayer podcastPlayer) {
+    public EpisodeDetailPresenter(@Named("episodeDetail") UseCase episodeDetailUseCase, PodcastPlayer podcastPlayer) {
         this.episodeDetailUseCase = episodeDetailUseCase;
         this.podcastPlayer = podcastPlayer;
     }
@@ -71,18 +72,17 @@ public class EpisodeDetailPresenter implements Presenter {
     }
 
     public void onClick(View v) {
-        if ((podcastPlayer.getEpisode() != null) &&
-            (!podcastPlayer.isStopped() &&  podcastPlayer.isNowEpisode(episode.getEpisodeId()))) {
-            Context applicationContext = episodeDetailActivity.getApplicationContext();
-            Intent intent;
+        if (podcastPlayer.isNowEpisode(episodeId)) {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, PodcastPlayerService.class);
             if (podcastPlayer.isPlaying()) {
                 // 今から一時停止する
-                intent = PodcastPlayerService.createPauseIntent(applicationContext);
+                intent.setAction(PodcastPlayerService.ACTION_PAUSE);
                 episodeDetailActivity.setPlayMediaButton();
                 episodeDetailActivity.setSeekBarEnabled(false);
             } else {
                 // 今から再生する
-                intent = PodcastPlayerService.createRestartIntent(applicationContext);
+                intent.setAction(PodcastPlayerService.ACTION_RESTART);
                 episodeDetailActivity.setPauseMediaButton();
                 episodeDetailActivity.setSeekBarEnabled(true);
             }
@@ -133,6 +133,7 @@ public class EpisodeDetailPresenter implements Presenter {
         public void onNext(Episode episode) {
             episodeDetailActivity.renderEpisode(episode);
             EpisodeDetailPresenter.this.episode = episode; // bad smell
+            EpisodeDetailPresenter.this.episodeId = episode.getEpisodeId(); // bad smell
         }
     }
 

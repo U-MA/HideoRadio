@@ -26,8 +26,8 @@ public class PodcastPlayerService extends Service {
     private final static String EXTRA_EPISODE_ID = "com.example.ideanote.hideoradio.extra_episode_id";
 
     private final static String ACTION_START   = "com.example.ideanote.hideoradio.start";
-    private final static String ACTION_RESTART = "com.example.ideanote.hideoradio.restart";
-    private final static String ACTION_PAUSE   = "com.example.ideanote.hideoradio.pause";
+    public final static String ACTION_RESTART = "com.example.ideanote.hideoradio.restart";
+    public final static String ACTION_PAUSE   = "com.example.ideanote.hideoradio.pause";
     private final static String ACTION_STOP    = "com.example.ideanote.hideoradio.stop";
 
     private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause"; // deprecated
