@@ -35,7 +35,7 @@ import com.squareup.otto.Subscribe;
 
 
 public class EpisodeListActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.OnItemClickListener, HasComponent<EpisodeComponent> {
+        implements HasComponent<EpisodeComponent> {
 
     private EpisodeComponent episodeComponent;
 
@@ -93,39 +93,6 @@ public class EpisodeListActivity extends AppCompatActivity
         }
 
         BusHolder.getInstance().unregister(this);
-    }
-
-    @Override
-    public void onClick(Episode episode) {
-        // Viewをクリックしたときの処理
-        Intent intent = new Intent(this, EpisodeDetailActivity.class);
-        intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onDownloadButtonClick(Episode episode) {
-        if (!episode.isDownload()) {
-            ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info != null && info.isConnected()) {
-                if (!EpisodeDownloadService.isDownloading(episode.getEpisodeId())) {
-                    startService(EpisodeDownloadService.createIntent(getApplicationContext(), episode));
-                } else {
-                    // create episode download cancel dialog
-                    EpisodeDownloadCancelDialog dialog = new EpisodeDownloadCancelDialog();
-                    dialog.setEpisode(episode);
-                    dialog.show(getSupportFragmentManager(), "DownloadCancelDialog");
-                }
-            } else {
-                DownloadFailDialog dialog = new DownloadFailDialog();
-                dialog.show(getSupportFragmentManager(), "DownloadFailDialog");
-            }
-        } else {
-            ClearCacheDialog dialog = new ClearCacheDialog();
-            dialog.setEpisode(episode);
-            dialog.show(getSupportFragmentManager(), "ClearCacheDialog");
-        }
     }
 
     @Subscribe

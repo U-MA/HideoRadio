@@ -18,6 +18,7 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
@@ -29,6 +30,7 @@ import com.example.ideanote.hideoradio.presentation.events.UpdateEpisodeListEven
 import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
+import com.example.ideanote.hideoradio.presentation.view.dialog.EpisodeDownloadCancelDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -45,9 +47,24 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     EpisodeListPresenter episodeListPresenter;
 
     private FragmentEpisodeListBinding binding;
-    private RecyclerViewAdapter.OnItemClickListener listener;
 
     private RecyclerViewAdapter recyclerViewAdapter;
+
+    private RecyclerViewAdapter.OnItemClickListener onItemClickListener =
+            new RecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(Episode episode) {
+                    Intent intent = new Intent(getContext(), EpisodeDetailActivity.class);
+                    intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onDownloadButtonClick(Episode episode) {
+                    episodeListPresenter.onDownloadButtonClicked(episode);
+                }
+            };
+
 
     public EpisodeListFragment() {
         // Required empty public constructor
@@ -56,9 +73,6 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RecyclerViewAdapter.OnItemClickListener) {
-            listener = (RecyclerViewAdapter.OnItemClickListener) context;
-        }
     }
 
     @Override
@@ -122,7 +136,7 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
         ArrayList<Episode> episodes = new ArrayList<>();
         recyclerViewAdapter = new RecyclerViewAdapter(episodes);
-        recyclerViewAdapter.setOnItemClickListener(listener);
+        recyclerViewAdapter.setOnItemClickListener(onItemClickListener);
         episodeListView.setAdapter(recyclerViewAdapter);
     }
 
@@ -178,12 +192,15 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
     @Override
     public void showClearCacheDialog(Episode episode) {
-
+        EpisodeDownloadCancelDialog dialog = new EpisodeDownloadCancelDialog();
+        dialog.setEpisode(episode);
+        dialog.show(getFragmentManager(), "DownloadCancelDialog");
     }
 
     @Override
     public void downloadEpisode(Episode episode) {
-
+        Intent intent = EpisodeDownloadService.createIntent(getContext(), episode);
+        getActivity().startService(intent);
     }
 
     @Override
