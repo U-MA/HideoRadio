@@ -23,15 +23,16 @@ import static org.mockito.Mockito.*;
 public class EpisodeListPresenterTest {
 
     EpisodeListView mockEpisodeListView;
-
     UseCase mockUseCase;
+    PodcastPlayer mockPodcastPlayer;
 
     EpisodeListPresenter episodeListPresenter;
 
     @Before
     public void setup() {
         mockUseCase = mock(UseCase.class);
-        episodeListPresenter = new EpisodeListPresenter(mockUseCase, mock(PodcastPlayer.class));
+        mockPodcastPlayer = mock(PodcastPlayer.class);
+        episodeListPresenter = new EpisodeListPresenter(mockUseCase, mockPodcastPlayer);
 
         mockEpisodeListView = mock(EpisodeListView.class);
         episodeListPresenter.setView(mockEpisodeListView);
@@ -44,5 +45,23 @@ public class EpisodeListPresenterTest {
         verify(mockEpisodeListView).hideRetryView();
         verify(mockEpisodeListView).showLoadingView();
         verify(mockUseCase).execute((Subscriber) anyObject());
+    }
+
+    @Test
+    public void setupMediaBarView_playerIsStopped() {
+        when(mockPodcastPlayer.isStopped()).thenReturn(true);
+
+        episodeListPresenter.setupMediaBarView();
+
+        verify(mockEpisodeListView).hideMediaBarView();
+    }
+
+    @Test
+    public void setupMediaBarView_playerIsNotStopped() {
+        when(mockPodcastPlayer.isStopped()).thenReturn(false);
+
+        episodeListPresenter.setupMediaBarView();
+
+        verify(mockEpisodeListView).showMediaBarView();
     }
 }
