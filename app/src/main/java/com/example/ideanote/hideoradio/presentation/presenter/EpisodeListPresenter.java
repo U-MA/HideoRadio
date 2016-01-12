@@ -49,6 +49,14 @@ public class EpisodeListPresenter implements Presenter {
         getEpisodes();
     }
 
+    public void setupMediaBarView() {
+        if (podcastPlayer.isStopped()) {
+            hideMediaBarView();
+        } else {
+            showMediaBarView();
+        }
+    }
+
     private void getEpisodes() {
         episodeListUseCase.execute(new EpisodeListSubscriber());
     }
@@ -81,13 +89,6 @@ public class EpisodeListPresenter implements Presenter {
         episodeListView.hideMediaBarView();
     }
 
-    public void setupMediaBarView() {
-        if (podcastPlayer.isStopped()) {
-            hideMediaBarView();
-        } else {
-            showMediaBarView();
-        }
-    }
 
     private final class EpisodeListSubscriber extends rx.Subscriber<List<Episode>> {
         @Override
