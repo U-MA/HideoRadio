@@ -1,6 +1,7 @@
 package com.example.ideanote.hideoradio;
 
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
+import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 
@@ -30,7 +31,7 @@ public class EpisodeListPresenterTest {
     @Before
     public void setup() {
         mockUseCase = mock(UseCase.class);
-        episodeListPresenter = new EpisodeListPresenter(mockUseCase);
+        episodeListPresenter = new EpisodeListPresenter(mockUseCase, mock(PodcastPlayer.class));
 
         mockEpisodeListView = mock(EpisodeListView.class);
         episodeListPresenter.setView(mockEpisodeListView);
