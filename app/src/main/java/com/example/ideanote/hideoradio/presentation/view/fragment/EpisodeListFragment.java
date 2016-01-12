@@ -177,6 +177,16 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     }
 
     @Override
+    public void showClearCacheDialog(Episode episode) {
+
+    }
+
+    @Override
+    public void downloadEpisode(Episode episode) {
+
+    }
+
+    @Override
     public void showMediaBarView() {
         binding.mediaBar.setVisibility(View.VISIBLE);
     }

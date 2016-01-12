@@ -64,4 +64,24 @@ public class EpisodeListPresenterTest {
 
         verify(mockEpisodeListView).showMediaBarView();
     }
+
+    @Test
+    public void onDownloadButtonClicked_episodeIsNotDownloaded() {
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.isDownloaded()).thenReturn(false);
+
+        episodeListPresenter.onDownloadButtonClicked(mockEpisode);
+
+        verify(mockEpisodeListView).downloadEpisode(mockEpisode);
+    }
+
+    @Test
+    public void onDownloadButtonClicked_episodeIsDownloaded() {
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.isDownloaded()).thenReturn(true);
+
+        episodeListPresenter.onDownloadButtonClicked(mockEpisode);
+
+        verify(mockEpisodeListView).showClearCacheDialog(mockEpisode);
+    }
 }

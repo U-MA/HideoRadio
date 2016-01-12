@@ -57,6 +57,14 @@ public class EpisodeListPresenter implements Presenter {
         }
     }
 
+    public void onDownloadButtonClicked(Episode episode) {
+        if (episode.isDownloaded()) {
+            episodeListView.showClearCacheDialog(episode);
+        } else {
+            episodeListView.downloadEpisode(episode);
+        }
+    }
+
     private void getEpisodes() {
         episodeListUseCase.execute(new EpisodeListSubscriber());
     }

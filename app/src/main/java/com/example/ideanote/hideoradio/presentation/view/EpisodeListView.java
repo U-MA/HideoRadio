@@ -19,4 +19,9 @@ public interface EpisodeListView {
     void showMediaBarView();
 
     void hideMediaBarView();
+
+    void showClearCacheDialog(Episode episode);
+
+    void downloadEpisode(Episode episode);
+
 }
