@@ -34,7 +34,7 @@ public class EpisodeDownloadService extends Service {
 
     private static final String TAG = EpisodeDownloadService.class.getName();
 
-    private static final String EXTRA_EPISODE_ID = "extra_episode_id";
+    public static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final int BUFFER_SIZE = 23 * 1024;
 
     private static List<Episode> downloadingList = new ArrayList<>();
