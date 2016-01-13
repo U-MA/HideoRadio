@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.di.TestApplicationModule;
@@ -71,6 +72,8 @@ public class EpisodeListActivityTest {
 
     @Test
     public void showEpisodeList() {
+        when(mockPodcastPlayer.isStopped()).thenReturn(true);
+
         intentsTestRule.launchActivity(new Intent());
 
         onView(withId(R.id.episode_list_view)).check(matches(isDisplayed()));
@@ -87,7 +90,10 @@ public class EpisodeListActivityTest {
 
     @Test
     public void visibleMediaBarWhenPlayerIsNotStopped() {
+        final String TITLE = "title";
         when(mockPodcastPlayer.isStopped()).thenReturn(false);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(
+                new Episode(null, TITLE, null, null, null, null, null));
 
         intentsTestRule.launchActivity(new Intent());
 
@@ -96,6 +102,8 @@ public class EpisodeListActivityTest {
 
     @Test
     public void invokeEpisodeDetailActivityWhenTouchCard() {
+        when(mockPodcastPlayer.isStopped()).thenReturn(true);
+
         intentsTestRule.launchActivity(new Intent());
 
         onView(withId(R.id.episode_list_view)).perform(

@@ -41,7 +41,7 @@ public class EpisodeDetailActivityTest {
 
     private final static String EXTRA_EPISODE_ID = "extra_episode_id";
 
-    Episode episode = new Select().from(Episode.class).where("Id=?", 1).executeSingle();
+    Episode episode = new Select().from(Episode.class).where("Id=?", 8).executeSingle();
 
     @Inject
     PodcastPlayer mockPodcastPlayer;
