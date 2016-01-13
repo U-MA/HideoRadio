@@ -3,6 +3,8 @@ package com.example.ideanote.hideoradio.domain.interactor;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
 import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeDownloadCompleteEvent;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -54,6 +56,10 @@ public class EpisodeDownloadUseCase {
                     while ((actual = bufferedInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
                         fileOutputStream.write(buffer, 0, actual);
                     }
+
+                    episode.setMediaLocalPath(destFile.toString());
+                    episode.save();
+                    BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
 
                     subscriber.onCompleted();
                 } catch (IOException e) {
