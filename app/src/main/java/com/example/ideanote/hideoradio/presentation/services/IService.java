@@ -4,6 +4,6 @@ import java.io.File;
 
 public interface IService {
     File getExternalFilesDir();
-    void startForegrouond();
+    void startForeground();
     void stopForeground();
 }

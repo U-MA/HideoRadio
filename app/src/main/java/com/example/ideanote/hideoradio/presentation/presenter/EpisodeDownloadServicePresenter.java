@@ -43,7 +43,7 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         String episodeId = intent.getStringExtra(EpisodeDownloadService.EXTRA_EPISODE_ID);
 
         File directory = episodeDownloadService.getExternalFilesDir();
-        episodeDownloadService.startForegrouond();
+        episodeDownloadService.startForeground();
         episodeDownloadUseCase.execute(episodeId, directory, new EpisodeDownloadServiceSubscriber());
 
         return Service.START_STICKY;
