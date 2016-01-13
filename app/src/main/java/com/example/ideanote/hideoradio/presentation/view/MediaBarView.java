@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.Episode;
+import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
@@ -21,6 +23,8 @@ public class MediaBarView extends FrameLayout {
     private ImageButton playAndStopButton;
     private ImageButton exitButton;
 
+    private PodcastPlayer podcastPlayer;
+
     public MediaBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         Log.i(TAG, "Constructor");
@@ -30,6 +34,11 @@ public class MediaBarView extends FrameLayout {
         playAndStopButton = (ImageButton) rootView.findViewById(R.id.play_and_pause);
         exitButton = (ImageButton) rootView.findViewById(R.id.exit_button);
         addView(rootView);
+
+        ApplicationComponent applicationComponent =
+                ((HideoRadioApplication) context.getApplicationContext()).getComponent();
+
+        podcastPlayer = applicationComponent.podcastPlayer();
     }
 
     public void show(Episode episode) {
@@ -47,14 +56,13 @@ public class MediaBarView extends FrameLayout {
 
     public void setMediaPlayAndPauseButton() {
         playAndStopButton.setImageResource(
-                PodcastPlayer.getInstance().isPlaying() ?
+                podcastPlayer.isPlaying() ?
                 R.drawable.ic_action_playback_pause :
                 R.drawable.ic_action_playback_play);
 
         playAndStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (podcastPlayer.isPlaying()) {
                     podcastPlayer.pause();
                     PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
@@ -74,11 +82,10 @@ public class MediaBarView extends FrameLayout {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     podcastPlayer.stop();
                     rootView.setVisibility(View.GONE);
-                    PodcastPlayer.getInstance().getService().stopSelf();
+                    podcastPlayer.getService().stopSelf();
                     // TODO: PodcastPlayerをメモリから削除
                 }
             }
