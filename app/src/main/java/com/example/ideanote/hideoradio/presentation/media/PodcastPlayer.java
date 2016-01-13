@@ -36,6 +36,7 @@ public class PodcastPlayer
         this.mediaPlayer = mediaPlayer;
     }
 
+    @Deprecated
     public static PodcastPlayer getInstance() {
         if (instance == null) {
             instance = new PodcastPlayer(new MediaPlayer());
