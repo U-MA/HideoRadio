@@ -52,23 +52,14 @@ public class MediaPlayConfirmationDialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int which) {
                     BusHolder.getInstance().post(new PlayCacheEvent());
                 }
+            })
+                    .setNegativeButton(DOWNLOAD_TEXT, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
             });
-
-            if (!EpisodeDownloadService.isDownloading(episodeId)) {
-                builder.setNegativeButton(DOWNLOAD_TEXT, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        BusHolder.getInstance().post(new DownloadEvent());
-                    }
-                });
-            } else {
-                builder.setNegativeButton(CANCEL_DOWNLOAD_TEXT, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EpisodeDownloadService.cancel(getContext(), episode);
-                    }
-                });
-            }
+            // DOWNLOADING中の動作
         }
 
         return builder.create();

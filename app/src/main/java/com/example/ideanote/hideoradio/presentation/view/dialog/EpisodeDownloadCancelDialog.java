@@ -19,13 +19,7 @@ public class EpisodeDownloadCancelDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Download cancel")
-               .setMessage("Cancel downloading?")
-               .setPositiveButton("CANCEL DOWNLOAD", new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                       EpisodeDownloadService.cancel(getContext(), episode);
-                   }
-               });
+               .setMessage("Cancel downloading?");
         return builder.create();
     }
 
