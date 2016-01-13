@@ -1,5 +1,6 @@
 package com.example.ideanote.hideoradio.presentation.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
@@ -83,12 +84,14 @@ public class EpisodeDownloadService extends Service implements IService {
     }
 
     @Override
-    public void startForeground() {
-        // TODO: startForeground();
+    public void startForeground(Episode episode) {
+        Notification notification =
+                EpisodeDownloadNotification.createBuilder(getApplicationContext(), episode).build();
+        startForeground(EpisodeDownloadNotification.DOWNLOAD_NOTIFICATION_ID, notification);
     }
 
     @Override
     public void stopForeground() {
-        // TODO: stopForeground();
+        stopForeground(true);
     }
 }

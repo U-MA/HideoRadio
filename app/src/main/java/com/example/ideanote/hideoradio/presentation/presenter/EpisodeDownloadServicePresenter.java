@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.interactor.EpisodeDownloadUseCase;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.services.IService;
@@ -43,7 +44,9 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         String episodeId = intent.getStringExtra(EpisodeDownloadService.EXTRA_EPISODE_ID);
 
         File directory = episodeDownloadService.getExternalFilesDir();
-        episodeDownloadService.startForeground();
+        Episode episode = Episode.findById(episodeId); // TODO: Use UseCase class!!
+
+        episodeDownloadService.startForeground(episode);
         episodeDownloadUseCase.execute(episodeId, directory, new EpisodeDownloadServiceSubscriber());
 
         return Service.START_STICKY;
