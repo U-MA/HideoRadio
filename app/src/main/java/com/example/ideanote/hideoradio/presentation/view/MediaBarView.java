@@ -32,19 +32,6 @@ public class MediaBarView extends FrameLayout {
         addView(rootView);
     }
 
-    public void setEpisode(Episode episode) {
-        PodcastPlayer podcastPlayer = PodcastPlayer.getInstance();
-        if (episode == null ||
-                (!podcastPlayer.isPlaying() && !podcastPlayer.isPaused())) {
-            Log.i(TAG, "View.GONE");
-            rootView.setVisibility(View.GONE);
-            return;
-        }
-        Log.i(TAG, episode.getTitle());
-
-        show(episode);
-    }
-
     public void show(Episode episode) {
         episodeTitleTextView.setText(episode.getTitle());
         episodeTitleTextView.setSelected(true);
