@@ -62,7 +62,7 @@ public class EpisodeListPresenterTest {
 
         episodeListPresenter.setupMediaBarView();
 
-        verify(mockEpisodeListView).showMediaBarView();
+        verify(mockEpisodeListView).showMediaBarView((Episode) anyObject());
     }
 
     @Test
