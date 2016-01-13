@@ -112,6 +112,39 @@ public class EpisodeListActivityTest {
         intended(hasComponent(hasClassName(EPISODE_DETAIL_ACTIVITY_NAME)));
     }
 
+    @Test
+    public void pauseWhenMediaBarViewPauseButtonClicked() {
+        final String TITLE = "title";
+
+        when(mockPodcastPlayer.isStopped()).thenReturn(false);
+        when(mockPodcastPlayer.isPlaying()).thenReturn(true);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(
+                new Episode(null, TITLE, null, null, null, null, null));
+
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.play_and_pause)).perform(click());
+
+        verify(mockPodcastPlayer).pause();
+    }
+
+    @Test
+    public void restartWhenMediaBarViewPlayButtonClicked() {
+        final String TITLE = "title";
+
+        when(mockPodcastPlayer.isStopped()).thenReturn(false);
+        when(mockPodcastPlayer.isPaused()).thenReturn(true);
+        when(mockPodcastPlayer.isPlaying()).thenReturn(false);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(
+                new Episode(null, TITLE, null, null, null, null, null));
+
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.play_and_pause)).perform(click());
+
+        verify(mockPodcastPlayer).restart();
+    }
+
     @Singleton
     @Component(modules = TestApplicationModule.class)
     public interface TestApplicationComponent extends ApplicationComponent {
