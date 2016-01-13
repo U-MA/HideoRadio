@@ -90,7 +90,8 @@ public class EpisodeListPresenter implements Presenter {
     }
 
     private void showMediaBarView() {
-        episodeListView.showMediaBarView();
+        Episode episode = podcastPlayer.getEpisode();
+        episodeListView.showMediaBarView(episode);
     }
 
     private void hideMediaBarView() {

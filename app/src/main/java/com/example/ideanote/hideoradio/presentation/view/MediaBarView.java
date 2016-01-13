@@ -54,6 +54,10 @@ public class MediaBarView extends FrameLayout {
         rootView.setVisibility(View.VISIBLE);
     }
 
+    public void hide() {
+        rootView.setVisibility(GONE);
+    }
+
     public void setMediaPlayAndPauseButton() {
         playAndStopButton.setImageResource(
                 PodcastPlayer.getInstance().isPlaying() ?

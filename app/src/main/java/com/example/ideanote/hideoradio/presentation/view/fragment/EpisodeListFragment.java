@@ -204,13 +204,13 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     }
 
     @Override
-    public void showMediaBarView() {
-        binding.mediaBar.setVisibility(View.VISIBLE);
+    public void showMediaBarView(Episode episode) {
+        binding.mediaBar.show(episode);
     }
 
     @Override
     public void hideMediaBarView() {
-        binding.mediaBar.setVisibility(View.GONE);
+        binding.mediaBar.hide();
     }
 
     @Subscribe

@@ -16,7 +16,7 @@ public interface EpisodeListView {
 
     void hideRetryView();
 
-    void showMediaBarView();
+    void showMediaBarView(Episode episode);
 
     void hideMediaBarView();
 
