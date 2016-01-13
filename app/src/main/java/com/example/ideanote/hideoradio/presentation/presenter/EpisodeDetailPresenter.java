@@ -53,8 +53,6 @@ public class EpisodeDetailPresenter implements Presenter {
             episodeDetailActivity.setPlayMediaButton();
             episodeDetailActivity.setSeekBarEnabled(false);
         }
-
-        podcastPlayer.setCurrentTimeListener(currentTimeListener);
     }
 
     @Override
@@ -134,6 +132,8 @@ public class EpisodeDetailPresenter implements Presenter {
             episodeDetailActivity.renderEpisode(episode);
             EpisodeDetailPresenter.this.episode = episode; // bad smell
             EpisodeDetailPresenter.this.episodeId = episode.getEpisodeId(); // bad smell
+
+            podcastPlayer.setCurrentTimeListener(currentTimeListener);
         }
     }
 
