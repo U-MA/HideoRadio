@@ -67,7 +67,7 @@ public class EpisodeDetailPresenter implements Presenter {
         BusHolder.getInstance().unregister(this);
 
         if (!podcastPlayer.isPlaying() && podcastPlayer.getService() != null) {
-            PodcastPlayer.getInstance().getService().stopSelf();
+            podcastPlayer.getService().stopSelf();
         }
     }
 
