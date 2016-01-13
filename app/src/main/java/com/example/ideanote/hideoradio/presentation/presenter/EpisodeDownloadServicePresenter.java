@@ -4,9 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.interactor.EpisodeDownloadUseCase;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.presentation.services.IService;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -14,7 +16,7 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
 
     private final EpisodeDownloadUseCase episodeDownloadUseCase;
 
-    private Service episodeDownloadService;
+    private IService episodeDownloadService;
 
     @Inject
     public EpisodeDownloadServicePresenter(EpisodeDownloadUseCase episodeDownloadUseCase) {
@@ -36,25 +38,26 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         return null;
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flag, int id) {
         String episodeId = intent.getStringExtra(EpisodeDownloadService.EXTRA_EPISODE_ID);
 
-        episodeDownloadUseCase.download(episodeId, new EpisodeDownloadServiceSubscriber());
+        File directory = episodeDownloadService.getExternalFilesDir();
+        episodeDownloadService.startForegrouond();
+        episodeDownloadUseCase.execute(episodeId, directory, new EpisodeDownloadServiceSubscriber());
 
         return Service.START_STICKY;
     }
 
-    public void setService(Service episodeDownloadService) {
+    public void setService(IService episodeDownloadService) {
         this.episodeDownloadService = episodeDownloadService;
     }
 
 
-    private class EpisodeDownloadServiceSubscriber extends rx.Subscriber<Episode> {
+    private class EpisodeDownloadServiceSubscriber extends rx.Subscriber<Integer> {
         @Override
         public void onCompleted() {
-
+            episodeDownloadService.stopForeground();
         }
 
         @Override
@@ -63,8 +66,8 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         }
 
         @Override
-        public void onNext(Episode episode) {
-
+        public void onNext(Integer integer) {
+            // do nothing
         }
     }
 }

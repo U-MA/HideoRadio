@@ -5,12 +5,15 @@ import android.content.Intent;
 import com.example.ideanote.hideoradio.domain.interactor.EpisodeDownloadUseCase;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDownloadServicePresenter;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.presentation.services.IService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.io.File;
 
 import rx.Subscriber;
 
@@ -37,8 +40,12 @@ public class EpisodeDownloadServicePresenterTest {
         Intent intent = new Intent();
         intent.putExtra(EpisodeDownloadService.EXTRA_EPISODE_ID, EPISODE_ID);
 
+        IService mockIService = mock(IService.class);
+        episodeDownloadServicePresenter.setService(mockIService);
+
         episodeDownloadServicePresenter.onStartCommand(intent, 0, 0);
 
-        verify(mockEpisodeDownloadUseCase).download((String) anyObject(), (Subscriber) anyObject());
+        verify(mockEpisodeDownloadUseCase).execute(
+                (String) anyObject(), (File) anyObject(), (Subscriber) anyObject());
     }
 }
