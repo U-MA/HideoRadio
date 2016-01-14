@@ -44,15 +44,7 @@ public class EpisodeDetailPresenter implements Presenter {
 
     @Override
     public void onCreate() {
-        if (podcastPlayer.isPlaying()) {
-            currentTimeUpdate(podcastPlayer.getCurrentPosition());
-            episodeDetailActivity.setPauseMediaButton();
-            episodeDetailActivity.setSeekBarEnabled(true);
-        } else {
-            currentTimeUpdate(0);
-            episodeDetailActivity.setPlayMediaButton();
-            episodeDetailActivity.setSeekBarEnabled(false);
-        }
+        // do nothing
     }
 
     @Override
@@ -103,6 +95,18 @@ public class EpisodeDetailPresenter implements Presenter {
         this.episodeDetailActivity = episodeDetailActivity;
     }
 
+    public void setupMediaView() {
+         if (podcastPlayer.isPlaying() && podcastPlayer.has(episode)) {
+            currentTimeUpdate(podcastPlayer.getCurrentPosition());
+            episodeDetailActivity.setPauseMediaButton();
+            episodeDetailActivity.setSeekBarEnabled(true);
+        } else {
+            currentTimeUpdate(0);
+            episodeDetailActivity.setPlayMediaButton();
+            episodeDetailActivity.setSeekBarEnabled(false);
+        }
+    }
+
     public void initialize() {
         episodeDetailUseCase.execute(new EpisodeDetailSubscriber());
     }
@@ -134,6 +138,8 @@ public class EpisodeDetailPresenter implements Presenter {
             EpisodeDetailPresenter.this.episodeId = episode.getEpisodeId(); // bad smell
 
             podcastPlayer.setCurrentTimeListener(currentTimeListener);
+
+            EpisodeDetailPresenter.this.setupMediaView();
         }
     }
 

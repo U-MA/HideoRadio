@@ -11,6 +11,9 @@ import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailA
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -24,6 +27,7 @@ public class EpisodeDetailPresenterTest {
     EpisodeDetailActivity mockEpisodeDetailActivity;
 
     UseCase mockUseCase;
+
     PodcastPlayer mockPodcastPlayer;
 
     EpisodeDetailPresenter episodeDetailPresenter;
@@ -39,10 +43,11 @@ public class EpisodeDetailPresenterTest {
     }
 
     @Test
-    public void onCreate_playerIsPlaying() {
+    public void setupMediaView_playerIsPlaying() {
         when(mockPodcastPlayer.isPlaying()).thenReturn(true);
+        when(mockPodcastPlayer.has(any(Episode.class))).thenReturn(true);
 
-        episodeDetailPresenter.onCreate();
+        episodeDetailPresenter.setupMediaView();
 
         verify(mockEpisodeDetailActivity).setPauseMediaButton();
         verify(mockEpisodeDetailActivity).setSeekBarEnabled(true);
@@ -50,20 +55,20 @@ public class EpisodeDetailPresenterTest {
     }
 
     @Test
-    public void onCreate_playerIsPaused() {
+    public void setupMediaView_playerIsPaused() {
         when(mockPodcastPlayer.isPaused()).thenReturn(true);
 
-        episodeDetailPresenter.onCreate();
+        episodeDetailPresenter.setupMediaView();
 
         verify(mockEpisodeDetailActivity).setPlayMediaButton();
         verify(mockEpisodeDetailActivity).setSeekBarEnabled(false);
         verify(mockEpisodeDetailActivity).currentTimeUpdate(anyInt());
     }
 
-    public void onCreate_playerIsStopped() {
+    public void setupMediaView_playerIsStopped() {
         when(mockPodcastPlayer.isStopped()).thenReturn(true);
 
-        episodeDetailPresenter.onCreate();
+        episodeDetailPresenter.setupMediaView();
 
         verify(mockEpisodeDetailActivity).setPlayMediaButton();
         verify(mockEpisodeDetailActivity).setSeekBarEnabled(false);

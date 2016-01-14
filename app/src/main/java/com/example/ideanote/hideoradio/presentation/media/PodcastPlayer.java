@@ -159,6 +159,13 @@ public class PodcastPlayer
         return false;
     }
 
+    public boolean has(Episode episode) {
+        if (this.episode == null || episode == null) {
+            return false;
+        }
+        return this.episode.isEquals(episode);
+    }
+
     public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
         this.currentTimeListener = currentTimeListener;
 
