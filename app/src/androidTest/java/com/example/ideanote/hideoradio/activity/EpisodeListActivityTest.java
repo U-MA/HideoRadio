@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.R;
@@ -143,6 +144,20 @@ public class EpisodeListActivityTest {
         onView(withId(R.id.play_and_pause)).perform(click());
 
         verify(mockPodcastPlayer).restart();
+    }
+
+    @Test
+    public void launchIntentWhenMediaBarViewIsTouched() {
+        Episode episode = new Select().from(Episode.class).where("Id=?", 8).executeSingle();
+
+        when(mockPodcastPlayer.isPlaying()).thenReturn(true);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(episode);
+
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.media_bar)).perform(click());
+
+        intended(hasComponent(hasClassName(EPISODE_DETAIL_ACTIVITY_NAME)));
     }
 
     @Singleton

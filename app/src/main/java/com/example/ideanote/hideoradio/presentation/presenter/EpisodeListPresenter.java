@@ -1,10 +1,15 @@
 package com.example.ideanote.hideoradio.presentation.presenter;
 
 
+import android.content.Intent;
+import android.view.View;
+
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.domain.interactor.UseCase;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 
 import java.util.List;
 
@@ -63,6 +68,12 @@ public class EpisodeListPresenter implements Presenter {
         } else {
             episodeListView.downloadEpisode(episode);
         }
+    }
+
+    public void onMediaBarViewClicked(View v) {
+        Intent intent = new Intent(v.getContext(), EpisodeDetailActivity.class);
+        intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, podcastPlayer.getEpisode().getEpisodeId());
+        episodeListView.launchIntent(intent);
     }
 
     private void getEpisodes() {

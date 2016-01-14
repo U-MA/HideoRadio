@@ -91,9 +91,7 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         binding.mediaBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), EpisodeDetailActivity.class);
-                intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, PodcastPlayer.getInstance().getEpisode().getEpisodeId());
-                startActivity(intent);
+                episodeListPresenter.onMediaBarViewClicked(v);
             }
         });
 
@@ -123,6 +121,10 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     public void onDestroy() {
         super.onDestroy();
         episodeListPresenter.onDestroy();
+    }
+
+    public void launchIntent(Intent intent) {
+        startActivity(intent);
     }
 
     public void setupMediaBarView() {
