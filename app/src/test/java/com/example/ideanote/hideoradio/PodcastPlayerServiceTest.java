@@ -46,11 +46,8 @@ public class PodcastPlayerServiceTest {
                 DaggerPodcastPlayerServiceTest_TestPodcastPlayerServiceComponent.builder()
                         .testPodcastPlayerServiceModule(new TestPodcastPlayerServiceModule()).build());
 
-        ApplicationComponent applicationComponent =
-                ((HideoRadioApplication) RuntimeEnvironment.application).getComponent();
-
         service = new PodcastPlayerService();
-        applicationComponent.inject(service);
+        service.onCreate();
     }
 
     @After
@@ -60,8 +57,6 @@ public class PodcastPlayerServiceTest {
 
     @Test
     public void onCreate() {
-        service.onCreate();
-
         verify(mockPodcastPlayer).setService(service);
     }
 

@@ -128,7 +128,6 @@ public class PodcastPlayerTest {
     public void onCompletion() {
         podcastPlayer.onCompletion(mockMediaPlayer);
 
-        verify(mockMediaPlayer).release();
         assertTrue(podcastPlayer.isStopped());
     }
 
