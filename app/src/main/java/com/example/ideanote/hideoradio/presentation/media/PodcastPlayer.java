@@ -100,9 +100,9 @@ public class PodcastPlayer
     public void release() {
         mediaPlayer.pause();
         mediaPlayer.reset();
-        mediaPlayer.release();
 
         instance = null;
+        episode = null;
     }
 
     public void start() {
