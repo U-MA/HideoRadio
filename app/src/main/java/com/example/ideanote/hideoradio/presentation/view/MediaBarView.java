@@ -10,10 +10,14 @@ import android.widget.TextView;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.MediaServiceStopEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
+
+import rx.internal.operators.OperatorBufferWithSingleObservable;
 
 public class MediaBarView extends FrameLayout {
     private static String TAG = MediaBarView.class.getSimpleName();
@@ -85,7 +89,8 @@ public class MediaBarView extends FrameLayout {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     podcastPlayer.stop();
                     rootView.setVisibility(View.GONE);
-                    podcastPlayer.getService().stopSelf();
+
+                    BusHolder.getInstance().post(new MediaServiceStopEvent());
                     // TODO: PodcastPlayerをメモリから削除
                 }
             }

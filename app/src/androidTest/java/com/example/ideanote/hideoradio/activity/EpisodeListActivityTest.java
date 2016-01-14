@@ -37,6 +37,7 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
 
 @RunWith(AndroidJUnit4.class)
@@ -158,6 +159,21 @@ public class EpisodeListActivityTest {
         onView(withId(R.id.media_bar)).perform(click());
 
         intended(hasComponent(hasClassName(EPISODE_DETAIL_ACTIVITY_NAME)));
+    }
+
+    @Test
+    public void mediaBarViewIsGoneWhenClickExitButton() {
+        final String TITLE = "title";
+
+        when(mockPodcastPlayer.isPlaying()).thenReturn(true);
+        when(mockPodcastPlayer.getEpisode()).thenReturn(
+                new Episode(null, TITLE, null, null, null, null, null));
+
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.exit_button)).perform(click());
+
+        onView(withId(R.id.media_bar)).check(matches(not(isDisplayed())));
     }
 
     @Singleton

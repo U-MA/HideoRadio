@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
@@ -93,7 +94,10 @@ public class PodcastPlayerService extends Service {
         applicationComponent.inject(this);
 
         podcastPlayer.setService(this);
+
+        BusHolder.getInstance().register(this);
     }
+
 
     /**
      * Process PodcastPlayer
@@ -136,6 +140,8 @@ public class PodcastPlayerService extends Service {
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
         super.onDestroy();
+
+        BusHolder.getInstance().unregister(this);
     }
 
     /**
