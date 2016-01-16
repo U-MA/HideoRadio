@@ -12,17 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
-import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
-import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
-import com.example.ideanote.hideoradio.RssParserTask;
 import com.example.ideanote.hideoradio.databinding.FragmentEpisodeListBinding;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.EpisodeDownloadCompleteEvent;
@@ -149,20 +145,6 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
     private void loadEpisodeList() {
         episodeListPresenter.loadEpisodes();
-    }
-
-    public void requestFeed() {
-        RecyclerViewAdapter adapter = (RecyclerViewAdapter) binding.episodeListView.getAdapter();
-        RssParserTask task = new RssParserTask(getContext(), adapter);
-        task.execute(RSS_FEED_URL);
-    }
-
-    private void setupUI() {
-        if (new Select().from(Episode.class).execute().size() == 0) {
-            binding.episodeListView.setVisibility(View.GONE);
-            // binding.loadingText.setVisibility(View.VISIBLE);
-            // binding.progressBar.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
