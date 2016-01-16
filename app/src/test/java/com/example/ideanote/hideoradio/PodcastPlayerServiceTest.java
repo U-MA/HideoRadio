@@ -112,26 +112,20 @@ public class PodcastPlayerServiceTest {
 
     @Test
     public void onStartCommand_actionStop() {
-        PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-
         Intent intent = PodcastPlayerService.createStopIntent(
                 RuntimeEnvironment.application);
         service.onStartCommand(intent, 0, 0);
 
         verify(mockPodcastPlayer).stop();
-        verify(mockManager).cancel();
     }
 
     @Test
     public void onStartCommand_actionRestart() {
-        PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-
         Intent intent = PodcastPlayerService.createRestartIntent(
                 RuntimeEnvironment.application);
         service.onStartCommand(intent, 0, 0);
 
         verify(mockPodcastPlayer).restart();
-        verify(mockManager).startForeground();
     }
 
     @Singleton
@@ -176,12 +170,6 @@ public class PodcastPlayerServiceTest {
         @Provides
         EpisodeRepository provideEpisodeRepository(EpisodeDataRepository episodeDataRepository) {
             return episodeDataRepository;
-        }
-
-        @Provides
-        @Singleton
-        public PodcastNotificationManager providePodcastNotificationManager() {
-            return new PodcastNotificationManager();
         }
     }
 }
