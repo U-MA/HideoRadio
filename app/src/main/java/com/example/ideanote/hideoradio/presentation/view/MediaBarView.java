@@ -89,6 +89,7 @@ public class MediaBarView extends FrameLayout {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     podcastPlayer.stop();
                     podcastPlayer.release();
+                    v.getContext().startService(PodcastPlayerService.createStopIntent(v.getContext()));
                     rootView.setVisibility(View.GONE);
 
                     BusHolder.getInstance().post(new MediaServiceStopEvent());
