@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.Timer;
@@ -75,6 +76,7 @@ public class PodcastPlayer
      * @param episode An {@link Episode} to play.
      */
     public void start(Context context, Episode episode) {
+        Log.i(TAG, "start(Context, Episode)");
 
         // ちょっと怪しいコード
         mediaPlayer.reset();
@@ -106,15 +108,18 @@ public class PodcastPlayer
     }
 
     public void start() {
+        Log.i(TAG, "start()");
         restart();
     }
 
     public void restart() {
+        Log.i(TAG, "restart()");
         mediaPlayer.start();
         state = PlayerState.PLAYING;
     }
 
     public void pause() {
+        Log.i(TAG, "pause");
         mediaPlayer.pause();
         state = PlayerState.PAUSED;
     }
@@ -124,6 +129,7 @@ public class PodcastPlayer
     }
 
     public void stop() {
+        Log.i(TAG, "stop()");
         mediaPlayer.pause();
 
         this.seekTo(0);
