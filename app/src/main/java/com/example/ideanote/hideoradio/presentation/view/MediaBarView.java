@@ -1,6 +1,7 @@
 package com.example.ideanote.hideoradio.presentation.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationCompo
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 
 import rx.internal.operators.OperatorBufferWithSingleObservable;
 
@@ -69,13 +71,11 @@ public class MediaBarView extends FrameLayout {
             public void onClick(View v) {
                 if (podcastPlayer.isPlaying()) {
                     podcastPlayer.pause();
-                    PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
-                            PodcastPlayerNotification.PAUSE);
+                    v.getContext().startService(PodcastPlayerService.createPauseIntent(v.getContext()));
                     playAndStopButton.setImageResource(R.drawable.ic_action_playback_play);
                 } else {
                     podcastPlayer.restart();
-                    PodcastPlayerNotification.notify(getContext(), podcastPlayer.getEpisode(),
-                            PodcastPlayerNotification.PLAY);
+                    v.getContext().startService(PodcastPlayerService.createRestartIntent(v.getContext()));
                     playAndStopButton.setImageResource(R.drawable.ic_action_playback_pause);
                 }
             }

@@ -1,8 +1,11 @@
 package com.example.ideanote.hideoradio;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.ideanote.hideoradio.data.executor.JobExecutor;
 import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
@@ -13,12 +16,16 @@ import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
+import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
 import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -36,8 +43,17 @@ import static org.mockito.Mockito.*;
 @Config(constants = BuildConfig.class)
 public class PodcastPlayerServiceTest {
 
+    private final static String EPISODE_ID = "episode_id";
+
     private PodcastPlayer mockPodcastPlayer;
 
+    @Mock
+    private NotificationManagerCompat notificationManagerCompat;
+
+    @Mock
+    private PodcastPlayerNotification podcastPlayerNotification;
+
+    @InjectMocks
     private PodcastPlayerService service;
 
     @Before
@@ -48,6 +64,13 @@ public class PodcastPlayerServiceTest {
 
         service = new PodcastPlayerService();
         service.onCreate();
+
+        MockitoAnnotations.initMocks(this);
+
+        when(podcastPlayerNotification.createBuilderForPlaying()).thenReturn(
+                new NotificationCompat.Builder(RuntimeEnvironment.application));
+        when(podcastPlayerNotification.createBuilderForPaused()).thenReturn(
+                new NotificationCompat.Builder(RuntimeEnvironment.application));
     }
 
     @After
@@ -65,40 +88,32 @@ public class PodcastPlayerServiceTest {
         assertNull(service.onBind(null));
     }
 
-    // TODO もう少しうまいテスト方法があるはず
     @Test
-    public void onStartCommand_actionStart() {
-        final String EPISODE_ID = "123";
-
-        PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-        service.setManager(mockManager);
-
+    public void onStartCommand_actionStart_startToPlayAndNotifyPlayNotification() {
         Intent intent = PodcastPlayerService.createStartIntent(
-                RuntimeEnvironment.application,
-                EPISODE_ID);
+                RuntimeEnvironment.application, EPISODE_ID);
+
         service.onStartCommand(intent, 0, 0);
 
-        verify(mockPodcastPlayer).start((Context) anyObject(), (Episode) anyObject());
-        verify(mockManager).startForeground();
+        verify(mockPodcastPlayer).start(any(Context.class), any(Episode.class));
+        verify(podcastPlayerNotification).createBuilderForPlaying();
+        verify(notificationManagerCompat).notify(anyInt(), any(Notification.class));
     }
 
     @Test
     public void onStartCommand_actionPause() {
-        PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-        service.setManager(mockManager);
+        Intent intent = PodcastPlayerService.createPauseIntent(RuntimeEnvironment.application);
 
-        Intent intent = PodcastPlayerService.createPauseIntent(
-                RuntimeEnvironment.application);
         service.onStartCommand(intent, 0, 0);
 
         verify(mockPodcastPlayer).pause();
-        verify(mockManager).stopForeground();
+        verify(podcastPlayerNotification).createBuilderForPaused();
+        verify(notificationManagerCompat).notify(anyInt(), any(Notification.class));
     }
 
     @Test
     public void onStartCommand_actionStop() {
         PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-        service.setManager(mockManager);
 
         Intent intent = PodcastPlayerService.createStopIntent(
                 RuntimeEnvironment.application);
@@ -111,7 +126,6 @@ public class PodcastPlayerServiceTest {
     @Test
     public void onStartCommand_actionRestart() {
         PodcastNotificationManager mockManager = mock(PodcastNotificationManager.class);
-        service.setManager(mockManager);
 
         Intent intent = PodcastPlayerService.createRestartIntent(
                 RuntimeEnvironment.application);

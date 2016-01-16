@@ -1,87 +1,98 @@
 package com.example.ideanote.hideoradio.presentation.notifications;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 
 public class PodcastPlayerNotification {
     private final static int PLAYBACK_NOTIFICATION_ID = 1000;
+    private final static int REQUEST_CODE = 0;
 
-    public final static String PLAY = "notification_play";
-    public final static String PAUSE = "notification_pause";
+    private final static String PLAY_TITLE  = "PLAY";
+    private final static String PAUSE_TITLE = "PAUSE";
+    private final static String STOP_TITLE  = "STOP";
 
-    private final static String TAG = PodcastPlayerNotification.class.getSimpleName();
+    private Context context;
+    private String episodeId;
+    private String title;
+    private String text;
 
-    private PodcastPlayerNotification() {
+    public PodcastPlayerNotification(Context context) {
+        this.context = context;
     }
 
-    public static void notify(Context context, Episode episode, String kind) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        switch (kind) {
-            case PLAY:
-                manager.notify(PLAYBACK_NOTIFICATION_ID, buildPlayNotification(context, episode));
-                break;
-            case PAUSE:
-                manager.notify(PLAYBACK_NOTIFICATION_ID, buildPauseNotification(context, episode));
-                break;
-            default:
-                Log.i(TAG, "Invalid kind");
-                break;
-        }
+    /**
+     * Note: You must call this method before any createBuilder method.
+     */
+    public void initialize(Episode episode) {
+        this.episodeId = episode.getEpisodeId();
+        this.title = episode.getTitle();
+        this.text = episode.getDescription();
     }
 
-    public static void cancel(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(PLAYBACK_NOTIFICATION_ID);
-    }
+    public NotificationCompat.Builder createBuilderForPlaying() {
+        Intent intentToLaunch = new Intent(context, EpisodeDetailActivity.class);
+        intentToLaunch.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episodeId);
 
-    private static PendingIntent createPauseIntent(Context context, Episode episode) {
-        Intent intent = PodcastPlayerService.createPlayPauseIntent(context, episode);
-        return PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-    }
+        PendingIntent intent = PendingIntent.getActivity(
+                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_ONE_SHOT);
 
-    private static PendingIntent createStopIntent(Context context, Episode episode) {
-        Intent intent = PodcastPlayerService.createStopIntent(context);
-        return PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-    }
-
-    public static Notification buildPlayNotification(Context context, Episode episode) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        return new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_play)
-                .setContentTitle(episode.getTitle())
-                .setContentText(episode.getDescription())
-                .addAction(R.drawable.ic_action_playback_pause, "PAUSE", createPauseIntent(context, episode))
-                .addAction(R.drawable.ic_action_cancel, "STOP", createStopIntent(context, episode))
-                .setOngoing(true);
-
-        PendingIntent intent = PendingIntent.getActivity(context, 0,
-                EpisodeListActivity.createIntent(context, episode.getEpisodeId()), PendingIntent.FLAG_ONE_SHOT);
-        builder.setContentIntent(intent);
-
-        return builder.build();
+                .setContentTitle(title)
+                .setContentText(text)
+                .addAction(createActionPause())
+                .addAction(createActionStop())
+                .setContentIntent(intent);
     }
 
-    public static Notification buildPauseNotification(Context context, Episode episode) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+    public NotificationCompat.Builder createBuilderForPaused() {
+        Intent intentToLaunch = new Intent(context, EpisodeDetailActivity.class);
+        intentToLaunch.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episodeId);
+
+        PendingIntent intent = PendingIntent.getActivity(
+                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_ONE_SHOT);
+
+        return new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_pause)
-                .setContentTitle(episode.getTitle())
-                .setContentText(episode.getDescription())
-                .addAction(R.drawable.ic_action_playback_play, "PLAY", createPauseIntent(context, episode))
-                .addAction(R.drawable.ic_action_cancel, "STOP", createStopIntent(context, episode));
+                .setContentTitle(title)
+                .setContentText(text)
+                .addAction(createActionRestart())
+                .addAction(createActionStop())
+                .setContentIntent(intent);
+    }
 
-        PendingIntent intent = PendingIntent.getActivity(context, 0,
-                EpisodeListActivity.createIntent(context, episode.getEpisodeId()), PendingIntent.FLAG_ONE_SHOT);
-        builder.setContentIntent(intent);
+    private NotificationCompat.Action createActionRestart() {
+        Intent intent = PodcastPlayerService.createRestartIntent(context);
+        PendingIntent pendingIntent =
+                PendingIntent.getService(context, PLAYBACK_NOTIFICATION_ID,
+                        intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return new NotificationCompat.Action(
+                R.drawable.ic_action_playback_play, PLAY_TITLE, pendingIntent);
+    }
 
-        return builder.build();
+    private NotificationCompat.Action createActionPause() {
+        Intent intent = PodcastPlayerService.createPauseIntent(context);
+        PendingIntent pendingIntent =
+                PendingIntent.getService(context, PLAYBACK_NOTIFICATION_ID,
+                        intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return new NotificationCompat.Action(
+                R.drawable.ic_action_playback_pause, PAUSE_TITLE, pendingIntent);
+    }
+
+    private NotificationCompat.Action createActionStop() {
+        Intent intent = PodcastPlayerService.createStopIntent(context);
+        PendingIntent pendingIntent =
+                PendingIntent.getService(context, PLAYBACK_NOTIFICATION_ID,
+                        intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return new NotificationCompat.Action(
+                R.drawable.ic_action_cancel, STOP_TITLE, pendingIntent);
     }
 }

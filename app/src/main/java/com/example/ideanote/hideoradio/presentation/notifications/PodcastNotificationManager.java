@@ -37,7 +37,7 @@ public class PodcastNotificationManager {
     }
 
     public void stopForeground() {
-        podcastPlayerService.stopForeground(false);
+        // podcastPlayerService.stopForeground(false);
     }
 
     public void cancel() {

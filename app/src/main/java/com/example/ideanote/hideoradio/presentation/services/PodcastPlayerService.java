@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
@@ -14,6 +15,7 @@ import com.example.ideanote.hideoradio.presentation.events.MediaServiceStopEvent
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
+import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -33,13 +35,14 @@ public class PodcastPlayerService extends Service {
     public final static String ACTION_PAUSE   = "com.example.ideanote.hideoradio.pause";
     private final static String ACTION_STOP    = "com.example.ideanote.hideoradio.stop";
 
-    private final static String ACTION_PLAY_AND_PAUSE = "action_play_and_pause"; // deprecated
+    private final static int NOTIFICATION_ID = 5555;
 
     @Inject
     PodcastPlayer podcastPlayer;
 
-    @Inject
-    PodcastNotificationManager podcastNotificationManager;
+    PodcastPlayerNotification podcastPlayerNotification;
+
+    NotificationManagerCompat notificationManagerCompat;
 
     public static Intent createStartIntent(Context context, String episodeId) {
         Intent intent = new Intent(context, PodcastPlayerService.class);
@@ -70,19 +73,6 @@ public class PodcastPlayerService extends Service {
         return intent;
     }
 
-    @Deprecated
-    public static Intent createPlayPauseIntent(Context context, Episode episode) {
-        Intent intent = new Intent(context, PodcastPlayerService.class);
-        intent.setAction(ACTION_PLAY_AND_PAUSE);
-        intent.putExtra(EXTRA_EPISODE_ID, episode.getEpisodeId());
-
-        return intent;
-    }
-
-    public void setManager(PodcastNotificationManager podcastNotificationManager) {
-        this.podcastNotificationManager = podcastNotificationManager;
-    }
-
     /**
      * Instance PodcastPlayer
      */
@@ -97,9 +87,11 @@ public class PodcastPlayerService extends Service {
 
         podcastPlayer.setService(this);
 
+        notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+        podcastPlayerNotification = new PodcastPlayerNotification(getApplicationContext());
+
         BusHolder.getInstance().register(this);
     }
-
 
     /**
      * Process PodcastPlayer
@@ -117,15 +109,19 @@ public class PodcastPlayerService extends Service {
         switch (action) {
             case ACTION_START:
                 start(episodeId);
+                playNotificationNotify(episodeId);
                 break;
             case ACTION_RESTART:
                 restart();
+                restartNotificationNotify(episodeId);
                 break;
             case ACTION_PAUSE:
                 pause();
+                pausedNotificationNotify(episodeId);
                 break;
             case ACTION_STOP:
                 stop();
+                cancelNotification();
                 break;
         }
 
@@ -146,6 +142,29 @@ public class PodcastPlayerService extends Service {
         BusHolder.getInstance().unregister(this);
     }
 
+    private void playNotificationNotify(String episodeId) {
+        Episode episode = Episode.findById(episodeId); // TODO: Use Repository
+
+        podcastPlayerNotification.initialize(episode);
+
+        notificationManagerCompat.notify(NOTIFICATION_ID,
+                podcastPlayerNotification.createBuilderForPlaying().build());
+    }
+
+    private void restartNotificationNotify(String episodeId) {
+        notificationManagerCompat.notify(NOTIFICATION_ID,
+                podcastPlayerNotification.createBuilderForPlaying().build());
+    }
+
+    private void pausedNotificationNotify(String episodeId) {
+        notificationManagerCompat.notify(NOTIFICATION_ID,
+                podcastPlayerNotification.createBuilderForPaused().build());
+    }
+
+    private void cancelNotification() {
+        notificationManagerCompat.cancel(NOTIFICATION_ID);
+    }
+
     /**
      * Start a new episode.
      *
@@ -162,8 +181,6 @@ public class PodcastPlayerService extends Service {
         Episode episode = Episode.findById(episodeId);
 
         podcastPlayer.start(getApplicationContext(), episode);
-        podcastNotificationManager.setService(this);
-        podcastNotificationManager.startForeground();
     }
 
     /**
@@ -171,7 +188,6 @@ public class PodcastPlayerService extends Service {
      */
     private void restart() {
         podcastPlayer.restart();
-        podcastNotificationManager.startForeground();
     }
 
     /**
@@ -179,7 +195,6 @@ public class PodcastPlayerService extends Service {
      */
     private void pause() {
         podcastPlayer.pause();
-        podcastNotificationManager.stopForeground();
     }
 
     /**
@@ -188,7 +203,6 @@ public class PodcastPlayerService extends Service {
     private void stop() {
         podcastPlayer.stop();
         podcastPlayer.release();
-        podcastNotificationManager.cancel();
         stopSelf();
     }
 

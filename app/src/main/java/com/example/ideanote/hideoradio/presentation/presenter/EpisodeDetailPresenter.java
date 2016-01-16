@@ -44,12 +44,12 @@ public class EpisodeDetailPresenter implements Presenter {
 
     @Override
     public void onCreate() {
-        // do nothing
+        BusHolder.getInstance().register(this);
     }
 
     @Override
     public void onResume() {
-        BusHolder.getInstance().register(this);
+        // do nothing
     }
 
     @Override
