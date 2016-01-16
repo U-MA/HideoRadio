@@ -13,7 +13,6 @@ import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
 import com.example.ideanote.hideoradio.presentation.UIThread;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
-import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
 import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;

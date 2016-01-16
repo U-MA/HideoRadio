@@ -14,7 +14,6 @@ import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.MediaServiceStopEvent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
-import com.example.ideanote.hideoradio.presentation.notifications.PodcastNotificationManager;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
 import com.squareup.otto.Subscribe;
 
