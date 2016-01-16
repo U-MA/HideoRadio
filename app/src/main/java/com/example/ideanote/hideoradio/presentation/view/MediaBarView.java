@@ -70,11 +70,9 @@ public class MediaBarView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (podcastPlayer.isPlaying()) {
-                    podcastPlayer.pause();
                     v.getContext().startService(PodcastPlayerService.createPauseIntent(v.getContext()));
                     playAndStopButton.setImageResource(R.drawable.ic_action_playback_play);
                 } else {
-                    podcastPlayer.restart();
                     v.getContext().startService(PodcastPlayerService.createRestartIntent(v.getContext()));
                     playAndStopButton.setImageResource(R.drawable.ic_action_playback_pause);
                 }
@@ -87,8 +85,6 @@ public class MediaBarView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
-                    podcastPlayer.stop();
-                    podcastPlayer.release();
                     v.getContext().startService(PodcastPlayerService.createStopIntent(v.getContext()));
                     rootView.setVisibility(View.GONE);
 
