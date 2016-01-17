@@ -42,7 +42,7 @@ public class PodcastPlayerNotification {
         intentToLaunch.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episodeId);
 
         PendingIntent intent = PendingIntent.getActivity(
-                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_ONE_SHOT);
+                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_play)
@@ -58,7 +58,7 @@ public class PodcastPlayerNotification {
         intentToLaunch.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episodeId);
 
         PendingIntent intent = PendingIntent.getActivity(
-                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_ONE_SHOT);
+                context, REQUEST_CODE, intentToLaunch, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_playback_pause)
