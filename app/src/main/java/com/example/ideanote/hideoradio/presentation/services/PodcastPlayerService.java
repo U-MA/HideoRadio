@@ -143,16 +143,18 @@ public class PodcastPlayerService extends Service {
 
         podcastPlayerNotification.initialize(episode);
 
-        notificationManagerCompat.notify(NOTIFICATION_ID,
-                podcastPlayerNotification.createBuilderForPlaying().build());
+        Log.i(TAG, "startForeground");
+        startForeground(NOTIFICATION_ID, podcastPlayerNotification.createBuilderForPlaying().build());
     }
 
     private void restartNotificationNotify(String episodeId) {
-        notificationManagerCompat.notify(NOTIFICATION_ID,
-                podcastPlayerNotification.createBuilderForPlaying().build());
+        Log.i(TAG, "startForeground");
+        startForeground(NOTIFICATION_ID, podcastPlayerNotification.createBuilderForPlaying().build());
     }
 
     private void pausedNotificationNotify(String episodeId) {
+        Log.i(TAG, "stopForeground");
+        stopForeground(false);
         notificationManagerCompat.notify(NOTIFICATION_ID,
                 podcastPlayerNotification.createBuilderForPaused().build());
     }
