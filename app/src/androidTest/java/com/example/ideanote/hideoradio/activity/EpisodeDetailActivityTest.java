@@ -64,6 +64,7 @@ public class EpisodeDetailActivityTest {
         application.setComponent(component);
 
         component.inject(this);
+        reset(mockPodcastPlayer);
     }
 
     @After
