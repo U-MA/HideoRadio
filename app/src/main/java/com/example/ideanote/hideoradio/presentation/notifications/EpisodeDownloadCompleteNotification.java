@@ -9,12 +9,12 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 
 public class EpisodeDownloadCompleteNotification {
-    private final static int DOWNLOAD_COMPLETE_NOTIFICATION_ID = 3000;
+    public final static int DOWNLOAD_COMPLETE_NOTIFICATION_ID = 3000;
 
 
     public static NotificationCompat.Builder createBuilder(Context context, Episode episode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_action_tick)
                 .setContentTitle("Download completed")
                 .setContentText(episode.getTitle());
 

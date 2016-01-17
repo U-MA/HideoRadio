@@ -33,10 +33,10 @@ public class EpisodeDownloadUseCase {
         this.postExecutionThread = postExecutionThread;
     }
 
-    public Observable<Integer> buildUseCaseObservable(final String episodeId, final File directory) {
-        return Observable.create(new Observable.OnSubscribe<Integer>() {
+    public Observable<Episode> buildUseCaseObservable(final String episodeId, final File directory) {
+        return Observable.create(new Observable.OnSubscribe<Episode>() {
             @Override
-            public void call(Subscriber<? super Integer> subscriber) {
+            public void call(Subscriber<? super Episode> subscriber) {
                 try {
                     Episode episode = Episode.findById(episodeId);
                     URL url = new URL(episode.getEnclosure().toString());
@@ -61,6 +61,7 @@ public class EpisodeDownloadUseCase {
                     episode.save();
                     BusHolder.getInstance().post(new EpisodeDownloadCompleteEvent());
 
+                    subscriber.onNext(episode);
                     subscriber.onCompleted();
                 } catch (IOException e) {
                     subscriber.onError(e);

@@ -7,5 +7,5 @@ import java.io.File;
 public interface IService {
     File getExternalFilesDir();
     void startForeground(Episode episode);
-    void stopForeground();
+    void stopForeground(Episode episode);
 }

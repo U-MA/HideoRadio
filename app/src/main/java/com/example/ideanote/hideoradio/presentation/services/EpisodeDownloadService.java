@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -91,7 +92,11 @@ public class EpisodeDownloadService extends Service implements IService {
     }
 
     @Override
-    public void stopForeground() {
+    public void stopForeground(Episode episode) {
         stopForeground(true);
+        Notification notification =
+                EpisodeDownloadCompleteNotification.createBuilder(getApplicationContext(), episode).build();
+        NotificationManagerCompat.from(getApplicationContext()).notify(
+                EpisodeDownloadCompleteNotification.DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification);
     }
 }

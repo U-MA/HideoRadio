@@ -57,10 +57,10 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
     }
 
 
-    private class EpisodeDownloadServiceSubscriber extends rx.Subscriber<Integer> {
+    private class EpisodeDownloadServiceSubscriber extends rx.Subscriber<Episode> {
         @Override
         public void onCompleted() {
-            episodeDownloadService.stopForeground();
+            // do nothing
         }
 
         @Override
@@ -69,8 +69,8 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         }
 
         @Override
-        public void onNext(Integer integer) {
-            // do nothing
+        public void onNext(Episode episode) {
+            episodeDownloadService.stopForeground(episode);
         }
     }
 }
