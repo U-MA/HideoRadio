@@ -11,11 +11,9 @@ import android.util.Log;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
-import com.example.ideanote.hideoradio.presentation.events.MediaServiceStopEvent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -211,10 +209,5 @@ public class PodcastPlayerService extends Service {
 
     public Episode getEpisode() {
         return podcastPlayer.getEpisode();
-    }
-
-    @Subscribe
-    public void onMediaServiceStopEvent(MediaServiceStopEvent event) {
-        stop();
     }
 }

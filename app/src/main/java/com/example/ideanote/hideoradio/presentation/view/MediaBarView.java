@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
-import com.example.ideanote.hideoradio.presentation.events.MediaServiceStopEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.R;
@@ -87,8 +86,6 @@ public class MediaBarView extends FrameLayout {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     v.getContext().startService(PodcastPlayerService.createStopIntent(v.getContext()));
                     rootView.setVisibility(View.GONE);
-
-                    BusHolder.getInstance().post(new MediaServiceStopEvent());
                     // TODO: PodcastPlayerをメモリから削除
                 }
             }
