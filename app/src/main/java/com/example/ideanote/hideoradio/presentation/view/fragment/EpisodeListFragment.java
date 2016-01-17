@@ -101,9 +101,13 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         getComponent(EpisodeComponent.class).inject(this);
         episodeListPresenter.setView(this);
 
-        setupMediaBarView();
-
         loadEpisodeList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupMediaBarView();
     }
 
     @Override
