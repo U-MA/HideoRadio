@@ -96,7 +96,6 @@ public class PodcastPlayerServiceTest {
 
         verify(mockPodcastPlayer).start(any(Context.class), any(Episode.class));
         verify(podcastPlayerNotification).createBuilderForPlaying();
-        verify(notificationManagerCompat).notify(anyInt(), any(Notification.class));
     }
 
     @Test
