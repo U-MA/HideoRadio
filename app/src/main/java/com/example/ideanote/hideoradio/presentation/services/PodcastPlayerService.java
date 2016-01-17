@@ -102,18 +102,22 @@ public class PodcastPlayerService extends Service {
 
         switch (action) {
             case ACTION_START:
+                Log.i(TAG, ACTION_START);
                 start(episodeId);
                 playNotificationNotify(episodeId);
                 break;
             case ACTION_RESTART:
+                Log.i(TAG, ACTION_RESTART);
                 restart();
                 restartNotificationNotify(episodeId);
                 break;
             case ACTION_PAUSE:
+                Log.i(TAG, ACTION_PAUSE);
                 pause();
                 pausedNotificationNotify(episodeId);
                 break;
             case ACTION_STOP:
+                Log.i(TAG, ACTION_STOP);
                 stop();
                 cancelNotification();
                 break;
