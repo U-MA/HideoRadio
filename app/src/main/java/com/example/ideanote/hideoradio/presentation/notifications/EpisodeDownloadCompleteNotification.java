@@ -2,10 +2,12 @@ package com.example.ideanote.hideoradio.presentation.notifications;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 
 public class EpisodeDownloadCompleteNotification {
@@ -16,11 +18,13 @@ public class EpisodeDownloadCompleteNotification {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_action_tick)
                 .setContentTitle("Download completed")
-                .setContentText(episode.getTitle());
+                .setContentText(episode.getTitle())
+                .setAutoCancel(true);
 
-        // TODO: launch EpisodeDetailActivity
+        Intent intent = new Intent(context, EpisodeDetailActivity.class);
+        intent.putExtra(EpisodeListActivity.EXTRA_EPISODE_ID, episode.getEpisodeId());
         PendingIntent launchIntent = PendingIntent.getActivity(
-                context, 0, EpisodeListActivity.createIntent(context, null), PendingIntent.FLAG_ONE_SHOT);
+                context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         builder.setContentIntent(launchIntent);
 
         return builder;
