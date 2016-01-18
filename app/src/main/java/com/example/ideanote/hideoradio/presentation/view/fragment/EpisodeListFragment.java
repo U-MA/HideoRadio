@@ -1,8 +1,11 @@
 package com.example.ideanote.hideoradio.presentation.view.fragment;
 
+import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
@@ -124,6 +128,19 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     public void onDestroy() {
         super.onDestroy();
         episodeListPresenter.onDestroy();
+    }
+
+    @Override
+    public boolean isNetworkConnected() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Override
+    public void showNetworkError() {
+        Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
     }
 
     public void launchIntent(Intent intent) {

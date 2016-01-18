@@ -66,7 +66,11 @@ public class EpisodeListPresenter implements Presenter {
         if (episode.isDownloaded()) {
             episodeListView.showClearCacheDialog(episode);
         } else {
-            episodeListView.downloadEpisode(episode);
+            if (episodeListView.isNetworkConnected()) {
+                episodeListView.downloadEpisode(episode);
+            } else {
+                episodeListView.showNetworkError();
+            }
         }
     }
 

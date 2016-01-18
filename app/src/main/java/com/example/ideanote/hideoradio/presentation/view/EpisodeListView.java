@@ -28,4 +28,7 @@ public interface EpisodeListView {
 
     void launchIntent(Intent intent);
 
+    boolean isNetworkConnected();
+
+    void showNetworkError();
 }
