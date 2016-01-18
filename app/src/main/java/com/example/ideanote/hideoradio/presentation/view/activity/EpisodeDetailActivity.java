@@ -11,6 +11,8 @@ import android.widget.SeekBar;
 
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.databinding.ActivityEpisodeDetailBinding;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
@@ -21,6 +23,7 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.dialog.MediaPlayConfirmationDialog;
+import com.squareup.otto.Subscribe;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -58,6 +61,8 @@ public class EpisodeDetailActivity extends AppCompatActivity
 
         binding.episodeDetail.imageButton.setOnClickListener(onClickListener);
         binding.episodeDetail.mediaSeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
+
+        BusHolder.getInstance().register(this);
     }
 
     @Override
@@ -70,6 +75,8 @@ public class EpisodeDetailActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         episodeDetailPresenter.onDestroy();
+
+        BusHolder.getInstance().unregister(this);
     }
 
     @Override
@@ -194,6 +201,13 @@ public class EpisodeDetailActivity extends AppCompatActivity
         sec += Integer.valueOf(data[data.length - 1]);
 
         return sec * 1000;
+    }
+
+    @Subscribe
+    public void onEpisodeComplete(final EpisodeCompleteEvent event) {
+        setPlayMediaButton();
+        setSeekBarEnabled(false);
+        currentTimeUpdate(0);
     }
 
     private View.OnClickListener onClickListener =
