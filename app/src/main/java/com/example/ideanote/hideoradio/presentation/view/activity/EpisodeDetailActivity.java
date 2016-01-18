@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
@@ -74,6 +75,7 @@ public class EpisodeDetailActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "onDestroy()");
         episodeDetailPresenter.onDestroy();
 
         BusHolder.getInstance().unregister(this);
