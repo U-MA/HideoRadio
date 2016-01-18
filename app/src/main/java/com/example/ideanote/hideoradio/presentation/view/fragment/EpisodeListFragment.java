@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
@@ -26,6 +27,7 @@ import com.example.ideanote.hideoradio.presentation.events.UpdateEpisodeListEven
 import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
+import com.example.ideanote.hideoradio.presentation.view.dialog.ClearCacheDialog;
 import com.example.ideanote.hideoradio.presentation.view.dialog.EpisodeDownloadCancelDialog;
 import com.squareup.otto.Subscribe;
 
@@ -180,9 +182,8 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
     @Override
     public void showClearCacheDialog(Episode episode) {
-        EpisodeDownloadCancelDialog dialog = new EpisodeDownloadCancelDialog();
-        dialog.setEpisode(episode);
-        dialog.show(getFragmentManager(), "DownloadCancelDialog");
+        ClearCacheDialog dialog = ClearCacheDialog.newInstance(episode);
+        dialog.show(getFragmentManager(), null);
     }
 
     @Override
@@ -199,6 +200,16 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Override
     public void hideMediaBarView() {
         binding.mediaBar.hide();
+    }
+
+    @Subscribe
+    public void onClearCache(final ClearCacheEvent event) {
+        String episodeId = event.getEpisodeId();
+        Episode episode = Episode.findById(episodeId); // TODO: Use Repository
+
+        episode.clearCache();
+
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Subscribe

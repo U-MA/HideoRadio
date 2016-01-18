@@ -2,6 +2,7 @@ package com.example.ideanote.hideoradio;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
@@ -162,6 +163,7 @@ public class Episode extends Model {
         file.delete();
         mediaLocalPath = null;
         save();
+        Log.i(Episode.class.getSimpleName(), "clearCache()");
     }
 
     public static Episode findById(String eid) {
