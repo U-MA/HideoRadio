@@ -55,10 +55,6 @@ public class EpisodeDetailPresenter implements Presenter {
     @Override
     public void onDestroy() {
         BusHolder.getInstance().unregister(this);
-
-        if (!podcastPlayer.isPlaying() && podcastPlayer.getService() != null) {
-            podcastPlayer.getService().stopSelf();
-        }
     }
 
     public void onClick(View v) {
