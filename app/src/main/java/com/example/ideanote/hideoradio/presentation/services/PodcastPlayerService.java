@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
@@ -122,6 +124,7 @@ public class PodcastPlayerService extends Service {
                 cancelNotification();
                 break;
         }
+        BusHolder.getInstance().post(new PodcastPlayerStateChangedEvent());
 
         return START_STICKY;
     }

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
+import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
@@ -28,7 +29,6 @@ import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 import com.example.ideanote.hideoradio.presentation.view.dialog.ClearCacheDialog;
-import com.example.ideanote.hideoradio.presentation.view.dialog.EpisodeDownloadCancelDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -210,6 +210,11 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         episode.clearCache();
 
         recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onPodcastPlayerStateChanged(final PodcastPlayerStateChangedEvent event) {
+        setupMediaBarView();
     }
 
     @Subscribe
