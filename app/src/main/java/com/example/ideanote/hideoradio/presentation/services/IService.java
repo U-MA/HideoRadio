@@ -8,4 +8,6 @@ public interface IService {
     File getExternalFilesDir();
     void startForeground(Episode episode);
     void stopForeground(Episode episode);
+    boolean isNetworkConnected();
+    void showErrorMessage();
 }

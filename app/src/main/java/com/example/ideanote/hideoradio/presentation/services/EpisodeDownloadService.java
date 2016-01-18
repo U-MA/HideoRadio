@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
@@ -98,5 +101,18 @@ public class EpisodeDownloadService extends Service implements IService {
                 EpisodeDownloadCompleteNotification.createBuilder(getApplicationContext(), episode).build();
         NotificationManagerCompat.from(getApplicationContext()).notify(
                 EpisodeDownloadCompleteNotification.DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public boolean isNetworkConnected() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toast.makeText(getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
     }
 }

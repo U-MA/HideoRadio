@@ -46,8 +46,12 @@ public class EpisodeDownloadServicePresenter implements ServicePresenter {
         File directory = episodeDownloadService.getExternalFilesDir();
         Episode episode = Episode.findById(episodeId); // TODO: Use UseCase class!!
 
-        episodeDownloadService.startForeground(episode);
-        episodeDownloadUseCase.execute(episodeId, directory, new EpisodeDownloadServiceSubscriber());
+        if (episodeDownloadService.isNetworkConnected()) {
+            episodeDownloadService.startForeground(episode);
+            episodeDownloadUseCase.execute(episodeId, directory, new EpisodeDownloadServiceSubscriber());
+        } else {
+            episodeDownloadService.showErrorMessage();
+        }
 
         return Service.START_STICKY;
     }

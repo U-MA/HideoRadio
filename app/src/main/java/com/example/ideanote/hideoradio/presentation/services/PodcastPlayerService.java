@@ -1,12 +1,16 @@
 package com.example.ideanote.hideoradio.presentation.services;
 
 import android.app.Service;
+import android.app.usage.NetworkStatsManager;
 import android.content.Intent;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
@@ -109,6 +113,16 @@ public class PodcastPlayerService extends Service {
         switch (action) {
             case ACTION_START:
                 Log.i(TAG, ACTION_START);
+                Episode episode = Episode.findById(episodeId);
+                if (!episode.isDownloaded()) {
+                    ConnectivityManager connectivityManager =
+                            (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    if (networkInfo == null || !networkInfo.isConnected()) {
+                        Toast.makeText(getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+                        return START_STICKY;
+                    }
+                }
                 start(episodeId);
                 playNotificationNotify(episodeId);
                 break;
@@ -186,7 +200,6 @@ public class PodcastPlayerService extends Service {
         }
 
         Episode episode = Episode.findById(episodeId);
-
         podcastPlayer.start(getApplicationContext(), episode);
     }
 
