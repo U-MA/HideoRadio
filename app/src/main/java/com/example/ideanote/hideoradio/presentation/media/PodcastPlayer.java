@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.Timer;
+import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -153,6 +155,7 @@ public class PodcastPlayer
     public void onCompletion(MediaPlayer mp) {
         state = PlayerState.STOPPED;
         release();
+        BusHolder.getInstance().post(new EpisodeCompleteEvent());
     }
 
     /**

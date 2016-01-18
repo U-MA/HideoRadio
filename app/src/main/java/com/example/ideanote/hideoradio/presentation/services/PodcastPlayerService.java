@@ -11,10 +11,12 @@ import android.util.Log;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.notifications.PodcastPlayerNotification;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -87,6 +89,8 @@ public class PodcastPlayerService extends Service {
 
         notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
         podcastPlayerNotification = new PodcastPlayerNotification(getApplicationContext());
+
+        BusHolder.getInstance().register(this);
     }
 
     /**
@@ -139,6 +143,8 @@ public class PodcastPlayerService extends Service {
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
         super.onDestroy();
+
+        BusHolder.getInstance().unregister(this);
     }
 
     private void playNotificationNotify(String episodeId) {
@@ -213,5 +219,10 @@ public class PodcastPlayerService extends Service {
 
     public Episode getEpisode() {
         return podcastPlayer.getEpisode();
+    }
+
+    @Subscribe
+    public void onEpisodeComplete(final EpisodeCompleteEvent event) {
+        stopForeground(true);
     }
 }
