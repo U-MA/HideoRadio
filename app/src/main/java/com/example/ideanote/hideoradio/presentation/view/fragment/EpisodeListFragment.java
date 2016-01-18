@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
@@ -214,6 +215,11 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
 
     @Subscribe
     public void onPodcastPlayerStateChanged(final PodcastPlayerStateChangedEvent event) {
+        setupMediaBarView();
+    }
+
+    @Subscribe
+    public void onEpisodeComplete(final EpisodeCompleteEvent event) {
         setupMediaBarView();
     }
 

@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.DaggerEpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
