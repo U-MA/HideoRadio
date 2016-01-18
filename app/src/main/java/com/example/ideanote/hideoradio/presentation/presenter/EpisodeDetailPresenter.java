@@ -121,6 +121,24 @@ public class EpisodeDetailPresenter implements Presenter {
         }
     }
 
+    public void onDialogPlayClicked() {
+        episodeDetailActivity.setPauseMediaButton();
+        episodeDetailActivity.setSeekBarEnabled(true);
+        episodeDetailActivity.startPodcast(episode);
+    }
+
+    public void onDialogDownloadClicked() {
+        episodeDetailActivity.startDownload(episode);
+    }
+
+    public void onDialogDownloadCancelClicked() {
+        // TODO: implementation
+    }
+
+    public void onDialogClearCacheClicked() {
+        episode.clearCache();
+    }
+
     private final class EpisodeDetailSubscriber extends rx.Subscriber<Episode> {
         @Override
         public void onCompleted() {

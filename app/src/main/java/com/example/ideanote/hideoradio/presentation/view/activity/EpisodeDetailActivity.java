@@ -1,5 +1,6 @@
 package com.example.ideanote.hideoradio.presentation.view.activity;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,13 +18,17 @@ import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeModule;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeDetailPresenter;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
+import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
+import com.example.ideanote.hideoradio.presentation.view.dialog.MediaPlayConfirmationDialog;
 
 import java.util.Formatter;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class EpisodeDetailActivity extends AppCompatActivity {
+public class EpisodeDetailActivity extends AppCompatActivity
+        implements MediaPlayConfirmationDialog.OnClickCallback{
 
     private final static String TAG = EpisodeDetailActivity.class.getName();
 
@@ -77,6 +82,37 @@ public class EpisodeDetailActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDialogPlayClicked() {
+        episodeDetailPresenter.onDialogPlayClicked();
+    }
+
+    @Override
+    public void onDialogDownloadClicked() {
+        episodeDetailPresenter.onDialogDownloadClicked();
+    }
+
+    @Override
+    public void onDialogDownloadCancelClicked() {
+        episodeDetailPresenter.onDialogDownloadCancelClicked();
+    }
+
+    @Override
+    public void onDialogClearCacheClicked() {
+        episodeDetailPresenter.onDialogClearCacheClicked();
+    }
+
+    public void startPodcast(Episode episode) {
+        Intent intent = PodcastPlayerService.createStartIntent(
+                getApplicationContext(), episode.getEpisodeId());
+        startService(intent);
+    }
+
+    public void startDownload(Episode episode) {
+        Intent intent = EpisodeDownloadService.createIntent(getApplicationContext(), episode);
+        startService(intent);
     }
 
     private void setupToolbar() {
