@@ -20,6 +20,7 @@
             android:id="@+id/episode_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/media_bar"
             android:scrollbars="vertical"
             android:fadeScrollbars="true"
             android:visibility="visible"
@@ -27,6 +28,7 @@
 
         <com.example.ideanote.hideoradio.presentation.view.MediaBarView
             android:id="@+id/media_bar"
+            android:layout_alignParentEnd="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
