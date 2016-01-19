@@ -23,6 +23,7 @@ import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
 import com.example.ideanote.hideoradio.presentation.services.EpisodeDownloadService;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 import com.example.ideanote.hideoradio.presentation.view.adapter.RecyclerViewAdapter;
@@ -238,6 +239,9 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Subscribe
     public void onEpisodeComplete(final EpisodeCompleteEvent event) {
         setupMediaBarView();
+
+        Intent intent = PodcastPlayerService.createStopIntent(getContext());
+        getActivity().startService(intent);
     }
 
     @Subscribe

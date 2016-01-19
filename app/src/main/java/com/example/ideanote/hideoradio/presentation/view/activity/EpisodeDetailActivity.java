@@ -210,6 +210,9 @@ public class EpisodeDetailActivity extends AppCompatActivity
         setPlayMediaButton();
         setSeekBarEnabled(false);
         currentTimeUpdate(0);
+
+        Intent intent = PodcastPlayerService.createStopIntent(getApplicationContext());
+        startService(intent);
     }
 
     private View.OnClickListener onClickListener =
