@@ -9,11 +9,13 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.Episode;
@@ -39,6 +41,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,6 +57,14 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     private FragmentEpisodeListBinding binding;
 
     private RecyclerViewAdapter recyclerViewAdapter;
+
+    private int actionBarAutoHideSensivity = 0;
+
+    private int actionBarAutoHideY = 0;
+
+    private int actionBarAutoHideSignal = 0;
+
+    private boolean actionBarShown = true;
 
     private RecyclerViewAdapter.OnItemClickListener onItemClickListener =
             new RecyclerViewAdapter.OnItemClickListener() {
@@ -69,6 +81,34 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
                 }
             };
 
+    private RecyclerView.OnScrollListener onScrollListener =
+            new RecyclerView.OnScrollListener() {
+
+                private Map<Integer, Integer> heights = new HashMap<>();
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                    View firstVisibleItemView = recyclerView.getChildAt(0);
+                    if (firstVisibleItemView == null) {
+                        return;
+                    }
+
+                    int firstVisibleItem = recyclerView.getChildAdapterPosition(firstVisibleItemView);
+                    heights.put(firstVisibleItem, firstVisibleItemView.getHeight());
+
+                    int previousItemsHeight = 0;
+                    for (int i=0; i < firstVisibleItem; ++i) {
+                        previousItemsHeight += heights.get(i) != null ? heights.get(i) : 0;
+                    }
+
+                    int currentScrollY = previousItemsHeight - firstVisibleItemView.getTop()
+                            + recyclerView.getPaddingTop();
+
+                    onMainContentScrolled(currentScrollY, dy);
+                }
+            };
+
 
     public EpisodeListFragment() {
         // Required empty public constructor
@@ -82,6 +122,12 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        actionBarAutoHideSensivity = getResources().getDimensionPixelSize(
+                R.dimen.action_bar_auto_hide_sensivity);
+
+        actionBarAutoHideY = getResources().getDimensionPixelSize(
+                R.dimen.action_bar_auto_hide_min_y);
 
         BusHolder.getInstance().register(this);
     }
@@ -156,6 +202,7 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         RecyclerView episodeListView = binding.episodeListView;
         episodeListView.setHasFixedSize(false);
         episodeListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        episodeListView.addOnScrollListener(onScrollListener);
 
         ArrayList<Episode> episodes = new ArrayList<>();
         recyclerViewAdapter = new RecyclerViewAdapter(episodes);
@@ -219,6 +266,57 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     @Override
     public void hideMediaBarView() {
         binding.mediaBar.hide();
+    }
+
+    private void onMainContentScrolled(int currentY, int deltaY) {
+        if (deltaY > actionBarAutoHideSensivity) {
+            deltaY = actionBarAutoHideSensivity;
+        } else if (deltaY < -actionBarAutoHideSensivity) {
+            deltaY = -actionBarAutoHideSensivity;
+        }
+
+        if (Math.signum(deltaY) * Math.signum(actionBarAutoHideSignal) < 0) {
+            actionBarAutoHideSignal = deltaY;
+        } else {
+            actionBarAutoHideSignal += deltaY;
+        }
+
+        boolean shouldShown = currentY < actionBarAutoHideY ||
+                (actionBarAutoHideSignal <= -actionBarAutoHideSensivity);
+        autoShownOrHideActionBar(shouldShown);
+    }
+
+    private void autoShownOrHideActionBar(boolean show) {
+        if (show == actionBarShown) {
+            return;
+        }
+
+        actionBarShown = show;
+        onActionBarAutoShowOrHide(show);
+    }
+
+    private void onActionBarAutoShowOrHide(boolean shown) {
+        ArrayList<View> viewCollection = new ArrayList<>();
+        viewCollection.add(getActivity().findViewById(R.id.headerbar));
+        viewCollection.add(getActivity().findViewById(R.id.toolbar));
+
+        for (View view : viewCollection) {
+            if (shown) {
+                ViewCompat.animate(view)
+                        .translationY(0)
+                        .alpha(1)
+                        .setDuration(300)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .withLayer();
+            } else {
+                ViewCompat.animate(view)
+                        .translationY(-view.getBottom())
+                        .alpha(0)
+                        .setDuration(300)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .withLayer();
+            }
+        }
     }
 
     @Subscribe
