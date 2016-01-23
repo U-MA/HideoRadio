@@ -126,7 +126,6 @@ public class EpisodeDetailActivity extends AppCompatActivity
 
     private void setupToolbar() {
         binding.toolbar.setNavigationIcon(R.drawable.ic_action_arrow_left);
-        binding.toolbar.getBackground().setAlpha(0);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
