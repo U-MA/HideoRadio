@@ -3,10 +3,13 @@ package com.example.ideanote.hideoradio.activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.View;
 
 import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.Episode;
@@ -15,9 +18,12 @@ import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.di.TestApplicationModule;
 import com.example.ideanote.hideoradio.presentation.internal.di.ApplicationComponent;
 import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
+import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
 
+import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,6 +42,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
@@ -70,6 +77,15 @@ public class EpisodeListActivityTest {
         application.setComponent(component);
 
         component.inject(this);
+    }
+
+    @After
+    public void teardown() {
+        reset(mockPodcastPlayer);
+
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        Intent intent = PodcastPlayerService.createStopIntent(instrumentation.getTargetContext());
+        intentsTestRule.getActivity().startService(intent);
     }
 
     @Test
@@ -176,9 +192,47 @@ public class EpisodeListActivityTest {
         onView(withId(R.id.media_bar)).check(matches(not(isDisplayed())));
     }
 
+    @Test
+    public void showDownloadDialogWhenDownloadButtonIsClicked() {
+        final String TITLE = "title";
+
+        when(mockPodcastPlayer.getEpisode()).thenReturn(
+                new Episode(null, TITLE, null, null, null, null, null));
+
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.episode_list_view))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(
+                        0, clickChildViewWithId(R.id.download_toggle_button)));
+
+        onView(withText("Download this episode")).check(matches(isDisplayed()));
+    }
+
     @Singleton
     @Component(modules = TestApplicationModule.class)
     public interface TestApplicationComponent extends ApplicationComponent {
         void inject(EpisodeListActivityTest episodeListActivityTest);
+    }
+
+    public static ViewAction clickChildViewWithId(final int id) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                View v = view.findViewById(id);
+                if (v != null) {
+                    v.performClick();
+                }
+            }
+        };
     }
 }

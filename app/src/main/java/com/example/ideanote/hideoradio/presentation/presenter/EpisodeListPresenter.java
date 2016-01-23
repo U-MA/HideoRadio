@@ -41,7 +41,7 @@ public class EpisodeListPresenter implements Presenter {
 
     @Override
     public void onDestroy() {
-        if (podcastPlayer.isPaused()) {
+        if (podcastPlayer.isPaused() && podcastPlayer.getService() != null) {
             podcastPlayer.getService().stopSelf();
         }
     }

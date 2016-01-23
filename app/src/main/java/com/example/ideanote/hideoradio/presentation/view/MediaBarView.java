@@ -47,7 +47,8 @@ public class MediaBarView extends FrameLayout {
     }
 
     public void show(Episode episode) {
-        episodeTitleTextView.setText(episode.getTitle());
+        String title = episode != null ? episode.getTitle() : "";
+        episodeTitleTextView.setText(title);
         episodeTitleTextView.setSelected(true);
         setMediaPlayAndPauseButton();
         setExitButton();
