@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.R;
 import com.example.ideanote.hideoradio.presentation.events.ClearCacheEvent;
+import com.example.ideanote.hideoradio.presentation.events.DownloadEvent;
 import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
 import com.example.ideanote.hideoradio.presentation.internal.di.EpisodeComponent;
@@ -37,6 +38,7 @@ import com.example.ideanote.hideoradio.presentation.internal.di.HasComponent;
 import com.example.ideanote.hideoradio.presentation.presenter.EpisodeListPresenter;
 import com.example.ideanote.hideoradio.presentation.view.EpisodeListView;
 import com.example.ideanote.hideoradio.presentation.view.dialog.ClearCacheDialog;
+import com.example.ideanote.hideoradio.presentation.view.dialog.DownloadDialog;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -253,6 +255,12 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
     }
 
     @Override
+    public void showDownloadDialog(Episode episode) {
+        DownloadDialog dialog =  DownloadDialog.newInstance(episode);
+        dialog.show(getFragmentManager(), null);
+    }
+
+    @Override
     public void downloadEpisode(Episode episode) {
         Intent intent = EpisodeDownloadService.createIntent(getContext(), episode);
         getActivity().startService(intent);
@@ -327,6 +335,14 @@ public class EpisodeListFragment extends Fragment implements EpisodeListView {
         episode.clearCache();
 
         recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onDownloadEpisode(final DownloadEvent event) {
+        String episodeId = event.getEpisodeId();
+        Episode episode = Episode.findById(episodeId); // TODO: Use Repository
+
+        downloadEpisode(episode);
     }
 
     @Subscribe

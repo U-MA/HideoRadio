@@ -26,6 +26,8 @@ public interface EpisodeListView {
 
     void downloadEpisode(Episode episode);
 
+    void showDownloadDialog(Episode episode);
+
     void launchIntent(Intent intent);
 
     boolean isNetworkConnected();
