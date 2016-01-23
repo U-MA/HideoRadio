@@ -85,7 +85,7 @@ public class MediaBarView extends FrameLayout {
             public void onClick(View v) {
                 if (podcastPlayer.isPlaying() || podcastPlayer.isPaused()) {
                     v.getContext().startService(PodcastPlayerService.createStopIntent(v.getContext()));
-                    rootView.setVisibility(View.GONE);
+                    MediaBarView.this.setVisibility(View.GONE);
                     // TODO: PodcastPlayerをメモリから削除
                 }
             }
