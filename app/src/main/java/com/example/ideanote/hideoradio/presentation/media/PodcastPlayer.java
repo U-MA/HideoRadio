@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 public class PodcastPlayer
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
-    private static String TAG = PodcastPlayer.class.getName();
+    private static final String TAG = PodcastPlayer.class.getName();
 
 
     private final MediaPlayer mediaPlayer;
