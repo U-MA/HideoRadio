@@ -38,6 +38,9 @@ public class PodcastPlayer
     @Inject
     public PodcastPlayer(MediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
+
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnCompletionListener(this);
     }
 
     @Deprecated
@@ -90,9 +93,6 @@ public class PodcastPlayer
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(context, episode.getUri());
-
-            mediaPlayer.setOnPreparedListener(this);
-            mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
