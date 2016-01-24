@@ -69,10 +69,11 @@ public class EpisodeListPresenterTest {
     public void onDownloadButtonClicked_episodeIsNotDownloaded() {
         Episode mockEpisode = mock(Episode.class);
         when(mockEpisode.isDownloaded()).thenReturn(false);
+        when(mockEpisodeListView.isNetworkConnected()).thenReturn(true);
 
         episodeListPresenter.onDownloadButtonClicked(mockEpisode);
 
-        verify(mockEpisodeListView).downloadEpisode(mockEpisode);
+        verify(mockEpisodeListView).showDownloadDialog(mockEpisode);
     }
 
     @Test

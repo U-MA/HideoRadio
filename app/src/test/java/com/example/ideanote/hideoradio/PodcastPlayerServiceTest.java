@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
+import com.activeandroid.query.Select;
 import com.example.ideanote.hideoradio.data.executor.JobExecutor;
 import com.example.ideanote.hideoradio.domain.executor.PostExecutionThread;
 import com.example.ideanote.hideoradio.domain.executor.ThreadExecutor;
@@ -28,12 +30,16 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
+
+import java.util.List;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
@@ -46,6 +52,8 @@ public class PodcastPlayerServiceTest {
 
     private PodcastPlayer mockPodcastPlayer;
 
+    private EpisodeRepository episodeRepository;
+
     @Mock
     private NotificationManagerCompat notificationManagerCompat;
 
@@ -57,6 +65,8 @@ public class PodcastPlayerServiceTest {
 
     @Before
     public void setup() {
+        episodeRepository= mock(EpisodeRepository.class);
+
         ((HideoRadioApplication) RuntimeEnvironment.application).setComponent(
                 DaggerPodcastPlayerServiceTest_TestPodcastPlayerServiceComponent.builder()
                         .testPodcastPlayerServiceModule(new TestPodcastPlayerServiceModule()).build());
@@ -70,6 +80,8 @@ public class PodcastPlayerServiceTest {
                 new NotificationCompat.Builder(RuntimeEnvironment.application));
         when(podcastPlayerNotification.createBuilderForPaused()).thenReturn(
                 new NotificationCompat.Builder(RuntimeEnvironment.application));
+
+        ShadowLog.stream = System.out;
     }
 
     @After
@@ -89,9 +101,13 @@ public class PodcastPlayerServiceTest {
 
     @Test
     public void onStartCommand_actionStart_startToPlayAndNotifyPlayNotification() {
+        Episode mockEpisode = mock(Episode.class);
+        when(mockEpisode.isDownloaded()).thenReturn(true);
+        when(episodeRepository.episode(any(String.class))).thenReturn(
+                Observable.from(new Episode[] {mockEpisode}));
+
         Intent intent = PodcastPlayerService.createStartIntent(
                 RuntimeEnvironment.application, EPISODE_ID);
-
         service.onStartCommand(intent, 0, 0);
 
         verify(mockPodcastPlayer).start(any(Context.class), any(Episode.class));
@@ -168,7 +184,7 @@ public class PodcastPlayerServiceTest {
         @Singleton
         @Provides
         EpisodeRepository provideEpisodeRepository(EpisodeDataRepository episodeDataRepository) {
-            return episodeDataRepository;
+            return episodeRepository;
         }
     }
 }

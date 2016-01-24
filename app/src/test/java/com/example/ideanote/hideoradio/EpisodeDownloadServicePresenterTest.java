@@ -42,6 +42,7 @@ public class EpisodeDownloadServicePresenterTest {
 
         IService mockIService = mock(IService.class);
         episodeDownloadServicePresenter.setService(mockIService);
+        when(mockIService.isNetworkConnected()).thenReturn(true);
 
         episodeDownloadServicePresenter.onStartCommand(intent, 0, 0);
 

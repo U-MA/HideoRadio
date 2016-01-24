@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.example.ideanote.hideoradio.Episode;
 import com.example.ideanote.hideoradio.HideoRadioApplication;
+import com.example.ideanote.hideoradio.data.repository.EpisodeDataRepository;
+import com.example.ideanote.hideoradio.domain.repository.EpisodeRepository;
+import com.example.ideanote.hideoradio.presentation.UIThread;
 import com.example.ideanote.hideoradio.presentation.events.BusHolder;
 import com.example.ideanote.hideoradio.presentation.events.EpisodeCompleteEvent;
 import com.example.ideanote.hideoradio.presentation.events.PodcastPlayerStateChangedEvent;
@@ -24,6 +27,8 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import rx.Subscriber;
 
 /**
  * Service for playing podcast media
@@ -43,6 +48,9 @@ public class PodcastPlayerService extends Service {
 
     @Inject
     PodcastPlayer podcastPlayer;
+
+    @Inject
+    EpisodeRepository episodeDataRepository;
 
     PodcastPlayerNotification podcastPlayerNotification;
 
@@ -87,6 +95,7 @@ public class PodcastPlayerService extends Service {
 
         ApplicationComponent applicationComponent =
                 ((HideoRadioApplication) getApplicationContext()).getComponent();
+        Log.i(TAG, applicationComponent.toString());
         applicationComponent.inject(this);
 
         podcastPlayer.setService(this);
@@ -108,23 +117,44 @@ public class PodcastPlayerService extends Service {
         }
 
         String action = intent.getAction();
-        String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
+        final String episodeId = intent.getStringExtra(EXTRA_EPISODE_ID);
 
         switch (action) {
             case ACTION_START:
                 Log.i(TAG, ACTION_START);
-                Episode episode = Episode.findById(episodeId);
-                if (!episode.isDownloaded()) {
-                    ConnectivityManager connectivityManager =
-                            (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
-                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                    if (networkInfo == null || !networkInfo.isConnected()) {
-                        Toast.makeText(getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
-                        return START_STICKY;
-                    }
-                }
-                start(episodeId);
-                playNotificationNotify(episodeId);
+                Log.i(TAG, episodeDataRepository.toString());
+                episodeDataRepository.episode(episodeId)
+                        .subscribeOn(new UIThread().getScheduler())
+                        .observeOn(new UIThread().getScheduler())
+                        .subscribe(new Subscriber<Episode>() {
+                            @Override
+                            public void onCompleted() {
+                                // do nothing
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // do nothing
+                            }
+
+                            @Override
+                            public void onNext(Episode episode) {
+                                Log.i(PodcastPlayerService.class.getSimpleName(), "onNext");
+                                Log.e(PodcastPlayerService.class.getSimpleName(), "" + (episode != null));
+                                Log.i(PodcastPlayerService.class.getSimpleName(), episode.toString());
+                                if (!episode.isDownloaded()) {
+                                    ConnectivityManager connectivityManager =
+                                            (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+                                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                                    if (networkInfo == null || !networkInfo.isConnected()) {
+                                        Toast.makeText(getApplicationContext(), "Network error", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+                                start(episodeId);
+                                playNotificationNotify(episodeId);
+                            }
+                        });
                 break;
             case ACTION_RESTART:
                 Log.i(TAG, ACTION_RESTART);
