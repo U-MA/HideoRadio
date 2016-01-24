@@ -32,7 +32,6 @@ public class PodcastPlayer
     private PlayerState state = PlayerState.STOPPED;
     private Episode episode;
     private Service service;
-    private CurrentTimeListener currentTimeListener;
 
     @Inject
     public PodcastPlayer(MediaPlayer mediaPlayer) {
@@ -176,8 +175,6 @@ public class PodcastPlayer
     }
 
     public void setCurrentTimeListener(final CurrentTimeListener currentTimeListener) {
-        this.currentTimeListener = currentTimeListener;
-
         Timer timer = new Timer(new Timer.TimerCallback() {
             @Override
             public void onTick(long millis) {
