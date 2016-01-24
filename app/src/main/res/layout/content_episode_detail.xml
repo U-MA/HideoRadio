@@ -22,9 +22,9 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/episode_detail_header_height"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:contentDescription="@string/episode_detail_header"
-                android:src="@drawable/detail_header" />
+                android:src="@drawable/header_cassette" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -41,6 +41,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginLeft="@dimen/space_large"
                 android:layout_marginRight="@dimen/space_large"
+                android:paddingBottom="48dp"
                 />
 
             <RelativeLayout
