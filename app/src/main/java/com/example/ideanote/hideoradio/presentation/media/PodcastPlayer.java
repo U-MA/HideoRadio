@@ -84,14 +84,12 @@ public class PodcastPlayer
     public void start(Context context, Episode episode) {
         Log.i(TAG, "start(Context, Episode)");
 
-        // ちょっと怪しいコード
-        mediaPlayer.reset();
-
-        state = PlayerState.PREPARING;
         this.episode = episode;
+        state = PlayerState.PREPARING;
 
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
+            mediaPlayer.reset();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(context, episode.getUri());
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
