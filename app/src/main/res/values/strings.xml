@@ -17,4 +17,6 @@
 
     <string name="network_error_text">ネットワークに繋がっていない可能性があります\nネットワーク設定を確認していただき\n再接続をしてみてください</string>
     <string name="reconnect_text">再接続</string>
+
+    <string name="action_settings">Setting</string>
 </resources>

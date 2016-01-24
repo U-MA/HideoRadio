@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import com.activeandroid.query.Select;
@@ -85,6 +86,12 @@ public class EpisodeListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity", "onResume");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
