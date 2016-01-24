@@ -27,6 +27,7 @@ public class PodcastPlayer
 
     private final MediaPlayer mediaPlayer;
 
+    @Deprecated
     private static PodcastPlayer instance;
 
     private PlayerState state = PlayerState.STOPPED;
