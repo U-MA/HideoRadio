@@ -141,6 +141,14 @@ public class PodcastPlayerTest {
     }
 
     @Test
+    public void seekTo() {
+        final int MSEC = 123;
+        podcastPlayer.seekTo(MSEC);
+
+        verify(mockMediaPlayer).seekTo(MSEC);
+    }
+
+    @Test
     public void isNowEpisode_trueCase() {
         final String EPISODE_ID = "episode_id";
 
