@@ -24,15 +24,16 @@ public class PodcastPlayer
 
     private static final String TAG = PodcastPlayer.class.getName();
 
-
-    private final MediaPlayer mediaPlayer;
-
     @Deprecated
     private static PodcastPlayer instance;
 
-    private PlayerState state = PlayerState.STOPPED;
+    private final MediaPlayer mediaPlayer;
+
     private Episode episode;
+
     private Service service;
+
+    private PlayerState state = PlayerState.STOPPED;
 
     @Inject
     public PodcastPlayer(MediaPlayer mediaPlayer) {
