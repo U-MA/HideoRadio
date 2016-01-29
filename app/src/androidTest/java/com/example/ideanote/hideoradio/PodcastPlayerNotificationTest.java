@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 public class PodcastPlayerNotificationTest {
     private final static String EPISODE_DETAIL_ACTIVIYT_NAME =
             EpisodeDetailActivity.class.getName();
-    private final static int TIMEOUT = 2000;
+    private final static int TIMEOUT = 5000;
 
     private final static Episode episode = new Select().from(Episode.class).where("Id=?", 8).executeSingle();
 
