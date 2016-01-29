@@ -21,6 +21,7 @@ import com.example.ideanote.hideoradio.presentation.media.PodcastPlayer;
 import com.example.ideanote.hideoradio.presentation.services.PodcastPlayerService;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeDetailActivity;
 import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeListActivity;
+import com.example.ideanote.hideoradio.presentation.view.activity.EpisodeSearchActivity;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -53,6 +54,9 @@ public class EpisodeListActivityTest {
 
     private final static String EPISODE_DETAIL_ACTIVITY_NAME =
             EpisodeDetailActivity.class.getName();
+
+    private final static String EPISODE_SEARCH_ACTIVITY_NAME =
+            EpisodeSearchActivity.class.getName();
 
     @Inject
     PodcastPlayer mockPodcastPlayer;
@@ -206,6 +210,15 @@ public class EpisodeListActivityTest {
                         0, clickChildViewWithId(R.id.download_toggle_button)));
 
         onView(withText("Download this episode")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void startSearchActivityWhenSearchButtonIsClicked() {
+        intentsTestRule.launchActivity(new Intent());
+
+        onView(withId(R.id.search_button)).perform(click());
+
+        intended(hasComponent(hasClassName(EPISODE_SEARCH_ACTIVITY_NAME)));
     }
 
     @Singleton

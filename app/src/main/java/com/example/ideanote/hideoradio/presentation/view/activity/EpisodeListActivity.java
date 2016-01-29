@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.activeandroid.query.Select;
@@ -38,13 +39,15 @@ import com.squareup.otto.Subscribe;
 
 
 public class EpisodeListActivity extends AppCompatActivity
-        implements HasComponent<EpisodeComponent> {
+        implements HasComponent<EpisodeComponent>, Toolbar.OnMenuItemClickListener {
 
     private EpisodeComponent episodeComponent;
 
     public static final String EXTRA_EPISODE_ID = "extra_episode_id";
 
     private static final String TAG = EpisodeListActivity.class.getName();
+
+    private Toolbar toolbar;
 
     public static Intent createIntent(Context context, String episodeId) {
         Intent intent = new Intent(context, EpisodeListActivity.class);
@@ -55,7 +58,7 @@ public class EpisodeListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -91,7 +94,18 @@ public class EpisodeListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        toolbar.setOnMenuItemClickListener(this);
         return true;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search_button:
+                startActivity(EpisodeSearchActivity.createIntent(getApplicationContext()));
+                return true;
+        }
+        return false;
     }
 
     @Override
