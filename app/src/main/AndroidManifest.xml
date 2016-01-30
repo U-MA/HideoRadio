@@ -57,7 +57,7 @@
         <activity
             android:name=".presentation.view.activity.EpisodeSearchActivity"
             android:label="@string/title_activity_episode_search"
-            android:theme="@style/AppTheme">
+            android:theme="@style/Theme.HideoRadio.Search">
         </activity>
     </application>
 
